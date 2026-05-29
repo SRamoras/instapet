@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 
-from app.database import get_db
-from app.models import Post, Tag, PostTag, Like, Save, Comment, User
-from app.schemas.post import PostCreate, PostRead
-from app.schemas.comment import CommentCreate, CommentRead
-from app.auth.dependencies import get_current_user, get_optional_user
+from database import get_db
+from models import Post, Tag, PostTag, Like, Save, Comment, User
+from schemas.post import PostCreate, PostRead
+from schemas.comment import CommentCreate, CommentRead
+from auth.dependencies import get_current_user, get_optional_user
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 

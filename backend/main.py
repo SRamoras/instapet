@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.database import create_db
-from app.routers import auth, users, posts
+from database import create_db
+from routers import auth, users, posts
 
 
 @asynccontextmanager

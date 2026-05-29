@@ -2,9 +2,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session
 
-from app.database import get_db
-from app.models.user import User
-from app.auth.jwt import decode_access_token
+from database import get_db
+from models.user import User
+from auth.jwt import decode_access_token
 
 security = HTTPBearer()
 
