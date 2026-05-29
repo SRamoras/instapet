@@ -1,6 +1,16 @@
-def main():
-    print("Hello from backend!")
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from database import create_db
 
 
-if __name__ == "__main__":
-    main()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db()
+    yield
+
+app = FastAPI(title="instapet", lifespan=lifespan)
+
+
+@app.get("/")
+def root():
+    return {"message": "PetNet 🐾"}
