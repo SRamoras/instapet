@@ -1,4 +1,9 @@
 class PostCard extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
     connectedCallback() {
         const username = this.getAttribute('username') || 'usuario';
         const petName = this.getAttribute('pet-name') || 'Pet';
@@ -6,79 +11,100 @@ class PostCard extends HTMLElement {
         const caption = this.getAttribute('caption') || '';
         const likes = this.getAttribute('likes') || '0';
         const avatar = this.getAttribute('avatar') || '';
+        const avatarMarkup = avatar
+            ? `<img class="post-avatar" src="${avatar}" alt="${username}">`
+            : `<div class="post-placeholder">${username.charAt(0).toUpperCase()}</div>`;
+        const imageMarkup = image
+            ? `<img class="post-image" src="${image}" alt="${petName}">`
+            : `<div class="post-image" aria-label="${petName}"></div>`;
 
-        this.innerHTML = `
+        this.shadowRoot.innerHTML = `
             <style>
                 .post-card {
                     background: white;
                     border-radius: 12px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                     margin-bottom: 24px;
                     overflow: hidden;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    color: #222;
+                    font-family: inherit;
                 }
+
                 .post-header {
                     display: flex;
                     align-items: center;
                     padding: 12px 16px;
                     gap: 10px;
                 }
+
                 .post-avatar {
                     width: 40px;
                     height: 40px;
-                    border-radius: 50%;
                     object-fit: cover;
                     background: #ddd;
+                    border-radius: 50%;
                 }
-                .post-username {
+
+                .post-placeholder {
+                    width: 40px;
+                    height: 40px;
+                    display: grid;
+                    place-items: center;
+                    color: #666;
                     font-weight: bold;
-                    font-size: 0.9rem;
-                }
-                .post-pet {
+                    background: #ddd;
+                    border-radius: 50%;
                     font-size: 0.8rem;
-                    color: #888;
                 }
+
+                .post-username { font-weight: bold; font-size: 0.9rem; }
+                .post-pet { color: #888; font-size: 0.8rem; }
+
                 .post-image {
                     width: 100%;
                     aspect-ratio: 1;
+                    display: block;
                     object-fit: cover;
                     background: #eee;
-                    display: block;
                 }
+
                 .post-actions {
                     display: flex;
                     gap: 12px;
                     padding: 12px 16px 8px;
                 }
+
                 .action-btn {
-                    background: none;
                     border: none;
                     cursor: pointer;
-                    font-size: 1.4rem;
+                    background: none;
                     padding: 0;
+                    font-size: 1.4rem;
                 }
+
                 .post-likes {
                     padding: 0 16px 4px;
                     font-weight: bold;
                     font-size: 0.9rem;
                 }
+
                 .post-caption {
                     padding: 4px 16px 16px;
                     font-size: 0.9rem;
                 }
-                .post-caption strong {
-                    margin-right: 6px;
-                }
+
+                .post-caption strong { margin-right: 6px; }
             </style>
 
             <div class="post-card">
                 <div class="post-header">
-                    <img class="post-avatar" src="${avatar}" alt="${username}">
+                    ${avatarMarkup}
                     <div>
                         <div class="post-username">${username}</div>
                         <div class="post-pet">${petName}</div>
                     </div>
                 </div>
-                <img class="post-image" src="${image}" alt="${petName}">
+                ${imageMarkup}
                 <div class="post-actions">
                     <button class="action-btn like-btn">🤍</button>
                     <button class="action-btn">💬</button>
@@ -89,14 +115,14 @@ class PostCard extends HTMLElement {
             </div>
         `;
 
-        this.querySelector('.like-btn').addEventListener('click', (e) => {
-            const btn = e.currentTarget;
-            const countEl = this.querySelector('.likes-count');
-            if (btn.textContent === '🤍') {
-                btn.textContent = '❤️';
+        const likeBtn = this.shadowRoot.querySelector('.like-btn');
+        const countEl = this.shadowRoot.querySelector('.likes-count');
+        likeBtn.addEventListener('click', () => {
+            if (likeBtn.textContent === '🤍') {
+                likeBtn.textContent = '❤️';
                 countEl.textContent = parseInt(countEl.textContent) + 1;
             } else {
-                btn.textContent = '🤍';
+                likeBtn.textContent = '🤍';
                 countEl.textContent = parseInt(countEl.textContent) - 1;
             }
         });
