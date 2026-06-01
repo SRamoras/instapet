@@ -1,0 +1,28 @@
+{
+  "name": "Fullstack Dev Container",
+
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "enableNonRootDocker": "true"
+    },
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {}
+  },
+
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
