@@ -21,7 +21,6 @@ def get_current_user(
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Utilizador não encontrado")
     return user
 
-
 def get_optional_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False)),
     session: Session = Depends(get_db),
