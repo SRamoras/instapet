@@ -1,13 +1,12 @@
-
 services:
- 
   frontend:
     build: ./frontend
     ports:
       - "80:80"
- 
+    volumes:
+      - ./frontend:/usr/share/nginx/html 
+    
   backend:
     build: ./backend
     ports:
       - "8000:8000"
- 
