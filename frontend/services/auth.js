@@ -1,0 +1,4 @@
+import { request } from './api.js';
+
+export const login = (data) => request('/auth/login', { method: 'POST', body: JSON.stringify(data) });
+export const register = (data) => request('/auth/register', { method: 'POST', body: JSON.stringify(data) });
