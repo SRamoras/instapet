@@ -1,0 +1,78 @@
+.footer {
+  background: #f3f4f5;
+  /* light gray background */
+  padding: 40px 32px 24px;
+  font-family: Arial, sans-serif;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.footer__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f7a3a;
+  /* darker green for titles */
+  margin-bottom: 14px;
+}
+
+.footer__desc {
+  font-size: 13px;
+  color: #545454;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer__list a {
+  color: #5F5E5A;
+  text-decoration: none;
+}
+
+.footer__list a:hover {
+  color: #2f7a3a;
+}
+
+.footer__brand {
+  align-items: center;
+}
+
+.footer__brand-icon {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+.footer__brand-name {
+  margin-left: 8px;
+  color: #2f7a3a;
+  font-weight: 700;
+}
+
+.footer__col {
+  font-size: 13px;
+  color: #5F5E5A;
+}
+
+.footer__list a {
+  color: #5F5E5A;
+  text-decoration: none;
+}
+
+.footer__list a:hover {
+  color: #3B6D11;
+}
+
+.footer__bottom {
+  border-top: 1px solid #B4B2A9;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #888780;
+}
