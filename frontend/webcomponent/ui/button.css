@@ -1,0 +1,27 @@
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.ui-button:hover {
+  background: #2563eb;
+}
+
+.ui-button:active {
+  background: #1d4ed8;
+}
+
+.ui-button__icon {
+  font-size: 16px;
+  line-height: 1;
+}
