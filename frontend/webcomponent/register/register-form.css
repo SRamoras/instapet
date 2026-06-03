@@ -1,4 +1,4 @@
-.login-form {
+.register-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -11,13 +11,13 @@
   box-sizing: border-box;
 }
 
-.login-form__header {
+.register-form__header {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.login-form__title {
+.register-form__title {
   margin: 0;
   font-size: 26px;
   font-weight: 800;
@@ -25,24 +25,24 @@
   letter-spacing: -0.5px;
 }
 
-.login-form__subtitle {
+.register-form__subtitle {
   margin: 0;
   font-size: 14px;
   color: #9A9A9A;
 }
 
-.login-form__body {
+.register-form__body {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.login-form__submit {
+.register-form__submit {
   margin-top: 8px;
   display: block;
 }
 
-.login-form__submit .ui-button {
+.register-form__submit .ui-button {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
@@ -51,24 +51,24 @@
   border-color: #5B8A6B;
 }
 
-.login-form__submit .ui-button:hover {
+.register-form__submit .ui-button:hover {
   background: #4A7258;
   border-color: #4A7258;
 }
 
-.login-form__footer {
+.register-form__footer {
   margin: 0;
   text-align: center;
   font-size: 14px;
   color: #9A9A9A;
 }
 
-.login-form__link {
+.register-form__link {
   color: #5B8A6B;
   font-weight: 700;
   text-decoration: none;
 }
 
-.login-form__link:hover {
+.register-form__link:hover {
   text-decoration: underline;
 }
