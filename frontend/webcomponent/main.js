@@ -1,5 +1,12 @@
 import './ui/button.js';
+import './ui/input.js';
 import './ui/postcard.js';
-import './layout/navbar.js';
 import './ui/usercard.js';
-
+import './layout/navbar.js';
+import './layout/footer.js';
+import './layout/layout.js';
+import './login/login-form.js';
+import './register/register-form.js';
+import './post/comment-form.js';
+import './profile/profile-header.js';
+import './profile/profile-grid.js';
