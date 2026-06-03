@@ -1,7 +1,11 @@
 
-.PHONY: start up down build restart logs clean
- 
+.PHONY: start up down build restart logs clean sync
+
+sync:
+	cd backend && uv sync
+
 start:
+	cd backend && uv sync
 	docker compose down --remove-orphans
 	docker compose build --no-cache
 	docker compose up -d
