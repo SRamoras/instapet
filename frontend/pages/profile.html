@@ -1,11 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Perfil</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    
+
+  <nav-bar logo="InstaPet"></nav-bar>
+
+  <div class="profile-layout">
+    <div id="profile-header-container"></div>
+    <profile-grid id="profile-grid"></profile-grid>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/profile/profile-header.js';
+    import '../webcomponent/profile/profile-grid.js';
+    import { getMe, getUser } from '../services/users.js';
+    import { getPosts } from '../services/posts.js';
+
+    const params       = new URLSearchParams(window.location.search);
+    const usernameParam = params.get('user');
+    const isOwnProfile  = !usernameParam;
+
+    async function loadProfile() {
+      try {
+        const user = isOwnProfile ? await getMe() : await getUser(usernameParam);
+
+        document.title = `InstaPet – @${user.username}`;
+
+        const header = document.createElement('profile-header');
+        header.setAttribute('username',     user.username);
+        header.setAttribute('display-name', user.display_name ?? user.username);
+        header.setAttribute('avatar',       user.avatar_url ?? `https://i.pravatar.cc/80?u=${user.username}`);
+        header.setAttribute('bio',          user.bio ?? '');
+        header.setAttribute('editable',     isOwnProfile ? 'true' : 'false');
+        document.getElementById('profile-header-container').appendChild(header);
+
+        const posts = await getPosts();
+        const grid = document.getElementById('profile-grid');
+        grid.setPosts(posts.filter(p => p.author_username === user.username));
+      } catch {
+        document.getElementById('profile-header-container').innerHTML =
+          '<p class="feed__status feed__status--error">Erro ao carregar perfil.</p>';
+      }
+    }
+
+    loadProfile();
+  </script>
+
 </body>
 </html>

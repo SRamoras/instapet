@@ -1,11 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Post</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    
+
+  <nav-bar logo="🐾 InstaPet"></nav-bar>
+
+  <div class="layout">
+    <main class="feed">
+      <div id="post-container">
+        <p class="feed__status">A carregar post...</p>
+      </div>
+
+      <section class="comments-section" id="comments-section" hidden>
+        <h3 class="comments-section__title">Comentários</h3>
+        <comment-form></comment-form>
+        <div id="comments-list" class="comments-list"></div>
+      </section>
+    </main>
+
+    <aside class="sidebar">
+      <div id="author-card"></div>
+    </aside>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/ui/button.js';
+    import '../webcomponent/ui/postcard.js';
+    import '../webcomponent/ui/usercard.js';
+    import '../webcomponent/post/comment-form.js';
+    import { getPost, getComments, createComment, likePost, savePost } from '../services/posts.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('id');
+
+    if (!postId) {
+      window.location.href = '/pages/feed.html';
+    }
+
+    const postContainer = document.getElementById('post-container');
+    const commentsSection = document.getElementById('comments-section');
+    const commentsList = document.getElementById('comments-list');
+    const authorCard = document.getElementById('author-card');
+
+    async function loadPost() {
+      try {
+        const post = await getPost(postId);
+
+        document.title = `InstaPet – Post de @${post.author_username ?? 'user'}`;
+
+        postContainer.innerHTML = '';
+        const card = document.createElement('post-card');
+        card.setAttribute('post-id', post.id);
+        card.setAttribute('username', post.author_username ?? 'user');
+        card.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
+        card.setAttribute('caption', post.content ?? '');
+        card.setAttribute('image', post.image_url ?? '');
+        card.setAttribute('likes', post.like_count ?? 0);
+        card.setAttribute('comments', post.comment_count ?? 0);
+        postContainer.appendChild(card);
+
+        const authorCardEl = document.createElement('user-card');
+        authorCardEl.setAttribute('username', post.author_username ?? 'user');
+        authorCardEl.setAttribute('display-name', post.author_username ?? 'user');
+        authorCardEl.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
+        authorCard.appendChild(authorCardEl);
+
+        commentsSection.hidden = false;
+        await loadComments();
+      } catch {
+        postContainer.innerHTML = '<p class="feed__status feed__status--error">Erro ao carregar post.</p>';
+      }
+    }
+
+    async function loadComments() {
+      try {
+        const comments = await getComments(postId);
+        commentsList.innerHTML = '';
+
+        if (!comments.length) {
+          commentsList.innerHTML = '<p class="feed__status">Ainda não há comentários.</p>';
+          return;
+        }
+
+        comments.forEach((comment) => {
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          item.innerHTML = `
+            <img class="comment-item__avatar" src="https://i.pravatar.cc/32?u=${comment.author_username}" alt="${comment.author_username}">
+            <div class="comment-item__body">
+              <span class="comment-item__username">@${comment.author_username ?? 'user'}</span>
+              <p class="comment-item__text">${comment.content}</p>
+            </div>
+          `;
+          commentsList.appendChild(item);
+        });
+      } catch {
+        commentsList.innerHTML = '<p class="feed__status feed__status--error">Erro ao carregar comentários.</p>';
+      }
+    }
+
+    document.addEventListener('comment-submit', async (e) => {
+      if (!localStorage.getItem('token')) {
+        window.location.href = '/pages/login.html';
+        return;
+      }
+      try {
+        await createComment(postId, { content: e.detail.content });
+        await loadComments();
+      } catch {
+        alert('Erro ao publicar comentário.');
+      }
+    });
+
+    document.addEventListener('post-like', async (e) => {
+      try { await likePost(e.detail.postId); } catch { /* já deu like */ }
+    });
+
+    document.addEventListener('post-save', async (e) => {
+      try { await savePost(e.detail.postId); } catch { /* já guardou */ }
+    });
+
+    loadPost();
+  </script>
+
 </body>
 </html>

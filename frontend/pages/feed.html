@@ -1,11 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Feed</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    
+
+  <nav-bar logo="🐾 InstaPet"></nav-bar>
+
+  <div class="layout">
+    <main class="feed" id="feed-container">
+      <p class="feed__status">A carregar posts...</p>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-title">Sugestões</div>
+      <div id="suggestions-container"></div>
+    </aside>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/ui/button.js';
+    import '../webcomponent/ui/postcard.js';
+    import '../webcomponent/ui/usercard.js';
+    import { getPosts, likePost, savePost } from '../services/posts.js';
+
+    const feedContainer = document.getElementById('feed-container');
+
+    async function loadFeed() {
+      try {
+        const posts = await getPosts();
+        feedContainer.innerHTML = '';
+
+        if (!posts.length) {
+          feedContainer.innerHTML = '<p class="feed__status">Nenhum post ainda. Seja o primeiro!</p>';
+          return;
+        }
+
+        posts.forEach((post) => {
+          const card = document.createElement('post-card');
+          card.setAttribute('post-id', post.id);
+          card.setAttribute('username', post.author_username ?? 'user');
+          card.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
+          card.setAttribute('caption', post.content ?? '');
+          card.setAttribute('image', post.image_url ?? '');
+          card.setAttribute('likes', post.like_count ?? 0);
+          card.setAttribute('comments', post.comment_count ?? 0);
+          feedContainer.appendChild(card);
+        });
+      } catch {
+        feedContainer.innerHTML = '<p class="feed__status feed__status--error">Erro ao carregar posts.</p>';
+      }
+    }
+
+    document.addEventListener('post-like', async (e) => {
+      try { await likePost(e.detail.postId); } catch { /* já deu like */ }
+    });
+
+    document.addEventListener('post-save', async (e) => {
+      try { await savePost(e.detail.postId); } catch { /* já guardou */ }
+    });
+
+    loadFeed();
+  </script>
+
 </body>
 </html>
