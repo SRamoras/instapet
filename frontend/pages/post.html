@@ -34,22 +34,21 @@
     import '../webcomponent/layout/navbar.js';
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/ui/button.js';
-    import '../webcomponent/ui/postcard.js';
     import '../webcomponent/ui/usercard.js';
     import '../webcomponent/post/comment-form.js';
+    import '../webcomponent/post/post-detail/post-detail.js';
+    import '../webcomponent/post/comment-item/comment-item.js';
     import { getPost, getComments, createComment, likePost, savePost } from '../services/posts.js';
 
-    const params = new URLSearchParams(window.location.search);
-    const postId = params.get('id');
+    const params          = new URLSearchParams(window.location.search);
+    const postId          = params.get('id');
 
-    if (!postId) {
-      window.location.href = '/pages/feed.html';
-    }
+    if (!postId) window.location.href = '/pages/feed.html';
 
-    const postContainer = document.getElementById('post-container');
+    const postContainer   = document.getElementById('post-container');
     const commentsSection = document.getElementById('comments-section');
-    const commentsList = document.getElementById('comments-list');
-    const authorCard = document.getElementById('author-card');
+    const commentsList    = document.getElementById('comments-list');
+    const authorCard      = document.getElementById('author-card');
 
     async function loadPost() {
       try {
@@ -58,20 +57,20 @@
         document.title = `InstaPet – Post de @${post.author_username ?? 'user'}`;
 
         postContainer.innerHTML = '';
-        const card = document.createElement('post-card');
-        card.setAttribute('post-id', post.id);
-        card.setAttribute('username', post.author_username ?? 'user');
-        card.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
-        card.setAttribute('caption', post.content ?? '');
-        card.setAttribute('image', post.image_url ?? '');
-        card.setAttribute('likes', post.like_count ?? 0);
-        card.setAttribute('comments', post.comment_count ?? 0);
-        postContainer.appendChild(card);
+        const detail = document.createElement('post-detail');
+        detail.setAttribute('post-id',  post.id);
+        detail.setAttribute('username', post.author_username ?? 'user');
+        detail.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
+        detail.setAttribute('caption',  post.content ?? '');
+        detail.setAttribute('image',    post.image_url ?? '');
+        detail.setAttribute('likes',    post.like_count ?? 0);
+        detail.setAttribute('comments', post.comment_count ?? 0);
+        postContainer.appendChild(detail);
 
         const authorCardEl = document.createElement('user-card');
-        authorCardEl.setAttribute('username', post.author_username ?? 'user');
+        authorCardEl.setAttribute('username',     post.author_username ?? 'user');
         authorCardEl.setAttribute('display-name', post.author_username ?? 'user');
-        authorCardEl.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
+        authorCardEl.setAttribute('avatar',       `https://i.pravatar.cc/40?u=${post.author_username}`);
         authorCard.appendChild(authorCardEl);
 
         commentsSection.hidden = false;
@@ -92,15 +91,11 @@
         }
 
         comments.forEach((comment) => {
-          const item = document.createElement('div');
-          item.className = 'comment-item';
-          item.innerHTML = `
-            <img class="comment-item__avatar" src="https://i.pravatar.cc/32?u=${comment.author_username}" alt="${comment.author_username}">
-            <div class="comment-item__body">
-              <span class="comment-item__username">@${comment.author_username ?? 'user'}</span>
-              <p class="comment-item__text">${comment.content}</p>
-            </div>
-          `;
+          const item = document.createElement('comment-item');
+          item.setAttribute('username',     comment.author_username ?? 'user');
+          item.setAttribute('display-name', comment.author_username ?? 'user');
+          item.setAttribute('avatar',       `https://i.pravatar.cc/32?u=${comment.author_username}`);
+          item.setAttribute('content',      comment.content ?? '');
           commentsList.appendChild(item);
         });
       } catch {
