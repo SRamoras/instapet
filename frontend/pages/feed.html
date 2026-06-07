@@ -11,14 +11,17 @@
   <nav-bar logo="🐾 InstaPet"></nav-bar>
 
   <div class="layout">
+
+    <aside class="sidebar" id="left-sidebar-container"></aside>
+
     <main class="feed" id="feed-container">
       <p class="feed__status">A carregar posts...</p>
     </main>
 
     <aside class="sidebar">
-      <div class="sidebar-title">Sugestões</div>
-      <div id="suggestions-container"></div>
+      <feed-sidebar-right></feed-sidebar-right>
     </aside>
+
   </div>
 
   <app-footer></app-footer>
@@ -28,10 +31,27 @@
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/ui/button.js';
     import '../webcomponent/ui/postcard.js';
-    import '../webcomponent/ui/usercard.js';
+    import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
+    import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
     import { getPosts, likePost, savePost } from '../services/posts.js';
+    import { getMe } from '../services/users.js';
 
-    const feedContainer = document.getElementById('feed-container');
+    const feedContainer      = document.getElementById('feed-container');
+    const leftSidebarContainer = document.getElementById('left-sidebar-container');
+
+    async function loadSidebar() {
+      const sidebar = document.createElement('feed-sidebar-left');
+      try {
+        const user = await getMe();
+        sidebar.setAttribute('username',     user.username ?? '');
+        sidebar.setAttribute('display-name', user.display_name ?? user.username ?? '');
+        sidebar.setAttribute('avatar',       user.avatar_url ?? `https://i.pravatar.cc/56?u=${user.username}`);
+        sidebar.setAttribute('likes',        user.like_count ?? '0');
+        sidebar.setAttribute('followers',    user.follower_count ?? '0');
+        sidebar.setAttribute('following',    user.following_count ?? '0');
+      } catch { /* sem sessão, mostra defaults */ }
+      leftSidebarContainer.appendChild(sidebar);
+    }
 
     async function loadFeed() {
       try {
@@ -45,12 +65,12 @@
 
         posts.forEach((post) => {
           const card = document.createElement('post-card');
-          card.setAttribute('post-id', post.id);
+          card.setAttribute('post-id',  post.id);
           card.setAttribute('username', post.author_username ?? 'user');
-          card.setAttribute('avatar', `https://i.pravatar.cc/40?u=${post.author_username}`);
-          card.setAttribute('caption', post.content ?? '');
-          card.setAttribute('image', post.image_url ?? '');
-          card.setAttribute('likes', post.like_count ?? 0);
+          card.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
+          card.setAttribute('caption',  post.content ?? '');
+          card.setAttribute('image',    post.image_url ?? '');
+          card.setAttribute('likes',    post.like_count ?? 0);
           card.setAttribute('comments', post.comment_count ?? 0);
           feedContainer.appendChild(card);
         });
@@ -67,6 +87,7 @@
       try { await savePost(e.detail.postId); } catch { /* já guardou */ }
     });
 
+    loadSidebar();
     loadFeed();
   </script>
 
