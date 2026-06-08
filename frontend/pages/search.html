@@ -1,11 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Pesquisa</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    
+
+  <nav-bar logo="🐾 InstaPet"></nav-bar>
+
+  <div class="layout">
+    <main class="feed">
+
+      <search-bar id="search-bar-el" placeholder="Pesquisar por tag... (ex: gato, cão)"></search-bar>
+
+      <div id="search-results">
+        <p class="feed__status">Pesquisa algo para começar.</p>
+      </div>
+
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-title">Tags populares</div>
+      <div class="popular-tags" id="popular-tags">
+        <button class="tag-chip" data-tag="gato">🐱 gato</button>
+        <button class="tag-chip" data-tag="cão">🐶 cão</button>
+        <button class="tag-chip" data-tag="coelho">🐰 coelho</button>
+        <button class="tag-chip" data-tag="pássaro">🐦 pássaro</button>
+        <button class="tag-chip" data-tag="hamster">🐹 hamster</button>
+      </div>
+    </aside>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/ui/button.js';
+    import '../webcomponent/ui/postcard.js';
+    import '../webcomponent/search/search-bar/search-bar.js';
+    import { getPosts } from '../services/posts.js';
+
+    const params           = new URLSearchParams(window.location.search);
+    const searchBarEl      = document.getElementById('search-bar-el');
+    const resultsContainer = document.getElementById('search-results');
+
+    if (params.get('q')) {
+      const input = searchBarEl.querySelector('.search-bar__input');
+      if (input) input.value = params.get('q');
+      runSearch(params.get('q'));
+    }
+
+    document.addEventListener('search-submit', (e) => {
+      const query = e.detail.query;
+      if (!query) return;
+      history.pushState(null, '', `?q=${encodeURIComponent(query)}`);
+      runSearch(query);
+    });
+
+    document.getElementById('popular-tags').addEventListener('click', (e) => {
+      const btn = e.target.closest('.tag-chip');
+      if (!btn) return;
+      const tag = btn.dataset.tag;
+      const input = searchBarEl.querySelector('.search-bar__input');
+      if (input) input.value = tag;
+      history.pushState(null, '', `?q=${encodeURIComponent(tag)}`);
+      runSearch(tag);
+    });
+
+    async function runSearch(query) {
+      resultsContainer.innerHTML = '<p class="feed__status">A pesquisar...</p>';
+      try {
+        const posts = await getPosts(`?tag=${encodeURIComponent(query)}`);
+        resultsContainer.innerHTML = '';
+
+        if (!posts.length) {
+          resultsContainer.innerHTML = `<p class="feed__status">Nenhum resultado para "<strong>${query}</strong>".</p>`;
+          return;
+        }
+
+        const header = document.createElement('p');
+        header.className = 'search-results__count';
+        header.textContent = `${posts.length} resultado(s) para "${query}"`;
+        resultsContainer.appendChild(header);
+
+        posts.forEach((post) => {
+          const card = document.createElement('post-card');
+          card.setAttribute('post-id',  post.id);
+          card.setAttribute('username', post.author_username ?? 'user');
+          card.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
+          card.setAttribute('caption',  post.content ?? '');
+          card.setAttribute('image',    post.image_url ?? '');
+          card.setAttribute('likes',    post.like_count ?? 0);
+          card.setAttribute('comments', post.comment_count ?? 0);
+          resultsContainer.appendChild(card);
+        });
+      } catch {
+        resultsContainer.innerHTML = '<p class="feed__status feed__status--error">Erro ao pesquisar. Tente novamente.</p>';
+      }
+    }
+  </script>
+
 </body>
 </html>

@@ -1,0 +1,56 @@
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F5EFE8;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-item__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E8DDD4;
+  flex-shrink: 0;
+}
+
+.comment-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-item__header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.comment-item__username {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1C1C1C;
+  text-decoration: none;
+}
+
+.comment-item__username:hover {
+  text-decoration: underline;
+}
+
+.comment-item__time {
+  font-size: 11px;
+  color: #B0A898;
+}
+
+.comment-item__text {
+  font-size: 13px;
+  color: #3A3A3A;
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}

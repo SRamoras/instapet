@@ -1,0 +1,161 @@
+.post-detail {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(30, 20, 10, 0.07);
+}
+
+.post-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.post-detail__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E8DDD4;
+  flex-shrink: 0;
+}
+
+.post-detail__header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.post-detail__username {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1C1C1C;
+  text-decoration: none;
+}
+
+.post-detail__username:hover {
+  text-decoration: underline;
+}
+
+.post-detail__time {
+  font-size: 12px;
+  color: #9A9A9A;
+}
+
+.post-detail__more-btn {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  color: #B0A898;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.post-detail__more-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.post-detail__more-btn:hover {
+  background: #F5EFE8;
+  color: #5B8A6B;
+}
+
+.post-detail__image {
+  display: block;
+  width: 100%;
+  max-height: 600px;
+  object-fit: cover;
+}
+
+.post-detail__body {
+  padding: 12px 16px 16px;
+}
+
+.post-detail__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.post-detail__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #9A9A9A;
+  transition: background 0.15s, color 0.15s;
+}
+
+.post-detail__action-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.post-detail__action-btn:hover {
+  background: #F5EFE8;
+  color: #1C1C1C;
+}
+
+.post-detail__action-btn--save {
+  margin-left: auto;
+}
+
+.post-detail__action-btn--like:hover,
+.post-detail__action-btn--liked {
+  color: #D05050;
+}
+
+.post-detail__action-btn--liked svg {
+  fill: #D05050;
+  stroke: #D05050;
+}
+
+.post-detail__action-btn--save:hover,
+.post-detail__action-btn--saved {
+  color: #5B8A6B;
+}
+
+.post-detail__action-btn--saved svg {
+  fill: #5B8A6B;
+  stroke: #5B8A6B;
+}
+
+.post-detail__caption {
+  font-size: 14px;
+  color: #1C1C1C;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.post-detail__caption-user {
+  font-weight: 700;
+  color: #1C1C1C;
+  text-decoration: none;
+}
+
+.post-detail__caption-user:hover {
+  text-decoration: underline;
+}
+
+.post-detail__comments-section {
+  border-top: 1px solid #F0E8E0;
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

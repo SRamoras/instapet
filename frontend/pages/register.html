@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Criar conta</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
-<body>
-    
+<body class="auth-page">
+
+  <div class="auth-page__brand">
+    <span class="auth-page__logo">🐾 InstaPet</span>
+    <p class="auth-page__tagline">A rede social dos teus animais de estimação</p>
+  </div>
+
+  <register-form></register-form>
+
+  <script type="module">
+    import '../webcomponent/register/register-form.js';
+    import '../webcomponent/ui/input.js';
+    import '../webcomponent/ui/button.js';
+    import { register } from '../services/auth.js';
+
+    document.addEventListener('register-submit', async (e) => {
+      const formData = e.detail;
+      try {
+        await register(formData);
+        window.location.href = '/pages/login.html';
+      } catch {
+        alert('Erro ao criar conta. Verifique os dados e tente novamente.');
+      }
+    });
+  </script>
+
 </body>
 </html>

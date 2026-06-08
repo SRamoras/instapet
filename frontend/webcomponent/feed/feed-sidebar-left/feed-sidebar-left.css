@@ -1,0 +1,113 @@
+.feed-sidebar-left {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 2px 12px rgba(30, 20, 10, 0.07);
+}
+
+.feed-sidebar-left__profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feed-sidebar-left__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E8DDD4;
+  flex-shrink: 0;
+}
+
+.feed-sidebar-left__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.feed-sidebar-left__name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1C1C1C;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed-sidebar-left__username {
+  font-size: 13px;
+  color: #9A9A9A;
+}
+
+.feed-sidebar-left__stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-top: 1px solid #F0E8E0;
+  border-bottom: 1px solid #F0E8E0;
+}
+
+.feed-sidebar-left__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.feed-sidebar-left__stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1C1C1C;
+}
+
+.feed-sidebar-left__stat-label {
+  font-size: 11px;
+  color: #9A9A9A;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.feed-sidebar-left__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feed-sidebar-left__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1C1C;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, color 0.15s;
+}
+
+.feed-sidebar-left__nav-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.feed-sidebar-left__nav-link:hover {
+  background: #F5EFE8;
+  color: #5B8A6B;
+}
+
+.feed-sidebar-left__nav-link--premium {
+  color: #5B8A6B;
+}
+
+.feed-sidebar-left__nav-link--premium:hover {
+  background: #5B8A6B;
+  color: #fff;
+}

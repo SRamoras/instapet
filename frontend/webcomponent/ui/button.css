@@ -1,25 +1,52 @@
 .ui-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
+  padding: 10px 22px;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  transition: background 0.2s;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  line-height: 1;
 }
 
-.ui-button:hover {
-  background: #2563eb;
+/* Primary — green filled */
+.ui-button--primary {
+  background: #5B8A6B;
+  color: #fff;
+  border-color: #5B8A6B;
 }
+.ui-button--primary:hover  { background: #4A7258; border-color: #4A7258; }
+.ui-button--primary:active { background: #3D6048; border-color: #3D6048; }
 
-.ui-button:active {
-  background: #1d4ed8;
+/* Outline — green border */
+.ui-button--outline {
+  background: transparent;
+  color: #5B8A6B;
+  border-color: #5B8A6B;
 }
+.ui-button--outline:hover { background: #EBF3EE; }
+
+/* Ghost — neutral */
+.ui-button--ghost {
+  background: transparent;
+  color: #7A7A7A;
+  border-color: #E8DDD4;
+}
+.ui-button--ghost:hover { background: #F5EFE8; color: #1C1C1C; }
+
+/* Danger — red */
+.ui-button--danger {
+  background: #D05050;
+  color: #fff;
+  border-color: #D05050;
+}
+.ui-button--danger:hover { background: #B83A3A; border-color: #B83A3A; }
 
 .ui-button__icon {
   font-size: 16px;

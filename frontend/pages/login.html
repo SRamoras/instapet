@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Entrar</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
-<body>
-    
+<body class="auth-page">
+
+  <div class="auth-page__brand">
+    <span class="auth-page__logo">🐾 InstaPet</span>
+    <p class="auth-page__tagline">A rede social dos teus animais de estimação</p>
+  </div>
+
+  <login-form></login-form>
+
+  <script type="module">
+    import '../webcomponent/login/login-form.js';
+    import '../webcomponent/ui/input.js';
+    import '../webcomponent/ui/button.js';
+    import { login } from '../services/auth.js';
+
+    document.addEventListener('login-submit', async (e) => {
+      const { email, password } = e.detail;
+      try {
+        const data = await login({ email, password });
+        localStorage.setItem('token', data.access_token);
+        window.location.href = '/pages/feed.html';
+      } catch {
+        alert('Email ou senha inválidos. Tente novamente.');
+      }
+    });
+  </script>
+
 </body>
 </html>

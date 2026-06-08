@@ -1,0 +1,126 @@
+.feed-sidebar-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feed-sidebar-right__section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(30, 20, 10, 0.07);
+}
+
+.feed-sidebar-right__title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9A9A9A;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.feed-sidebar-right__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feed-sidebar-right__suggest {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed-sidebar-right__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E8DDD4;
+  flex-shrink: 0;
+}
+
+.feed-sidebar-right__user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.feed-sidebar-right__user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1C1C1C;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed-sidebar-right__user-handle {
+  font-size: 11px;
+  color: #9A9A9A;
+}
+
+.feed-sidebar-right__follow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #5B8A6B;
+  background: none;
+  color: #5B8A6B;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.feed-sidebar-right__follow-btn:hover,
+.feed-sidebar-right__follow-btn--followed {
+  background: #5B8A6B;
+  color: #fff;
+}
+
+.feed-sidebar-right__see-more {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #5B8A6B;
+  text-decoration: none;
+  padding-top: 6px;
+}
+
+.feed-sidebar-right__see-more:hover {
+  text-decoration: underline;
+}
+
+.feed-sidebar-right__topics {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feed-sidebar-right__topic-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5B8A6B;
+  text-decoration: none;
+}
+
+.feed-sidebar-right__topic-link:hover {
+  text-decoration: underline;
+}

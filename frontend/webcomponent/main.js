@@ -1,5 +1,20 @@
 import './ui/button.js';
+import './ui/input.js';
 import './ui/postcard.js';
-import './layout/navbar.js';
 import './ui/usercard.js';
-
+import './layout/navbar.js';
+import './layout/footer.js';
+import './layout/layout.js';
+import './login/login-form.js';
+import './register/register-form.js';
+import './post/comment-form.js';
+import './post/post-detail/post-detail.js';
+import './post/comment-item/comment-item.js';
+import './profile/profile-header.js';
+import './profile/profile-grid.js';
+import './feed/feed-sidebar-left/feed-sidebar-left.js';
+import './feed/feed-sidebar-right/feed-sidebar-right.js';
+import './search/search-bar/search-bar.js';
+import './search/search-results/search-results.js';
+import './terms/terms-content/terms-content.js';
+import './terms/faq/faq.js';

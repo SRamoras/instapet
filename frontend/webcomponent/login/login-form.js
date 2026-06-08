@@ -1,3 +1,8 @@
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = new URL('./login-form.css', import.meta.url);
+document.head.appendChild(link);
+
 export class LoginForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
@@ -26,7 +31,7 @@ export class LoginForm extends HTMLElement {
         </form>
 
         <p class="login-form__footer">
-          Não tem uma conta? <a class="login-form__link" href="#">Cadastre-se</a>
+          Não tem uma conta? <a class="login-form__link" href="/pages/register.html">Cadastre-se</a>
         </p>
       </div>
     `;
