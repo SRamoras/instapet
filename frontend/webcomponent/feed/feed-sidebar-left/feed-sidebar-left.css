@@ -100,14 +100,14 @@
 
 .feed-sidebar-left__nav-link:hover {
   background: #F5EFE8;
-  color: #5B8A6B;
+  color: var(--color-primary);
 }
 
 .feed-sidebar-left__nav-link--premium {
-  color: #5B8A6B;
+  color: var(--color-primary);
 }
 
 .feed-sidebar-left__nav-link--premium:hover {
-  background: #5B8A6B;
+  background: var(--color-primary);
   color: #fff;
 }

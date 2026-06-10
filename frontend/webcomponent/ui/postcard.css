@@ -52,7 +52,7 @@
 
 .post-card__more-link:hover {
   background: #F5EFE8;
-  color: #5B8A6B;
+  color: var(--color-primary);
 }
 
 .post-card__image-wrap {
@@ -120,7 +120,7 @@
 
 .post-card__action-btn:hover {
   background: #F5EFE8;
-  color: #1C1C1C;
+  color: var(--color-primary);
 }
 
 .post-card__action-btn--save {
@@ -139,10 +139,10 @@
 
 .post-card__action-btn--save:hover,
 .post-card__action-btn--saved {
-  color: #5B8A6B;
+  color: var(--color-primary);
 }
 
 .post-card__action-btn--saved svg {
-  fill: #5B8A6B;
-  stroke: #5B8A6B;
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
 }

@@ -72,7 +72,7 @@
 .user-card__follow-btn {
   width: 100%;
   padding: 9px;
-  background: #5B8A6B;
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -84,5 +84,5 @@
 }
 
 .user-card__follow-btn:hover {
-  background: #4A7258;
+  background: var(--color-primary);
 }
