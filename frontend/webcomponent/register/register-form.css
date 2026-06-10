@@ -44,16 +44,6 @@
 
 .register-form__submit .ui-button {
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 15px;
-  background: #5B8A6B;
-  border-color: #5B8A6B;
-}
-
-.register-form__submit .ui-button:hover {
-  background: #4A7258;
-  border-color: #4A7258;
 }
 
 .register-form__footer {
