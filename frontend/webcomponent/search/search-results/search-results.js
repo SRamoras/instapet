@@ -29,7 +29,7 @@ export class SearchResults extends HTMLElement {
                       <span class="search-results__user-handle">@${u.username}</span>
                     </div>
                   </a>
-                  <button class="search-results__follow-btn" data-username="${u.username}">Seguir</button>
+                  <ui-button class="search-results__follow-btn" variant="primary" text="Seguir" data-username="${u.username}"></ui-button>
                 </li>
               `).join('')
             : `<li class="search-results__empty">Nenhum resultado encontrado.</li>`
@@ -52,8 +52,11 @@ export class SearchResults extends HTMLElement {
 
     this.querySelectorAll('.search-results__follow-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const following = btn.classList.toggle('search-results__follow-btn--following');
-        btn.textContent = following ? 'Seguindo' : 'Seguir';
+        const innerBtn = btn.querySelector('.ui-button');
+        const textEl   = btn.querySelector('.ui-button__text');
+        const following = innerBtn.classList.toggle('ui-button--ghost');
+        innerBtn.classList.toggle('ui-button--primary', !following);
+        textEl.textContent = following ? 'Seguindo' : 'Seguir';
         this.dispatchEvent(new CustomEvent('follow-user', {
           detail: { username: btn.dataset.username },
           bubbles: true,

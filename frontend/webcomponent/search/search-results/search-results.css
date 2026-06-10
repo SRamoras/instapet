@@ -30,8 +30,8 @@
 }
 
 .search-results__tab--active {
-  color: #5B8A6B;
-  border-bottom-color: #5B8A6B;
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 .search-results__list {
@@ -92,31 +92,12 @@
 }
 
 .search-results__follow-btn {
-  padding: 7px 18px;
-  background: #5B8A6B;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s;
 }
 
-.search-results__follow-btn:hover {
-  background: #4A7258;
-}
-
-.search-results__follow-btn--following {
-  background: #E8DDD4;
-  color: #9A9A9A;
-}
-
-.search-results__follow-btn--following:hover {
-  background: #D9D0C8;
+.search-results__follow-btn .ui-button {
+  padding: 7px 18px;
+  font-size: 13px;
 }
 
 .search-results__empty {
