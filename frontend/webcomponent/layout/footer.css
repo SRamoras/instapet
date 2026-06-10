@@ -1,6 +1,6 @@
 .footer {
-  background: #1A2E24;
-  color: #8CB8A0;
+  background: var(--color-contrast);
+  color: var(--color-primary);
   margin-top: 56px;
 }
 
@@ -33,13 +33,13 @@
 .footer__brand-name {
   font-size: 22px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-primary);
   letter-spacing: -0.5px;
 }
 
 .footer__tagline {
   font-size: 14px;
-  color: #6A9A80;
+  color: var(--color-contrast);
   line-height: 1.7;
   margin: 0;
 }
@@ -57,15 +57,15 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
-  color: #A0C8B0;
+  background: var(--color-primary);
+  color: var(--color-contrast);
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
 }
 
 .footer__social-btn:hover {
   background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  color: var(--color-contrast);
 }
 
 .footer__social-btn svg {
@@ -82,7 +82,7 @@
 .footer__col-title {
   font-size: 14px;
   font-weight: 700;
-  color: #C0D8C8;
+  color: var(--color-primary);
   margin: 0 0 18px;
 }
 
@@ -97,13 +97,13 @@
 
 .footer__links a {
   font-size: 14px;
-  color: #6A9A80;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .footer__links a:hover {
-  color: #A8C8B4;
+  color: var(--color-primary);
 }
 
 .footer__bottom {
@@ -120,7 +120,7 @@
 
 .footer__copyright {
   font-size: 13px;
-  color: #4A7A60;
+  color: var(--color-primary);
   margin: 0;
 }
 
@@ -131,11 +131,11 @@
 
 .footer__legal a {
   font-size: 13px;
-  color: #4A7A60;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .footer__legal a:hover {
-  color: #6A9A80;
+  color: var(--color-primary);
 }
