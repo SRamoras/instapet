@@ -1,6 +1,8 @@
+import os
+
 from sqlmodel import SQLModel, Session, create_engine
 
-DATABASE_URL = "sqlite:///./instapet.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./instapet.db")
 
 engine = create_engine(DATABASE_URL, echo=True, connect_args={"check_same_thread": False})
 

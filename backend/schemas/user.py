@@ -7,7 +7,6 @@ class UserCreate(SQLModel):
     email: str
     password: str
     display_name: str | None = None
-    bio: str | None = None
 
 
 class UserRead(SQLModel):

@@ -6,6 +6,7 @@ from routers import auth, users, posts
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO... CRIANDO BANCO...")
     create_db()
     yield
 
@@ -19,4 +20,4 @@ app.include_router(posts.router)
 
 @app.get("/")
 def root():
-    return {"message": "InstaPet 🐾"}
+    return {"message": "InstaPet 🐾"}   

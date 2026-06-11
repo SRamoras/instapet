@@ -17,13 +17,12 @@ def register(data: UserCreate, session: Session = Depends(get_db)):
     ).first()
     if existing:
         raise HTTPException(status.HTTP_409_CONFLICT, "Email ou username já existe")
-
+    
     user = User(
         username=data.username,
         email=data.email,
-        hashed_password=hash_password(data.password),
+        password=hash_password(data.password),
         display_name=data.display_name,
-        bio=data.bio,
     )
     session.add(user)
     session.commit()
@@ -34,6 +33,6 @@ def register(data: UserCreate, session: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 def login(data: LoginRequest, session: Session = Depends(get_db)):
     user = session.exec(select(User).where(User.email == data.email)).first()
-    if not user or not verify_password(data.password, user.hashed_password):
+    if not user or not verify_password(data.password, user.password):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Credenciais inválidas")
     return Token(access_token=create_access_token(user.id))
