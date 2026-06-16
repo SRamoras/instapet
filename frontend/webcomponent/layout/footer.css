@@ -1,6 +1,6 @@
 .footer {
   background: var(--color-contrast);
-  color: var(--color-primary);
+  color: var(--color-footer);
   margin-top: 56px;
 }
 
@@ -82,7 +82,7 @@
 .footer__col-title {
   font-size: 14px;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-footer);
   margin: 0 0 18px;
 }
 
@@ -97,7 +97,7 @@
 
 .footer__links a {
   font-size: 14px;
-  color: var(--color-primary);
+  color: var(--color-footer);
   text-decoration: none;
   transition: color 0.15s;
 }

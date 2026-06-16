@@ -1,3 +1,5 @@
+import { avatarHTML } from '../../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./search-results.css', import.meta.url);
@@ -23,7 +25,7 @@ export class SearchResults extends HTMLElement {
             ? users.map(u => `
                 <li class="search-results__item">
                   <a class="search-results__user-link" href="/pages/profile.html?user=${u.username}">
-                    <img class="search-results__avatar" src="${u.avatar || `https://i.pravatar.cc/44?u=${u.username}`}" alt="${u.displayName || u.username}">
+                    ${avatarHTML(u.displayName || u.username, u.avatar || '', 'search-results__avatar')}
                     <div class="search-results__user-info">
                       <span class="search-results__user-name">${u.displayName || u.username}</span>
                       <span class="search-results__user-handle">@${u.username}</span>

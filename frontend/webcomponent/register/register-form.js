@@ -7,6 +7,13 @@ export class RegisterForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="register-form">
+
+        <div class="register-form__image">
+        <img src="https://admin.cnnbrasil.com.br/wp-content/uploads/sites/12/2025/05/gato-laranja-e1748043537291.jpg?w=1200&h=1200&crop=1" alt="Imagem de registro">
+        </div>
+
+        <div class="register-form__content">
+
         <div class="register-form__header">
           <h2 class="register-form__title">Criar conta</h2>
           <p class="register-form__subtitle">Junte-se ao Instapet hoje</p>
@@ -16,15 +23,15 @@ export class RegisterForm extends HTMLElement {
           <ui-input
             name="username"
             type="text"
-            label="Nome de utilizador"
-            placeholder="seuusername"
+            label="Nome de exibição"
+            placeholder="Diogo Silva"
           ></ui-input>
 
           <ui-input
             name="display_name"
             type="text"
-            label="Nome a apresentar"
-            placeholder="O seu nome"
+            label="Nome do utilizador"
+            placeholder="Diogo123"
           ></ui-input>
 
           <ui-input
@@ -33,7 +40,7 @@ export class RegisterForm extends HTMLElement {
             label="E-mail"
             placeholder="seu@email.com"
           ></ui-input>
-
+          
           <ui-input
             name="password"
             type="password"
@@ -47,8 +54,12 @@ export class RegisterForm extends HTMLElement {
         <p class="register-form__footer">
           Já tem uma conta? <a class="register-form__link" href="/pages/login.html">Entrar</a>
         </p>
-      </div>
-    `;
+
+        </div>
+
+
+        </div>`;  
+
 
     this._formData = { username: '', display_name: '', email: '', password: '' };
 

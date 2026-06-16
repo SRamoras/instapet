@@ -38,7 +38,7 @@
   color: #7A7A7A;
   border-color: #E8DDD4;
 }
-.ui-button--ghost:hover { background: #F5EFE8; color: #1C1C1C; }
+.ui-button--ghost:hover { background: #F5EFE8; color:var(--color-primary); }
 
 /* Danger — red */
 .ui-button--danger {

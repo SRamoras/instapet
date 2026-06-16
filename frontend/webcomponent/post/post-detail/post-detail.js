@@ -1,3 +1,5 @@
+import { avatarHTML } from '../../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./post-detail.css', import.meta.url);
@@ -7,7 +9,7 @@ export class PostDetail extends HTMLElement {
   connectedCallback() {
     const postId   = this.getAttribute('post-id') || '';
     const username = this.getAttribute('username') || '';
-    const avatar   = this.getAttribute('avatar') || `https://i.pravatar.cc/40?u=${username}`;
+    const avatar   = this.getAttribute('avatar') || '';
     const image    = this.getAttribute('image') || '';
     const caption  = this.getAttribute('caption') || '';
     const likes    = this.getAttribute('likes') || '0';
@@ -17,7 +19,7 @@ export class PostDetail extends HTMLElement {
     this.innerHTML = `
       <article class="post-detail">
         <header class="post-detail__header">
-          <img class="post-detail__avatar" src="${avatar}" alt="${username}">
+          ${avatarHTML(username, avatar, 'post-detail__avatar')}
           <div class="post-detail__header-info">
             <a class="post-detail__username" href="/pages/profile.html?user=${username}">@${username}</a>
             ${time ? `<span class="post-detail__time">${time}</span>` : ''}

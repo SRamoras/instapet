@@ -1,3 +1,5 @@
+import { avatarHTML } from './avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./usercard.css', import.meta.url);
@@ -7,7 +9,7 @@ class UserCard extends HTMLElement {
   connectedCallback() {
     const username    = this.getAttribute('username') || '';
     const displayName = this.getAttribute('display-name') || username;
-    const avatar      = this.getAttribute('avatar') || `https://i.pravatar.cc/44?u=${username}`;
+    const avatar      = this.getAttribute('avatar') || '';
     const posts       = this.getAttribute('posts') || '0';
     const followers   = this.getAttribute('followers') || '0';
     const following   = this.getAttribute('following') || '0';
@@ -15,7 +17,7 @@ class UserCard extends HTMLElement {
     this.innerHTML = `
       <div class="user-card">
         <div class="user-card__profile">
-          <img class="user-card__avatar" src="${avatar}" alt="${username}">
+          ${avatarHTML(displayName, avatar, 'user-card__avatar')}
           <div class="user-card__info">
             <span class="user-card__name">${displayName}</span>
             <span class="user-card__username">@${username}</span>

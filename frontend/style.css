@@ -88,6 +88,20 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Avatar initials fallback ── */
+.avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-contrast, #DADAD9);
+  color: var(--text-muted, #7A7A7A);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  user-select: none;
+}
+
 /* ── Feed states ── */
 .feed__status {
   padding: 40px 24px;

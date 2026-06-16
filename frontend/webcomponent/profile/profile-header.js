@@ -1,3 +1,5 @@
+import { avatarHTML } from '../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./profile-header.css', import.meta.url);
@@ -7,7 +9,7 @@ export class ProfileHeader extends HTMLElement {
   connectedCallback() {
     const username    = this.getAttribute('username') || '';
     const displayName = this.getAttribute('display-name') || username;
-    const avatar      = this.getAttribute('avatar') || `https://i.pravatar.cc/80?u=${username}`;
+    const avatar      = this.getAttribute('avatar') || '';
     const bio         = this.getAttribute('bio') || '';
     const likes       = this.getAttribute('likes') || '0';
     const followers   = this.getAttribute('followers') || '0';
@@ -16,7 +18,7 @@ export class ProfileHeader extends HTMLElement {
 
     this.innerHTML = `
       <div class="profile-header">
-        <img class="profile-header__avatar" src="${avatar}" alt="${displayName}">
+        ${avatarHTML(displayName, avatar, 'profile-header__avatar')}
         <div class="profile-header__info">
           <div class="profile-header__top-row">
             <div>

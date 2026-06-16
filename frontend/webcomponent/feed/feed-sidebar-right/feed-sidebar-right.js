@@ -1,3 +1,5 @@
+import { avatarHTML } from '../../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./feed-sidebar-right.css', import.meta.url);
@@ -14,17 +16,6 @@ export class FeedSidebarRight extends HTMLElement {
     try { suggestions = JSON.parse(suggestionsAttr); } catch {}
     try { topics = JSON.parse(topicsAttr); } catch {}
 
-    if (!suggestions.length) {
-      suggestions = [
-        { username: 'rex_dog',    displayName: 'Rex',   avatar: 'https://i.pravatar.cc/36?u=rex' },
-        { username: 'mia_cat',    displayName: 'Mia',   avatar: 'https://i.pravatar.cc/36?u=mia' },
-        { username: 'buddy_paws', displayName: 'Buddy', avatar: 'https://i.pravatar.cc/36?u=buddy' },
-      ];
-    }
-
-    if (!topics.length) {
-      topics = ['#puppylove', '#dogsofinstagram', '#catsofinstagram', '#petlife', '#adorablepets'];
-    }
 
     this.innerHTML = `
       <div class="feed-sidebar-right">
@@ -33,7 +24,7 @@ export class FeedSidebarRight extends HTMLElement {
           <ul class="feed-sidebar-right__list">
             ${suggestions.map(u => `
               <li class="feed-sidebar-right__suggest">
-                <img class="feed-sidebar-right__avatar" src="${u.avatar}" alt="${u.displayName}">
+                ${avatarHTML(u.displayName, u.avatar || '', 'feed-sidebar-right__avatar')}
                 <div class="feed-sidebar-right__user-info">
                   <span class="feed-sidebar-right__user-name">${u.displayName}</span>
                   <span class="feed-sidebar-right__user-handle">@${u.username}</span>

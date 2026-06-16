@@ -1,3 +1,5 @@
+import { avatarHTML } from './avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./postcard.css', import.meta.url);
@@ -7,7 +9,7 @@ class PostCard extends HTMLElement {
   connectedCallback() {
     const postId   = this.getAttribute('post-id') || '';
     const username = this.getAttribute('username') || '';
-    const avatar   = this.getAttribute('avatar') || `https://i.pravatar.cc/40?u=${username}`;
+    const avatar   = this.getAttribute('avatar') || '';
     const caption  = this.getAttribute('caption') || '';
     const image    = this.getAttribute('image') || '';
     const likes    = this.getAttribute('likes') || '0';
@@ -16,7 +18,7 @@ class PostCard extends HTMLElement {
     this.innerHTML = `
       <article class="post-card">
         <header class="post-card__header">
-          <img class="post-card__avatar" src="${avatar}" alt="${username}">
+          ${avatarHTML(username, avatar, 'post-card__avatar')}
           <a class="post-card__username" href="/pages/profile.html?user=${username}">@${username}</a>
           <a class="post-card__more-link" href="/pages/post.html?id=${postId}" title="Ver post">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">

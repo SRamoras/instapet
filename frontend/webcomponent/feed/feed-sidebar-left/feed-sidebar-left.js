@@ -1,3 +1,5 @@
+import { avatarHTML } from '../../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./feed-sidebar-left.css', import.meta.url);
@@ -7,7 +9,7 @@ export class FeedSidebarLeft extends HTMLElement {
   connectedCallback() {
     const username    = this.getAttribute('username') || '';
     const displayName = this.getAttribute('display-name') || username;
-    const avatar      = this.getAttribute('avatar') || `https://i.pravatar.cc/56?u=${username}`;
+    const avatar      = this.getAttribute('avatar') || '';
     const likes       = this.getAttribute('likes') || '0';
     const followers   = this.getAttribute('followers') || '0';
     const following   = this.getAttribute('following') || '0';
@@ -15,7 +17,7 @@ export class FeedSidebarLeft extends HTMLElement {
     this.innerHTML = `
       <div class="feed-sidebar-left">
         <div class="feed-sidebar-left__profile">
-          <img class="feed-sidebar-left__avatar" src="${avatar}" alt="${displayName}">
+          ${avatarHTML(displayName, avatar, 'feed-sidebar-left__avatar')}
           <div class="feed-sidebar-left__info">
             <span class="feed-sidebar-left__name">${displayName}</span>
             <span class="feed-sidebar-left__username">@${username}</span>

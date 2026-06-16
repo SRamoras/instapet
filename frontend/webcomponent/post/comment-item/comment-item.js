@@ -1,3 +1,5 @@
+import { avatarHTML } from '../../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./comment-item.css', import.meta.url);
@@ -7,13 +9,13 @@ export class CommentItem extends HTMLElement {
   connectedCallback() {
     const username    = this.getAttribute('username') || '';
     const displayName = this.getAttribute('display-name') || username;
-    const avatar      = this.getAttribute('avatar') || `https://i.pravatar.cc/32?u=${username}`;
+    const avatar      = this.getAttribute('avatar') || '';
     const content     = this.getAttribute('content') || '';
     const time        = this.getAttribute('time') || '';
 
     this.innerHTML = `
       <div class="comment-item">
-        <img class="comment-item__avatar" src="${avatar}" alt="${displayName}">
+        ${avatarHTML(displayName, avatar, 'comment-item__avatar')}
         <div class="comment-item__body">
           <div class="comment-item__header">
             <a class="comment-item__username" href="/pages/profile.html?user=${username}">${displayName}</a>

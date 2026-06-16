@@ -1,3 +1,5 @@
+import { avatarHTML } from '../ui/avatar.js';
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./navbar.css', import.meta.url);
@@ -5,7 +7,8 @@ document.head.appendChild(link);
 
 class NavBar extends HTMLElement {
   connectedCallback() {
-    const avatar = this.getAttribute('avatar') || 'https://i.pravatar.cc/40';
+    const displayName = this.getAttribute('display-name') || '';
+    const avatar = this.getAttribute('avatar') || '';
 
     this.innerHTML = `
       <nav class="navbar">
@@ -29,7 +32,7 @@ class NavBar extends HTMLElement {
           </button>
 
           <div class="navbar__user">
-            <img class="navbar__avatar" src="${avatar}" alt="avatar">
+            ${avatarHTML(displayName, avatar, 'navbar__avatar')}
             <div class="navbar__dropdown">
               <a class="navbar__dropdown-item" href="/pages/profile.html">Perfil</a>
               <button class="navbar__dropdown-item navbar__logout-btn">Sair</button>
