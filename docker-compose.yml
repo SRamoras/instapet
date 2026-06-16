@@ -3,11 +3,12 @@ services:
     build: ./frontend
     ports:
       - "80:80"
-    volumes:
-      - ./frontend:/usr/share/nginx/html 
-    
+    restart: unless-stopped
+
   backend:
     build: ./backend
     ports:
       - "8000:8000"
-
+    volumes:
+      - ./backend/instapet.db:/app/instapet.db
+    restart: unless-stopped
