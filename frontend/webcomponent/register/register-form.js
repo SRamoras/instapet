@@ -23,15 +23,15 @@ export class RegisterForm extends HTMLElement {
           <ui-input
             name="username"
             type="text"
-            label="Nome de utilizador"
-            placeholder="Seu Nome "
+            label="Nome de exibição"
+            placeholder="Diogo Silva"
           ></ui-input>
 
           <ui-input
             name="display_name"
             type="text"
-            label="Nome ID"
-            placeholder="Nick name"
+            label="Nome do utilizador"
+            placeholder="Diogo123"
           ></ui-input>
 
           <ui-input
