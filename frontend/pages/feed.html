@@ -45,7 +45,7 @@
         const user = await getMe();
         sidebar.setAttribute('username',     user.username ?? '');
         sidebar.setAttribute('display-name', user.display_name ?? user.username ?? '');
-        sidebar.setAttribute('avatar',       user.avatar_url ?? `https://i.pravatar.cc/56?u=${user.username}`);
+        sidebar.setAttribute('avatar',       user.avatar_url ?? '');
         sidebar.setAttribute('likes',        user.like_count ?? '0');
         sidebar.setAttribute('followers',    user.follower_count ?? '0');
         sidebar.setAttribute('following',    user.following_count ?? '0');

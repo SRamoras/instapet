@@ -90,7 +90,7 @@
           const card = document.createElement('post-card');
           card.setAttribute('post-id',  post.id);
           card.setAttribute('username', post.author_username ?? 'user');
-          card.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
+          card.setAttribute('avatar',   '');
           card.setAttribute('caption',  post.content ?? '');
           card.setAttribute('image',    post.image_url ?? '');
           card.setAttribute('likes',    post.like_count ?? 0);

@@ -38,7 +38,7 @@
         const header = document.createElement('profile-header');
         header.setAttribute('username',     user.username);
         header.setAttribute('display-name', user.display_name ?? user.username);
-        header.setAttribute('avatar',       user.avatar_url ?? `https://i.pravatar.cc/80?u=${user.username}`);
+        header.setAttribute('avatar',       user.avatar_url ?? '');
         header.setAttribute('bio',          user.bio ?? '');
         header.setAttribute('editable',     isOwnProfile ? 'true' : 'false');
         document.getElementById('profile-header-container').appendChild(header);

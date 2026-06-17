@@ -60,7 +60,7 @@
         const detail = document.createElement('post-detail');
         detail.setAttribute('post-id',  post.id);
         detail.setAttribute('username', post.author_username ?? 'user');
-        detail.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
+        detail.setAttribute('avatar',   '');
         detail.setAttribute('caption',  post.content ?? '');
         detail.setAttribute('image',    post.image_url ?? '');
         detail.setAttribute('likes',    post.like_count ?? 0);
@@ -70,7 +70,7 @@
         const authorCardEl = document.createElement('user-card');
         authorCardEl.setAttribute('username',     post.author_username ?? 'user');
         authorCardEl.setAttribute('display-name', post.author_username ?? 'user');
-        authorCardEl.setAttribute('avatar',       `https://i.pravatar.cc/40?u=${post.author_username}`);
+        authorCardEl.setAttribute('avatar',       '');
         authorCard.appendChild(authorCardEl);
 
         commentsSection.hidden = false;
@@ -94,7 +94,7 @@
           const item = document.createElement('comment-item');
           item.setAttribute('username',     comment.author_username ?? 'user');
           item.setAttribute('display-name', comment.author_username ?? 'user');
-          item.setAttribute('avatar',       `https://i.pravatar.cc/32?u=${comment.author_username}`);
+          item.setAttribute('avatar',       '');
           item.setAttribute('content',      comment.content ?? '');
           commentsList.appendChild(item);
         });
