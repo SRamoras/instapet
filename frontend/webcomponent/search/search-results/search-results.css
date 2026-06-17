@@ -1,13 +1,13 @@
 .search-results {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(30, 20, 10, 0.07);
 }
 
 .search-results__tabs {
   display: flex;
-  border-bottom: 1.5px solid #F0E8E0;
+  border-bottom: 1px solid var(--border);
   padding: 0 16px;
 }
 
@@ -66,7 +66,7 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   flex-shrink: 0;
 }
 

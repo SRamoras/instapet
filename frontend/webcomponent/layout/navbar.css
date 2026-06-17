@@ -5,7 +5,7 @@
   padding: 0 28px;
   height: 60px;
   background: #fff;
-  border-bottom: 1.5px solid #E8DDD4;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -78,7 +78,7 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   cursor: pointer;
   display: block;
   transition: border-color 0.15s;
@@ -94,8 +94,8 @@
   right: 0;
   top: calc(100% + 10px);
   background: #fff;
-  border: 1.5px solid #E8DDD4;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   box-shadow: 0 8px 28px rgba(30, 20, 10, 0.1);
   min-width: 154px;
   overflow: hidden;

@@ -4,7 +4,7 @@
   width: 100%;
   max-width: 860px;
   background: #fff;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 8px 36px rgba(30, 20, 10, 0.1);
   overflow: hidden;
   box-sizing: border-box;

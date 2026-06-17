@@ -15,7 +15,7 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   flex-shrink: 0;
 }
 

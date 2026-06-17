@@ -1,13 +1,13 @@
 .profile-grid {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(30, 20, 10, 0.06);
 }
 
 .profile-grid__tabs {
   display: flex;
-  border-bottom: 1.5px solid #E8DDD4;
+  border-bottom: 1px solid var(--border);
 }
 
 .profile-grid__tab {
@@ -38,7 +38,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  background: #E8DDD4;
+  background: var(--border);
 }
 
 .profile-grid__item {
@@ -74,14 +74,14 @@
   padding: 18px;
   text-align: center;
   background: #fff;
-  border-top: 1.5px solid #E8DDD4;
+  border-top: 1px solid var(--border);
 }
 
 .profile-grid__more-btn {
   padding: 8px 28px;
   background: transparent;
-  border: 1.5px solid #D8CFC7;
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;

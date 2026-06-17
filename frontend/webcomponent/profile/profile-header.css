@@ -1,6 +1,6 @@
 .profile-header {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 24px;
   display: flex;
   gap: 20px;
@@ -14,7 +14,7 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #E8DDD4;
+  border: 3px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -48,8 +48,8 @@
 .profile-header__edit-btn {
   padding: 6px 18px;
   background: transparent;
-  border: 1.5px solid #5B8A6B;
-  border-radius: 8px;
+  border: 1px solid #5B8A6B;
+  border-radius: var(--radius-sm);
   color: #5B8A6B;
   font-size: 12px;
   font-weight: 700;

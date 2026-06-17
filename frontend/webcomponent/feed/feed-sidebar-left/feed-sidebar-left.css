@@ -1,6 +1,6 @@
 .feed-sidebar-left {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -83,7 +83,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;

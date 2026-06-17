@@ -1,6 +1,6 @@
 .user-card {
   background: #fff;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -75,7 +75,7 @@
   background: var(--color-primary);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
