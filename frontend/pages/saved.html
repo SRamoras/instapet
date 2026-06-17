@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Posts Guardados</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <nav-bar logo="🐾 InstaPet"></nav-bar>
+
+  <div class="profile-layout">
+    <saved-grid id="saved-grid"></saved-grid>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/saved/saved-grid.js';
+    import { authRequest } from '../services/api.js';
+
+    const grid = document.getElementById('saved-grid');
+
+    async function loadSaved() {
+      try {
+        const posts = await authRequest('/posts/saved');
+        grid.setPosts(posts);
+      } catch {
+        grid.setError();
+      }
+    }
+
+    loadSaved();
+  </script>
+
+</body>
+</html>
