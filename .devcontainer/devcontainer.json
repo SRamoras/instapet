@@ -20,7 +20,9 @@
       "extensions": [
         "ms-python.python",
         "charliermarsh.ruff",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "alexcvzz.vscode-sqlite",
+        "qwtel.sqlite-viewer"
       ]
     }
   }
