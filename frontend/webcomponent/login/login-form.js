@@ -7,6 +7,13 @@ export class LoginForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="login-form">
+
+        <div class="login-form__image">
+        <img src="https://static.vecteezy.com/ti/fotos-gratis/t2/72227979-uma-dourado-retriever-cachorro-e-uma-gengibre-gato-estao-aconchegado-acima-dormindo-juntos-em-uma-de-madeira-superficie-foto.jpg" alt="Cachorro e gato dormindo juntos">
+        </div>
+
+        <div class="login-form__content">
+
         <div class="login-form__header">
           <h2 class="login-form__title">Entrar</h2>
           <p class="login-form__subtitle">Bem-vindo de volta ao Instapet</p>
@@ -33,7 +40,10 @@ export class LoginForm extends HTMLElement {
         <p class="login-form__footer">
           Não tem uma conta? <a class="login-form__link" href="/pages/register.html">Cadastre-se</a>
         </p>
-      </div>
+
+        </div>
+
+        </div>
     `;
 
     this._formData = { email: '', password: '' };
