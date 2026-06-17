@@ -14,3 +14,7 @@ export const unsavePost = (id) => authRequest(`/posts/${id}/save`, { method: 'DE
 export const getComments = (id) => request(`/posts/${id}/comments`);
 export const createComment = (id, data) => authRequest(`/posts/${id}/comments`, { method: 'POST', body: JSON.stringify(data) });
 export const deleteComment = (commentId) => authRequest(`/posts/comments/${commentId}`, { method: 'DELETE' });
+
+
+
+console.log(getPost(1))

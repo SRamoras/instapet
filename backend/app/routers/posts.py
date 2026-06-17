@@ -11,30 +11,67 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 # ── helpers ──────────────────────────────────────────
+def _enrich_post(
+    post: Post,
+    session: Session,
+    current_user_id: int | None = None
+) -> PostRead:
 
-def _enrich_post(post: Post, current_user_id: int | None = None) -> PostRead:
-    tag_names = [pt.tag.name for pt in post.tags]
-    liked_by_me = False
-    saved_by_me = False
-    if current_user_id:
-        liked_by_me = any(lk.user_id == current_user_id for lk in post.likes)
-        saved_by_me = any(sv.user_id == current_user_id for sv in post.saves)
+    # ── AUTHOR ─────────────────────────────
+    user = session.get(User, post.author_id)
 
+    # ── TAGS ───────────────────────────────
+    post_tags = session.exec(
+        select(PostTag).where(PostTag.post_id == post.id)
+    ).all()
+
+    tag_names = []
+    for pt in post_tags:
+        tag = session.get(Tag, pt.tag_id)
+        if tag:
+            tag_names.append(tag.name)
+
+    # ── LIKES ──────────────────────────────
+    likes = session.exec(
+        select(Like).where(Like.post_id == post.id)
+    ).all()
+
+    # ── SAVES ──────────────────────────────
+    saves = session.exec(
+        select(Save).where(Save.post_id == post.id)
+    ).all()
+
+    # ── COMMENTS ───────────────────────────
+    comments = session.exec(
+        select(Comment).where(Comment.post_id == post.id)
+    ).all()
+
+    # ── USER FLAGS ─────────────────────────
+    liked_by_me = (
+        any(l.user_id == current_user_id for l in likes)
+        if current_user_id else False
+    )
+
+    saved_by_me = (
+        any(s.user_id == current_user_id for s in saves)
+        if current_user_id else False
+    )
+
+    # ── RESPONSE ───────────────────────────
     return PostRead(
         id=post.id,
         content=post.content,
         image_url=post.image_url,
         created_at=post.created_at,
         author_id=post.author_id,
-        author_username=post.author.username,
+        author_username=user.username if user else None,
         tags=tag_names,
-        like_count=len(post.likes),
-        save_count=len(post.saves),
-        comment_count=len(post.comments),
+        like_count=len(likes),
+        save_count=len(saves),
+        comment_count=len(comments),
         liked_by_me=liked_by_me,
         saved_by_me=saved_by_me,
     )
-
 
 def _get_or_create_tags(session: Session, tag_names: list[str]) -> list[Tag]:
     tags = []
@@ -50,8 +87,6 @@ def _get_or_create_tags(session: Session, tag_names: list[str]) -> list[Tag]:
         tags.append(tag)
     return tags
 
-
-# ── Posts CRUD ───────────────────────────────────────
 
 @router.post("/", response_model=PostRead, status_code=201)
 def create_post(
@@ -69,7 +104,8 @@ def create_post(
 
     session.commit()
     session.refresh(post)
-    return _enrich_post(post, current_user.id)
+
+    return _enrich_post(post, session, current_user.id)
 
 
 @router.get("/", response_model=list[PostRead])
@@ -93,7 +129,8 @@ def list_posts(
 
     posts = session.exec(query.offset(skip).limit(limit)).all()
     user_id = current_user.id if current_user else None
-    return [_enrich_post(p, user_id) for p in posts]
+
+    return [_enrich_post(p, session, user_id) for p in posts]
 
 
 @router.get("/{post_id}", response_model=PostRead)
@@ -103,26 +140,13 @@ def get_post(
     session: Session = Depends(get_db),
 ):
     post = session.get(Post, post_id)
+
     if not post:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
+
     user_id = current_user.id if current_user else None
-    return _enrich_post(post, user_id)
 
-
-@router.delete("/{post_id}", status_code=204)
-def delete_post(
-    post_id: int,
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_db),
-):
-    post = session.get(Post, post_id)
-    if not post:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
-    if post.author_id != current_user.id:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Não podes apagar este post")
-    session.delete(post)
-    session.commit()
-
+    return _enrich_post(post, session, user_id)
 
 # ── Likes ────────────────────────────────────────────
 
