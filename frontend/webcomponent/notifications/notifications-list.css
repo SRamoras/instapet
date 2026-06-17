@@ -1,0 +1,133 @@
+.notifications-list {
+  background: #fff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(30, 20, 10, 0.06);
+}
+
+.notifications-list__header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notifications-list__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1C1C1C;
+  margin: 0;
+}
+
+.notifications-list__items {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #F0EAE4;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background: #FAFAF9;
+}
+
+.notification-item--unread {
+  background: #F6FAF9;
+}
+
+.notification-item__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.notification-item__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-light, #E6F5F2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-dark, #4A9C8E);
+}
+
+.notification-item__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.notification-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item__text {
+  font-size: 14px;
+  color: #1C1C1C;
+  line-height: 1.4;
+  margin: 0 0 2px;
+}
+
+.notification-item__text strong {
+  font-weight: 700;
+}
+
+.notification-item__time {
+  font-size: 12px;
+  color: #9A9A9A;
+}
+
+.notification-item__thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.notification-item__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary, #5EBBAB);
+  flex-shrink: 0;
+}
+
+.notifications-list__empty {
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.notifications-list__empty-icon {
+  color: #D8CFC7;
+  margin-bottom: 12px;
+}
+
+.notifications-list__empty-text {
+  font-size: 14px;
+  color: #9A9A9A;
+}
+
+.notifications-list__error {
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #D05050;
+}

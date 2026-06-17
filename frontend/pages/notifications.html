@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Notificações</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <nav-bar logo="🐾 InstaPet"></nav-bar>
+
+  <div class="profile-layout">
+    <notifications-list id="notifications-list"></notifications-list>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+    import '../webcomponent/notifications/notifications-list.js';
+    import { authRequest } from '../services/api.js';
+
+    const list = document.getElementById('notifications-list');
+
+    async function loadNotifications() {
+      try {
+        const notifications = await authRequest('/notifications');
+        list.setNotifications(notifications);
+      } catch {
+        list.setError();
+      }
+    }
+
+    loadNotifications();
+  </script>
+
+</body>
+</html>
