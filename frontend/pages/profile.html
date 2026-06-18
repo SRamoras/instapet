@@ -12,7 +12,8 @@
 
   <div class="profile-layout">
     <div id="profile-header-container"></div>
-    <profile-grid id="profile-grid"></profile-grid>
+    <div id="follow-container"></div>
+    <div id="profile-grid-container"></div>
   </div>
 
   <app-footer></app-footer>
@@ -22,31 +23,69 @@
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/profile/profile-header.js';
     import '../webcomponent/profile/profile-grid.js';
-    import { getMe, getUser } from '../services/users.js';
+    import { getMe, getUser, followUser, unfollowUser } from '../services/users.js';
     import { getPosts } from '../services/posts.js';
 
-    const params       = new URLSearchParams(window.location.search);
+    const params        = new URLSearchParams(window.location.search);
     const usernameParam = params.get('user');
     const isOwnProfile  = !usernameParam;
 
     async function loadProfile() {
       try {
-        const user = isOwnProfile ? await getMe() : await getUser(usernameParam);
+        const user       = isOwnProfile ? await getMe() : await getUser(usernameParam);
+        const posts      = await getPosts();
+        const userPosts  = posts.filter(p => p.author_username === user.username);
+        const totalLikes = userPosts.reduce((sum, p) => sum + (p.like_count ?? 0), 0);
 
         document.title = `InstaPet – @${user.username}`;
 
+        // ── Header ───────────────────────────────────────
         const header = document.createElement('profile-header');
         header.setAttribute('username',     user.username);
         header.setAttribute('display-name', user.display_name ?? user.username);
-        header.setAttribute('avatar',       user.avatar_url ?? `https://i.pravatar.cc/80?u=${user.username}`);
+        header.setAttribute('avatar',       user.avatar_url ?? '');
         header.setAttribute('bio',          user.bio ?? '');
+        header.setAttribute('followers',    user.follower_count  ?? 0);
+        header.setAttribute('following',    user.following_count ?? 0);
+        header.setAttribute('likes',        totalLikes);
         header.setAttribute('editable',     isOwnProfile ? 'true' : 'false');
         document.getElementById('profile-header-container').appendChild(header);
 
-        const posts = await getPosts();
-        const grid = document.getElementById('profile-grid');
-        grid.setPosts(posts.filter(p => p.author_username === user.username));
-      } catch {
+        // ── Follow button (só em perfis de outros) ───────
+        if (!isOwnProfile) {
+          let followedByMe = user.followed_by_me ?? false;
+
+          const btn = document.createElement('button');
+          btn.className = 'follow-btn';
+          btn.textContent = followedByMe ? 'A seguir' : 'Seguir';
+
+          btn.addEventListener('click', async () => {
+            try {
+              if (followedByMe) {
+                await unfollowUser(user.username);
+                followedByMe = false;
+                btn.textContent = 'Seguir';
+              } else {
+                await followUser(user.username);
+                followedByMe = true;
+                btn.textContent = 'A seguir';
+              }
+            } catch (e) {
+              console.error('Erro ao seguir/deixar de seguir', e);
+            }
+          });
+
+          document.getElementById('follow-container').appendChild(btn);
+        }
+
+        // ── Grid (criado dinamicamente para own-profile estar definido antes do connectedCallback) ──
+        const grid = document.createElement('profile-grid');
+        grid.setAttribute('own-profile', isOwnProfile ? 'true' : 'false');
+        document.getElementById('profile-grid-container').appendChild(grid);
+        grid.setPosts(userPosts);
+
+      } catch (e) {
+        console.error(e);
         document.getElementById('profile-header-container').innerHTML =
           '<p class="feed__status feed__status--error">Erro ao carregar perfil.</p>';
       }
