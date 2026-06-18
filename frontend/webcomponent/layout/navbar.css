@@ -19,21 +19,10 @@
   color: #1C1C1C;
 }
 
-.navbar__logo-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.navbar__logo-text {
-  font-size: 17px;
-  font-weight: 600;
-  color: #1C1C1C;
-  letter-spacing: -0.3px;
-}
-
-.navbar__logo-text strong {
-  color: #5B8A6B;
-  font-weight: 800;
+.navbar__logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
 }
 
 .navbar__actions {

@@ -5,6 +5,8 @@ link.rel = 'stylesheet';
 link.href = new URL('./navbar.css', import.meta.url);
 document.head.appendChild(link);
 
+const logoUrl = new URL('../../img/logoinstapetse.png', import.meta.url);
+
 class NavBar extends HTMLElement {
   connectedCallback() {
     const displayName = this.getAttribute('display-name') || '';
@@ -13,8 +15,7 @@ class NavBar extends HTMLElement {
     this.innerHTML = `
       <nav class="navbar">
         <a class="navbar__logo" href="/pages/feed.html">
-          <span class="navbar__logo-icon">🐾</span>
-          <span class="navbar__logo-text">Insta<strong>Pet</strong></span>
+          <img class="navbar__logo-img" src="${logoUrl}" alt="InstaPet">
         </a>
 
         <div class="navbar__actions">
