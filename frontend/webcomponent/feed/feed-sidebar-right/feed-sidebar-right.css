@@ -114,6 +114,12 @@
   gap: 8px;
 }
 
+.feed-sidebar-right__topic {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .feed-sidebar-right__topic-link {
   font-size: 13px;
   font-weight: 600;
@@ -122,5 +128,10 @@
 }
 
 .feed-sidebar-right__topic-link:hover {
-  text-decoration: underline;   
+  text-decoration: underline;
+}
+
+.feed-sidebar-right__topic-count {
+  font-size: 11px;
+  color: #9A9A9A;
 }

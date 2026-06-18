@@ -41,7 +41,8 @@ export class FeedSidebarRight extends HTMLElement {
           <ul class="feed-sidebar-right__topics">
             ${topics.map(t => `
               <li class="feed-sidebar-right__topic">
-                <a class="feed-sidebar-right__topic-link" href="/pages/search.html?q=${encodeURIComponent(t)}">${t}</a>
+                <a class="feed-sidebar-right__topic-link" href="/pages/search.html?q=${encodeURIComponent(t.name)}">#${t.name}</a>
+                <span class="feed-sidebar-right__topic-count">${t.count} post${t.count === 1 ? '' : 's'}</span>
               </li>
             `).join('')}
           </ul>
