@@ -8,19 +8,13 @@ document.head.appendChild(link);
 export class SearchResults extends HTMLElement {
   connectedCallback() {
     const usersAttr = this.getAttribute('users') || '[]';
-    const activeTab = this.getAttribute('active-tab') || 'profiles';
 
     let users = [];
     try { users = JSON.parse(usersAttr); } catch {}
 
     this.innerHTML = `
       <div class="search-results">
-        <div class="search-results__tabs">
-          <button class="search-results__tab ${activeTab === 'profiles' ? 'search-results__tab--active' : ''}" data-tab="profiles">Profiles</button>
-          <button class="search-results__tab ${activeTab === 'tags' ? 'search-results__tab--active' : ''}" data-tab="tags">Tags</button>
-        </div>
-
-        <ul class="search-results__list">
+        <ul class="search-results__grid">
           ${users.length
             ? users.map(u => `
                 <li class="search-results__item">
@@ -28,7 +22,7 @@ export class SearchResults extends HTMLElement {
                     ${avatarHTML(u.displayName || u.username, u.avatar || '', 'search-results__avatar')}
                     <div class="search-results__user-info">
                       <span class="search-results__user-name">${u.displayName || u.username}</span>
-                      <span class="search-results__user-handle">@${u.username}</span>
+                      <span class="search-results__user-handle">@${u.username} · ${u.postCount ?? 0} posts</span>
                     </div>
                   </a>
                   <ui-button class="search-results__follow-btn" variant="primary" text="Seguir" data-username="${u.username}"></ui-button>
@@ -39,18 +33,6 @@ export class SearchResults extends HTMLElement {
         </ul>
       </div>
     `;
-
-    this.querySelectorAll('.search-results__tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        this.querySelectorAll('.search-results__tab').forEach(t => t.classList.remove('search-results__tab--active'));
-        tab.classList.add('search-results__tab--active');
-        this.dispatchEvent(new CustomEvent('tab-change', {
-          detail: { tab: tab.dataset.tab },
-          bubbles: true,
-          composed: true,
-        }));
-      });
-    });
 
     this.querySelectorAll('.search-results__follow-btn').forEach(btn => {
       btn.addEventListener('click', () => {

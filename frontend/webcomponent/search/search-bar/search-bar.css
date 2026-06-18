@@ -4,15 +4,6 @@
   gap: 10px;
 }
 
-.search-bar__filter-btn {
-  flex-shrink: 0;
-}
-
-.search-bar__filter-btn .ui-button__icon svg {
-  width: 16px;
-  height: 16px;
-}
-
 .search-bar__input-wrap {
   position: relative;
   flex: 1;
