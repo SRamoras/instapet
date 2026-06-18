@@ -181,7 +181,6 @@ def unlike_post(
 
 
 # ── Saves ────────────────────────────────────────────
-
 @router.post("/{post_id}/save", status_code=201)
 def save_post(
     post_id: int,
@@ -198,7 +197,6 @@ def save_post(
     session.commit()
     return {"detail": "Post guardado"}
 
-
 @router.delete("/{post_id}/save", status_code=204)
 def unsave_post(
     post_id: int,
@@ -210,6 +208,25 @@ def unsave_post(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Save não encontrado")
     session.delete(save)
     session.commit()
+
+
+@router.get("/saved", response_model=list[PostRead])
+def list_saved_posts(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    posts = (
+        select(Post)
+        .join(Save, Save.post_id == Post.id)
+        .filter(Save.user_id == current_user.id)
+        .order_by(Post.created_at.desc())
+        .all()
+    )
+
+    return [
+        _enrich_post(post, session, current_user.id)
+        for post in posts
+    ]
 
 
 # ── Comments ─────────────────────────────────────────

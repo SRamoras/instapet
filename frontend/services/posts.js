@@ -10,7 +10,7 @@ export const unlikePost = (id) => authRequest(`/posts/${id}/like`, { method: 'DE
 
 export const savePost = (id) => authRequest(`/posts/${id}/save`, { method: 'POST' });
 export const unsavePost = (id) => authRequest(`/posts/${id}/save`, { method: 'DELETE' });
-
+export const getSavedPosts = () => authRequest('/posts/saved');
 export const getComments = (id) => request(`/posts/${id}/comments`);
 export const createComment = (id, data) => authRequest(`/posts/${id}/comments`, { method: 'POST', body: JSON.stringify(data) });
 export const deleteComment = (commentId) => authRequest(`/posts/comments/${commentId}`, { method: 'DELETE' });

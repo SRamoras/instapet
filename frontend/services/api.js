@@ -23,3 +23,4 @@ export async function authRequest(path, options = {}) {
   if (res.status === 204) return null;
   return res.json();
 }
+console.log(localStorage.getItem('token'));
