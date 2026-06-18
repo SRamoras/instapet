@@ -15,6 +15,8 @@ export class PostDetail extends HTMLElement {
     const likes    = this.getAttribute('likes') || '0';
     const comments = this.getAttribute('comments') || '0';
     const time     = this.getAttribute('time') || '';
+    let liked = this.getAttribute('liked-by-me') === 'true';
+    let saved = this.getAttribute('saved-by-me') === 'true';
 
     this.innerHTML = `
       <article class="post-detail">
@@ -77,14 +79,22 @@ export class PostDetail extends HTMLElement {
       </article>
     `;
 
-    this.querySelector('.post-detail__action-btn--like').addEventListener('click', (e) => {
+    const likeBtn = this.querySelector('.post-detail__action-btn--like');
+    const saveBtn = this.querySelector('.post-detail__action-btn--save');
+
+    if (liked) likeBtn.classList.add('post-detail__action-btn--liked');
+    if (saved) saveBtn.classList.add('post-detail__action-btn--saved');
+
+    likeBtn.addEventListener('click', (e) => {
+      liked = !liked;
       e.currentTarget.classList.toggle('post-detail__action-btn--liked');
-      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId }, bubbles: true, composed: true }));
+      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId, liked }, bubbles: true, composed: true }));
     });
 
-    this.querySelector('.post-detail__action-btn--save').addEventListener('click', (e) => {
+    saveBtn.addEventListener('click', (e) => {
+      saved = !saved;
       e.currentTarget.classList.toggle('post-detail__action-btn--saved');
-      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId }, bubbles: true, composed: true }));
+      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId, saved }, bubbles: true, composed: true }));
     });
 
     this.querySelector('.post-detail__action-btn--share').addEventListener('click', () => {

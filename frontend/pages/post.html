@@ -38,7 +38,8 @@
     import '../webcomponent/post/comment-form.js';
     import '../webcomponent/post/post-detail/post-detail.js';
     import '../webcomponent/post/comment-item/comment-item.js';
-    import { getPost, getComments, createComment, likePost, savePost } from '../services/posts.js';
+    import { getPost, getComments, createComment, likePost, unlikePost, savePost, unsavePost } from '../services/posts.js';
+    import { getUser, followUser, unfollowUser } from '../services/users.js';
 
     const params          = new URLSearchParams(window.location.search);
     const postId          = params.get('id');
@@ -63,14 +64,22 @@
         detail.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
         detail.setAttribute('caption',  post.content ?? '');
         detail.setAttribute('image',    post.image_url ?? '');
-        detail.setAttribute('likes',    post.like_count ?? 0);
-        detail.setAttribute('comments', post.comment_count ?? 0);
+        detail.setAttribute('likes',       post.like_count ?? 0);
+        detail.setAttribute('comments',    post.comment_count ?? 0);
+        detail.setAttribute('liked-by-me', post.liked_by_me ? 'true' : 'false');
+        detail.setAttribute('saved-by-me', post.saved_by_me ? 'true' : 'false');
         postContainer.appendChild(detail);
 
         const authorCardEl = document.createElement('user-card');
-        authorCardEl.setAttribute('username',     post.author_username ?? 'user');
-        authorCardEl.setAttribute('display-name', post.author_username ?? 'user');
-        authorCardEl.setAttribute('avatar',       `https://i.pravatar.cc/40?u=${post.author_username}`);
+        authorCardEl.setAttribute('username',      post.author_username ?? 'user');
+        authorCardEl.setAttribute('display-name',  post.author_username ?? 'user');
+        authorCardEl.setAttribute('avatar',        `https://i.pravatar.cc/40?u=${post.author_username}`);
+        try {
+          const authorData = await getUser(post.author_username);
+          authorCardEl.setAttribute('followers',     authorData.follower_count ?? '0');
+          authorCardEl.setAttribute('following',     authorData.following_count ?? '0');
+          authorCardEl.setAttribute('followed-by-me', authorData.followed_by_me ? 'true' : 'false');
+        } catch { /* sem sessão ou erro, mostra defaults */ }
         authorCard.appendChild(authorCardEl);
 
         commentsSection.hidden = false;
@@ -116,12 +125,29 @@
       }
     });
 
+    document.addEventListener('user-follow', async (e) => {
+      if (!localStorage.getItem('token')) {
+        window.location.href = '/pages/login.html';
+        return;
+      }
+      try {
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+      } catch (err) { console.error('follow error', err); }
+    });
+
     document.addEventListener('post-like', async (e) => {
-      try { await likePost(e.detail.postId); } catch { /* já deu like */ }
+      try {
+        if (e.detail.liked) await likePost(e.detail.postId);
+        else await unlikePost(e.detail.postId);
+      } catch (err) { console.error('like error', err); }
     });
 
     document.addEventListener('post-save', async (e) => {
-      try { await savePost(e.detail.postId); } catch { /* já guardou */ }
+      try {
+        if (e.detail.saved) await savePost(e.detail.postId);
+        else await unsavePost(e.detail.postId);
+      } catch (err) { console.error('save error', err); }
     });
 
     loadPost();

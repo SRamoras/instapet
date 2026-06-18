@@ -14,6 +14,8 @@ class PostCard extends HTMLElement {
     const image    = this.getAttribute('image') || '';
     const likes    = this.getAttribute('likes') || '0';
     const comments = this.getAttribute('comments') || '0';
+    let liked = this.getAttribute('liked-by-me') === 'true';
+    let saved = this.getAttribute('saved-by-me') === 'true';
 
     this.innerHTML = `
       <article class="post-card">
@@ -61,18 +63,26 @@ class PostCard extends HTMLElement {
       </article>
     `;
 
-    this.querySelector('.post-card__action-btn--like').addEventListener('click', (e) => {
+    const likeBtn = this.querySelector('.post-card__action-btn--like');
+    const saveBtn = this.querySelector('.post-card__action-btn--save');
+
+    if (liked) likeBtn.classList.add('post-card__action-btn--liked');
+    if (saved) saveBtn.classList.add('post-card__action-btn--saved');
+
+    likeBtn.addEventListener('click', (e) => {
+      liked = !liked;
       e.currentTarget.classList.toggle('post-card__action-btn--liked');
-      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId }, bubbles: true, composed: true }));
+      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId, liked }, bubbles: true, composed: true }));
     });
 
     this.querySelector('.post-card__action-btn--comment').addEventListener('click', () => {
       window.location.href = `/pages/post.html?id=${postId}`;
     });
 
-    this.querySelector('.post-card__action-btn--save').addEventListener('click', (e) => {
+    saveBtn.addEventListener('click', (e) => {
+      saved = !saved;
       e.currentTarget.classList.toggle('post-card__action-btn--saved');
-      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId }, bubbles: true, composed: true }));
+      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId, saved }, bubbles: true, composed: true }));
     });
   }
 }

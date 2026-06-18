@@ -33,7 +33,7 @@
     import '../webcomponent/ui/postcard.js';
     import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
     import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
-    import { getPosts, likePost, savePost } from '../services/posts.js';
+    import { getPosts, likePost, unlikePost, savePost, unsavePost } from '../services/posts.js';
     import { getMe } from '../services/users.js';
 
     const feedContainer      = document.getElementById('feed-container');
@@ -70,8 +70,10 @@
           card.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
           card.setAttribute('caption',  post.content ?? '');
           card.setAttribute('image',    post.image_url ?? '');
-          card.setAttribute('likes',    post.like_count ?? 0);
-          card.setAttribute('comments', post.comment_count ?? 0);
+          card.setAttribute('likes',        post.like_count ?? 0);
+          card.setAttribute('comments',     post.comment_count ?? 0);
+          card.setAttribute('liked-by-me',  post.liked_by_me ? 'true' : 'false');
+          card.setAttribute('saved-by-me',  post.saved_by_me ? 'true' : 'false');
           feedContainer.appendChild(card);
         });
       } catch {
@@ -80,11 +82,17 @@
     }
 
     document.addEventListener('post-like', async (e) => {
-      try { await likePost(e.detail.postId); } catch { /* já deu like */ }
+      try {
+        if (e.detail.liked) await likePost(e.detail.postId);
+        else await unlikePost(e.detail.postId);
+      } catch (err) { console.error('like error', err); }
     });
 
     document.addEventListener('post-save', async (e) => {
-      try { await savePost(e.detail.postId); } catch { /* já guardou */ }
+      try {
+        if (e.detail.saved) await savePost(e.detail.postId);
+        else await unsavePost(e.detail.postId);
+      } catch (err) { console.error('save error', err); }
     });
 
     loadSidebar();
