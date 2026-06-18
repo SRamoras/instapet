@@ -6,6 +6,7 @@ export async function request(path, options = {}) {
     ...options,
   });
   if (!res.ok) throw new Error(`Erro ${res.status}`);
+  if (res.status === 204) return null;
   return res.json();
 }
 
@@ -19,5 +20,6 @@ export async function authRequest(path, options = {}) {
     ...options,
   });
   if (!res.ok) throw new Error(`Erro ${res.status}`);
+  if (res.status === 204) return null;
   return res.json();
 }
