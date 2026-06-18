@@ -23,7 +23,7 @@ export class SavedGrid extends HTMLElement {
         </div>
         <div class="saved-grid__photos" id="saved-photos"></div>
         <div class="saved-grid__footer" id="saved-footer" hidden>
-          <button class="saved-grid__more-btn" id="saved-more">VER MAIS</button>
+          <ui-button class="saved-grid__more-btn" id="saved-more" variant="ghost" text="VER MAIS"></ui-button>
         </div>
       </div>
     `;

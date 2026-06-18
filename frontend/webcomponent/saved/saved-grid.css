@@ -72,20 +72,3 @@
   border-top: 1px solid var(--border);
 }
 
-.saved-grid__more-btn {
-  padding: 8px 28px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #9A9A9A;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.saved-grid__more-btn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
