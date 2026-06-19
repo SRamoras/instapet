@@ -27,3 +27,7 @@ class UserUpdate(SQLModel):
     display_name: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
+
+    def model_post_init(self, __context):
+        if self.display_name is not None and not self.display_name.strip():
+            raise ValueError("display_name não pode ser vazio")

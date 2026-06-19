@@ -62,6 +62,8 @@ def update_me(
     session: Session = Depends(get_db),
 ):
     for field, value in data.model_dump(exclude_unset=True).items():
+        if value is None and field == 'display_name':
+            continue
         setattr(current_user, field, value)
     session.add(current_user)
     session.commit()
