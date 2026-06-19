@@ -11,12 +11,15 @@ export class PostDetail extends HTMLElement {
     const username = this.getAttribute('username') || '';
     const avatar   = this.getAttribute('avatar') || '';
     const image    = this.getAttribute('image') || '';
-    const caption  = this.getAttribute('caption') || '';
-    const likes    = this.getAttribute('likes') || '0';
-    const comments = this.getAttribute('comments') || '0';
+    const mine     = this.getAttribute('mine') === 'true';
     const time     = this.getAttribute('time') || '';
-    let liked = this.getAttribute('liked-by-me') === 'true';
-    let saved = this.getAttribute('saved-by-me') === 'true';
+    let caption    = this.getAttribute('caption') || '';
+    let likes      = this.getAttribute('likes') || '0';
+    let comments   = this.getAttribute('comments') || '0';
+    let liked      = this.getAttribute('liked-by-me') === 'true';
+    let saved      = this.getAttribute('saved-by-me') === 'true';
+    let tags = [];
+    try { tags = JSON.parse(this.getAttribute('tags') || '[]'); } catch {}
 
     this.innerHTML = `
       <article class="post-detail">
@@ -26,11 +29,23 @@ export class PostDetail extends HTMLElement {
             <a class="post-detail__username" href="/pages/profile.html?user=${username}">@${username}</a>
             ${time ? `<span class="post-detail__time">${time}</span>` : ''}
           </div>
-          <button class="post-detail__more-btn" aria-label="Mais opções">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>
-            </svg>
-          </button>
+          ${mine ? `
+            <div class="post-detail__menu-wrap">
+              <button class="post-detail__more-btn" aria-label="Mais opções">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>
+                </svg>
+              </button>
+              <div class="post-detail__dropdown" hidden>
+                <button class="post-detail__dropdown-item post-detail__dropdown-item--edit">
+                  <span class="material-symbols-outlined">edit</span> Editar
+                </button>
+                <button class="post-detail__dropdown-item post-detail__dropdown-item--delete">
+                  <span class="material-symbols-outlined">delete</span> Apagar
+                </button>
+              </div>
+            </div>
+          ` : ''}
         </header>
 
         ${image ? `<img class="post-detail__image" src="${image}" alt="post de ${username}">` : ''}
@@ -65,12 +80,15 @@ export class PostDetail extends HTMLElement {
             </button>
           </div>
 
-          ${caption ? `
-            <p class="post-detail__caption">
-              <a class="post-detail__caption-user" href="/pages/profile.html?user=${username}">@${username}</a>
-              ${caption}
-            </p>
-          ` : ''}
+          <div class="post-detail__caption-wrap">
+            ${caption ? `
+              <p class="post-detail__caption">
+                <a class="post-detail__caption-user" href="/pages/profile.html?user=${username}">@${username}</a>
+                <span class="post-detail__caption-text">${caption}</span>
+              </p>
+            ` : ''}
+            ${tags.length ? `<div class="post-detail__tags">${tags.map(t => `<a class="post-detail__tag" href="/pages/search.html?q=${encodeURIComponent(t)}">#${t}</a>`).join('')}</div>` : ''}
+          </div>
 
           <div class="post-detail__comments-section">
             <slot></slot>
@@ -88,6 +106,8 @@ export class PostDetail extends HTMLElement {
     likeBtn.addEventListener('click', (e) => {
       liked = !liked;
       e.currentTarget.classList.toggle('post-detail__action-btn--liked');
+      const countEl = e.currentTarget.querySelector('.post-detail__like-count');
+      countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
       this.dispatchEvent(new CustomEvent('post-like', { detail: { postId, liked }, bubbles: true, composed: true }));
     });
 
@@ -104,6 +124,79 @@ export class PostDetail extends HTMLElement {
         navigator.clipboard?.writeText(window.location.href);
       }
     });
+
+    if (mine) {
+      const menuWrap  = this.querySelector('.post-detail__menu-wrap');
+      const moreBtn   = this.querySelector('.post-detail__more-btn');
+      const dropdown  = this.querySelector('.post-detail__dropdown');
+      const editBtn   = this.querySelector('.post-detail__dropdown-item--edit');
+      const deleteBtn = this.querySelector('.post-detail__dropdown-item--delete');
+
+      moreBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.hidden = !dropdown.hidden;
+      });
+
+      document.addEventListener('click', () => { dropdown.hidden = true; }, { capture: true });
+
+      deleteBtn.addEventListener('click', () => {
+        dropdown.hidden = true;
+        this.dispatchEvent(new CustomEvent('post-delete', { detail: { postId }, bubbles: true }));
+      });
+
+      editBtn.addEventListener('click', () => {
+        dropdown.hidden = true;
+        this._startEdit(caption);
+      });
+    }
+  }
+
+  _startEdit(currentCaption) {
+    const wrap = this.querySelector('.post-detail__caption-wrap');
+    wrap.innerHTML = `
+      <div class="post-detail__edit-form">
+        <textarea class="post-detail__edit-textarea" rows="3">${currentCaption}</textarea>
+        <div class="post-detail__edit-actions">
+          <button class="post-detail__edit-cancel">Cancelar</button>
+          <button class="post-detail__edit-save">Guardar</button>
+        </div>
+      </div>
+    `;
+
+    const textarea  = wrap.querySelector('.post-detail__edit-textarea');
+    const saveBtn   = wrap.querySelector('.post-detail__edit-save');
+    const cancelBtn = wrap.querySelector('.post-detail__edit-cancel');
+    const postId    = this.getAttribute('post-id');
+    const username  = this.getAttribute('username');
+
+    textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+
+    cancelBtn.addEventListener('click', () => this._renderCaption(currentCaption, username));
+
+    saveBtn.addEventListener('click', () => {
+      const newContent = textarea.value.trim();
+      if (!newContent) return;
+      this.dispatchEvent(new CustomEvent('post-edit', {
+        detail: { postId, content: newContent },
+        bubbles: true,
+      }));
+    });
+  }
+
+  _renderCaption(caption, username) {
+    const wrap = this.querySelector('.post-detail__caption-wrap');
+    wrap.innerHTML = caption ? `
+      <p class="post-detail__caption">
+        <a class="post-detail__caption-user" href="/pages/profile.html?user=${username}">@${username}</a>
+        <span class="post-detail__caption-text">${caption}</span>
+      </p>
+    ` : '';
+  }
+
+  updateCaption(newCaption) {
+    const username = this.getAttribute('username');
+    this._renderCaption(newCaption, username);
   }
 }
 
