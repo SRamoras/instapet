@@ -5,7 +5,12 @@ from sqlmodel import SQLModel
 class PostCreate(SQLModel):
     content: str
     image_url: str | None = None
-    tags: list[str] = []  
+    tags: list[str] = []
+
+
+class PostUpdate(SQLModel):
+    content: str | None = None
+    tags: list[str] | None = None  
 
 
 class PostRead(SQLModel):

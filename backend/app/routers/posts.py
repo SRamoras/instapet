@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 
 from app.database.database import get_db
 from app.models import Post, Tag, PostTag, Like, Save, Comment, User
-from app.schemas.post import PostCreate, PostRead
+from app.schemas.post import PostCreate, PostRead, PostUpdate
 from app.schemas.comment import CommentCreate, CommentRead
 from app.auth.dependencies import get_current_user, get_optional_user
 
@@ -178,6 +178,50 @@ def get_post(
     user_id = current_user.id if current_user else None
 
     return _enrich_post(post, session, user_id)
+
+
+@router.patch("/{post_id}", response_model=PostRead)
+def update_post(
+    post_id: int,
+    data: PostUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    post = session.get(Post, post_id)
+    if not post:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
+    if post.author_id != current_user.id:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Não podes editar este post")
+    if data.content is not None:
+        post.content = data.content
+    if data.tags is not None:
+        session.exec(select(PostTag).where(PostTag.post_id == post.id))
+        existing = session.exec(select(PostTag).where(PostTag.post_id == post.id)).all()
+        for pt in existing:
+            session.delete(pt)
+        session.flush()
+        tags = _get_or_create_tags(session, data.tags)
+        for tag in tags:
+            session.add(PostTag(post_id=post.id, tag_id=tag.id))
+    session.commit()
+    session.refresh(post)
+    return _enrich_post(post, session, current_user.id)
+
+
+@router.delete("/{post_id}", status_code=204)
+def delete_post(
+    post_id: int,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    post = session.get(Post, post_id)
+    if not post:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
+    if post.author_id != current_user.id:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Não podes apagar este post")
+    session.delete(post)
+    session.commit()
+
 
 # ── Likes ────────────────────────────────────────────
 
