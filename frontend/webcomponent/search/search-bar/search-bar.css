@@ -25,26 +25,26 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: #9A9A9A;
+  color: var(--text-muted);
   pointer-events: none;
 }
 
 .search-bar__input {
   width: 100%;
   padding: 10px 14px 10px 38px;
-  border: 1.5px solid #E8DDD4;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
-  color: #1C1C1C;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.15s;
 }
 
 .search-bar__input::placeholder {
-  color: #B0A898;
+  color: var(--placeholder);
 }
 
 .search-bar__input:focus {

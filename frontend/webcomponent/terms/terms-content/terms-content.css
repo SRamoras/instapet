@@ -1,8 +1,8 @@
 .terms-content {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 2px 12px rgba(30, 20, 10, 0.07);
+  box-shadow: var(--shadow-sm);
   max-width: 780px;
   margin: 0 auto;
 }
@@ -10,13 +10,13 @@
 .terms-content__title {
   font-size: 22px;
   font-weight: 800;
-  color: #1C1C1C;
+  color: var(--text);
   margin: 0 0 6px;
 }
 
 .terms-content__date {
   font-size: 13px;
-  color: #9A9A9A;
+  color: var(--text-muted);
   margin: 0 0 28px;
 }
 
@@ -31,13 +31,13 @@
 .terms-content__section-title {
   font-size: 15px;
   font-weight: 700;
-  color: #1C1C1C;
+  color: var(--text);
   margin: 0 0 8px;
 }
 
 .terms-content__section-text {
   font-size: 14px;
-  color: #3A3A3A;
+  color: var(--text-body);
   line-height: 1.7;
   margin: 0;
 }
