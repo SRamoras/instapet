@@ -3,34 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InstaPet – Pesquisa</title>
+  <title>InstaPet – Explorar</title>
   <link rel="stylesheet" href="../style.css">
+  <style>
+    .search-page {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-page__bar-wrap {
+      position: relative;
+    }
+
+    .search-page__bar {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid #E8DDD4;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+      box-shadow: 0 2px 8px rgba(30,20,10,0.06);
+    }
+
+    .search-page__bar:focus-within {
+      border-color: var(--color-primary);
+    }
+
+    .search-page__icon {
+      width: 18px;
+      height: 18px;
+      color: #9A9A9A;
+      flex-shrink: 0;
+      margin-left: 14px;
+    }
+
+    .search-page__input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #1C1C1C;
+      background: transparent;
+    }
+
+    .search-page__input::placeholder { color: #B0A898; }
+
+    /* Autocomplete */
+    .autocomplete {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1.5px solid #E8DDD4;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(30,20,10,0.13);
+      z-index: 200;
+      list-style: none;
+      padding: 6px;
+      margin: 0;
+    }
+
+    .autocomplete[hidden] { display: none; }
+
+    .autocomplete__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #1C1C1C;
+      transition: background 0.1s;
+      text-decoration: none;
+    }
+
+    .autocomplete__item:hover,
+    .autocomplete__item--active {
+      background: #F5EFE8;
+    }
+
+    .autocomplete__item mark {
+      background: none;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .autocomplete__avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #E8DDD4;
+      flex-shrink: 0;
+    }
+
+    .autocomplete__user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .autocomplete__user-name {
+      font-weight: 700;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .autocomplete__user-handle {
+      font-size: 11px;
+      color: #9A9A9A;
+    }
+
+    .autocomplete__tag-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #E6F5F2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* Modes */
+    .search-page__modes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-page__mode {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 10px;
+      border: 1.5px solid #E8DDD4;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      color: #9A9A9A;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .search-page__mode--active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+
+    /* User result */
+    .user-result {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(30,20,10,0.06);
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.15s;
+    }
+
+    .user-result:hover { box-shadow: 0 4px 16px rgba(30,20,10,0.1); }
+
+    .user-result__avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #E8DDD4;
+      flex-shrink: 0;
+    }
+
+    .user-result__info { flex: 1; min-width: 0; }
+
+    .user-result__name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1C1C1C;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-result__handle { font-size: 13px; color: #9A9A9A; }
+
+    .user-result__stats {
+      font-size: 12px;
+      color: #9A9A9A;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .search-results__list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
 
   <nav-bar logo="🐾 InstaPet"></nav-bar>
 
-  <div class="layout">
-    <main class="feed">
+  <div class="search-page">
 
-      <search-bar id="search-bar-el" placeholder="Pesquisar por tag... (ex: gato, cão)"></search-bar>
+    <div class="search-page__bar-wrap">
+      <form class="search-page__bar" id="search-form">
+        <svg class="search-page__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input class="search-page__input" id="search-input" type="search" autocomplete="off" placeholder="Pesquisar por tag...">
+      </form>
+      <ul class="autocomplete" id="autocomplete" hidden></ul>
+    </div>
 
-      <div id="search-results">
-        <p class="feed__status">Pesquisa algo para começar.</p>
-      </div>
+    <div class="search-page__modes">
+      <button class="search-page__mode search-page__mode--active" data-mode="tags">Tags</button>
+      <button class="search-page__mode" data-mode="users">Pessoas</button>
+    </div>
 
-    </main>
+    <div id="search-results">
+      <p class="feed__status">Pesquisa algo para começar.</p>
+    </div>
 
-    <aside class="sidebar">
-      <div class="sidebar-title">Tags populares</div>
-      <div class="popular-tags" id="popular-tags">
-        <button class="tag-chip" data-tag="gato">🐱 gato</button>
-        <button class="tag-chip" data-tag="cão">🐶 cão</button>
-        <button class="tag-chip" data-tag="coelho">🐰 coelho</button>
-        <button class="tag-chip" data-tag="pássaro">🐦 pássaro</button>
-        <button class="tag-chip" data-tag="hamster">🐹 hamster</button>
-      </div>
-    </aside>
   </div>
 
   <app-footer></app-footer>
@@ -38,68 +251,226 @@
   <script type="module">
     import '../webcomponent/layout/navbar.js';
     import '../webcomponent/layout/footer.js';
-    import '../webcomponent/ui/button.js';
     import '../webcomponent/ui/postcard.js';
-    import '../webcomponent/search/search-bar/search-bar.js';
-    import { getPosts } from '../services/posts.js';
+    import { avatarHTML } from '../webcomponent/ui/avatar.js';
+    import { getPosts, getPopularTags } from '../services/posts.js';
+    import { getUsers } from '../services/users.js';
 
-    const params           = new URLSearchParams(window.location.search);
-    const searchBarEl      = document.getElementById('search-bar-el');
-    const resultsContainer = document.getElementById('search-results');
+    const searchForm  = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const resultsEl   = document.getElementById('search-results');
+    const acList      = document.getElementById('autocomplete');
+    const modeBtns    = document.querySelectorAll('.search-page__mode');
 
-    if (params.get('q')) {
-      const input = searchBarEl.querySelector('.search-bar__input');
-      if (input) input.value = params.get('q');
-      runSearch(params.get('q'));
-    }
+    let mode     = 'tags';
+    let allUsers = [];
+    let allTags  = [];
+    let activeIdx = -1;
 
-    document.addEventListener('search-submit', (e) => {
-      const query = e.detail.query;
-      if (!query) return;
-      history.pushState(null, '', `?q=${encodeURIComponent(query)}`);
-      runSearch(query);
+    getUsers().then(u => { allUsers = u; }).catch(() => {});
+    getPopularTags().then(t => { allTags = t; }).catch(() => {});
+
+    // ── Mode toggle ───────────────────────────────────────────────
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modeBtns.forEach(b => b.classList.remove('search-page__mode--active'));
+        btn.classList.add('search-page__mode--active');
+        mode = btn.dataset.mode;
+        searchInput.placeholder = mode === 'tags' ? 'Pesquisar por tag...' : 'Pesquisar pessoas...';
+        searchInput.focus();
+        const q = searchInput.value.trim();
+        hideAC();
+        if (q) runSearch(q);
+        else resultsEl.innerHTML = '<p class="feed__status">Pesquisa algo para começar.</p>';
+      });
     });
 
-    document.getElementById('popular-tags').addEventListener('click', (e) => {
-      const btn = e.target.closest('.tag-chip');
-      if (!btn) return;
-      const tag = btn.dataset.tag;
-      const input = searchBarEl.querySelector('.search-bar__input');
-      if (input) input.value = tag;
-      history.pushState(null, '', `?q=${encodeURIComponent(tag)}`);
-      runSearch(tag);
+    // ── Autocomplete ──────────────────────────────────────────────
+    function highlight(text, query) {
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return text;
+      return text.slice(0, idx)
+        + `<mark>${text.slice(idx, idx + query.length)}</mark>`
+        + text.slice(idx + query.length);
+    }
+
+    function showAC(items) {
+      activeIdx = -1;
+      if (!items.length) { hideAC(); return; }
+      acList.innerHTML = items.map((item, i) => item.html).join('');
+      acList.hidden = false;
+
+      acList.querySelectorAll('.autocomplete__item').forEach((el, i) => {
+        el.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          searchInput.value = items[i].value;
+          hideAC();
+          runSearch(items[i].value);
+        });
+      });
+    }
+
+    function hideAC() {
+      acList.hidden = true;
+      activeIdx = -1;
+    }
+
+    function buildSuggestions(q) {
+      if (!q) return [];
+      const lower = q.toLowerCase().replace(/^#/, '');
+
+      if (mode === 'tags') {
+        return allTags
+          .filter(t => t.replace(/^#/, '').includes(lower))
+          .slice(0, 6)
+          .map(t => ({
+            value: t.replace(/^#/, ''),
+            html: `<li class="autocomplete__item">
+              <div class="autocomplete__tag-icon">#</div>
+              <span>${highlight(t, q.startsWith('#') ? q : '#' + lower)}</span>
+            </li>`,
+          }));
+      } else {
+        return allUsers
+          .filter(u =>
+            u.username.toLowerCase().includes(lower) ||
+            (u.display_name || '').toLowerCase().includes(lower)
+          )
+          .slice(0, 6)
+          .map(u => ({
+            value: u.username,
+            html: `<li class="autocomplete__item">
+              ${avatarHTML(u.display_name || u.username, u.avatar_url || '', 'autocomplete__avatar')}
+              <div class="autocomplete__user-info">
+                <span class="autocomplete__user-name">${highlight(u.display_name || u.username, q)}</span>
+                <span class="autocomplete__user-handle">@${highlight(u.username, lower)}</span>
+              </div>
+            </li>`,
+          }));
+      }
+    }
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      if (!q) { hideAC(); return; }
+      showAC(buildSuggestions(q));
+      if (mode === 'users') runSearch(q);
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', (e) => {
+      const items = acList.querySelectorAll('.autocomplete__item');
+      if (!items.length || acList.hidden) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIdx = Math.max(activeIdx - 1, 0);
+      } else if (e.key === 'Escape') {
+        hideAC();
+        return;
+      } else { return; }
+
+      items.forEach((el, i) => el.classList.toggle('autocomplete__item--active', i === activeIdx));
+      const suggestions = buildSuggestions(searchInput.value.trim());
+      if (suggestions[activeIdx]) searchInput.value = suggestions[activeIdx].value;
+    });
+
+    searchInput.addEventListener('blur', () => setTimeout(hideAC, 150));
+    searchInput.addEventListener('focus', () => {
+      const q = searchInput.value.trim();
+      if (q) showAC(buildSuggestions(q));
+    });
+
+    // ── Submit ────────────────────────────────────────────────────
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = searchInput.value.trim();
+      hideAC();
+      if (q) runSearch(q);
     });
 
     async function runSearch(query) {
-      resultsContainer.innerHTML = '<p class="feed__status">A pesquisar...</p>';
-      try {
-        const posts = await getPosts(`?tag=${encodeURIComponent(query)}`);
-        resultsContainer.innerHTML = '';
+      if (mode === 'tags') await searchTags(query);
+      else searchUsers(query);
+    }
 
+    // ── Tags search ───────────────────────────────────────────────
+    async function searchTags(query) {
+      resultsEl.innerHTML = '<p class="feed__status">A pesquisar...</p>';
+      try {
+        const posts = await getPosts(`?tag=${encodeURIComponent(query.replace(/^#/, ''))}`);
+        resultsEl.innerHTML = '';
         if (!posts.length) {
-          resultsContainer.innerHTML = `<p class="feed__status">Nenhum resultado para "<strong>${query}</strong>".</p>`;
+          resultsEl.innerHTML = `<p class="feed__status">Nenhum post com a tag <strong>#${query.replace(/^#/, '')}</strong>.</p>`;
           return;
         }
-
-        const header = document.createElement('p');
-        header.className = 'search-results__count';
-        header.textContent = `${posts.length} resultado(s) para "${query}"`;
-        resultsContainer.appendChild(header);
-
-        posts.forEach((post) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'search-results__list';
+        posts.forEach(post => {
           const card = document.createElement('post-card');
-          card.setAttribute('post-id',  post.id);
-          card.setAttribute('username', post.author_username ?? 'user');
-          card.setAttribute('avatar',   `https://i.pravatar.cc/40?u=${post.author_username}`);
-          card.setAttribute('caption',  post.content ?? '');
-          card.setAttribute('image',    post.image_url ?? '');
-          card.setAttribute('likes',    post.like_count ?? 0);
-          card.setAttribute('comments', post.comment_count ?? 0);
-          resultsContainer.appendChild(card);
+          card.setAttribute('post-id',     post.id);
+          card.setAttribute('username',    post.author_username ?? 'user');
+          card.setAttribute('avatar',      post.author_avatar_url ?? '');
+          card.setAttribute('caption',     post.content ?? '');
+          card.setAttribute('image',       post.image_url ?? '');
+          card.setAttribute('likes',       post.like_count ?? 0);
+          card.setAttribute('comments',    post.comment_count ?? 0);
+          card.setAttribute('liked-by-me', post.liked_by_me ? 'true' : 'false');
+          card.setAttribute('saved-by-me', post.saved_by_me ? 'true' : 'false');
+          card.setAttribute('tags',        JSON.stringify(post.tags ?? []));
+          wrap.appendChild(card);
         });
+        resultsEl.appendChild(wrap);
       } catch {
-        resultsContainer.innerHTML = '<p class="feed__status feed__status--error">Erro ao pesquisar. Tente novamente.</p>';
+        resultsEl.innerHTML = '<p class="feed__status feed__status--error">Erro ao pesquisar.</p>';
       }
+    }
+
+    // ── Users search ──────────────────────────────────────────────
+    function searchUsers(query) {
+      const q = query.toLowerCase();
+      const matches = allUsers.filter(u =>
+        u.username.toLowerCase().includes(q) ||
+        (u.display_name || '').toLowerCase().includes(q)
+      );
+      resultsEl.innerHTML = '';
+      if (!matches.length) {
+        resultsEl.innerHTML = `<p class="feed__status">Nenhuma pessoa encontrada para "<strong>${query}</strong>".</p>`;
+        return;
+      }
+      const wrap = document.createElement('div');
+      wrap.className = 'search-results__list';
+      matches.forEach(u => {
+        const el = document.createElement('a');
+        el.className = 'user-result';
+        el.href = `/pages/profile.html?user=${u.username}`;
+        el.innerHTML = `
+          ${avatarHTML(u.display_name || u.username, u.avatar_url || '', 'user-result__avatar')}
+          <div class="user-result__info">
+            <span class="user-result__name">${u.display_name || u.username}</span>
+            <span class="user-result__handle">@${u.username}</span>
+          </div>
+          <div class="user-result__stats">${u.follower_count ?? 0} seguidores</div>
+        `;
+        wrap.appendChild(el);
+      });
+      resultsEl.appendChild(wrap);
+    }
+
+    // ── URL params ────────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode')) {
+      const m = params.get('mode');
+      modeBtns.forEach(b => b.classList.toggle('search-page__mode--active', b.dataset.mode === m));
+      mode = m;
+      searchInput.placeholder = mode === 'tags' ? 'Pesquisar por tag...' : 'Pesquisar pessoas...';
+    }
+    if (params.get('q')) {
+      searchInput.value = params.get('q');
+      runSearch(params.get('q'));
     }
   </script>
 
