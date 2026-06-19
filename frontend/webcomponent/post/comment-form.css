@@ -3,37 +3,37 @@
   gap: 8px;
   align-items: center;
   padding: 12px 0;
-  border-top: 1.5px solid #E8DDD4;
+  border-top: 1.5px solid var(--border);
 }
 
 .comment-form__input {
   flex: 1;
   padding: 9px 16px;
-  border: 1.5px solid #E8DDD4;
-  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
   font-size: 14px;
   font-family: inherit;
-  color: #1C1C1C;
+  color: var(--text);
   outline: none;
-  background: #FDFAF7;
+  background: var(--input-bg);
   transition: border-color 0.2s, background 0.2s;
 }
 
 .comment-form__input:focus {
-  border-color: #5B8A6B;
-  background: #fff;
+  border-color: var(--color-primary);
+  background: var(--surface);
 }
 
 .comment-form__input::placeholder {
-  color: #C0B4A8;
+  color: var(--placeholder);
 }
 
 .comment-form__btn {
   padding: 9px 20px;
-  background: #5B8A6B;
+  background: var(--color-primary);
   color: #fff;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
@@ -43,5 +43,5 @@
 }
 
 .comment-form__btn:hover {
-  background: #4A7258;
+  background: var(--color-dark);
 }

@@ -3,7 +3,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid #F5EFE8;
+  border-bottom: 1px solid var(--subtle-bg);
 }
 
 .comment-item:last-child {
@@ -15,7 +15,7 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #E8DDD4;
+  border: 2px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -34,7 +34,7 @@
 .comment-item__username {
   font-size: 13px;
   font-weight: 700;
-  color: #1C1C1C;
+  color: var(--text);
   text-decoration: none;
 }
 
@@ -44,12 +44,12 @@
 
 .comment-item__time {
   font-size: 11px;
-  color: #B0A898;
+  color: var(--placeholder);
 }
 
 .comment-item__text {
   font-size: 13px;
-  color: #3A3A3A;
+  color: var(--text-body);
   line-height: 1.5;
   margin: 0;
   word-break: break-word;
@@ -60,7 +60,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #B0A898;
+  color: var(--placeholder);
   padding: 0 2px;
   line-height: 1;
   display: flex;
