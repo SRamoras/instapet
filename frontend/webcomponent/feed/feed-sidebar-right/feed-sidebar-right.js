@@ -20,7 +20,6 @@ export class FeedSidebarRight extends HTMLElement {
           <ul class="feed-sidebar-right__list" id="fsr-suggestions">
             <li class="feed-sidebar-right__loading">A carregar...</li>
           </ul>
-          <a class="feed-sidebar-right__see-more" href="/pages/search.html">SEE MORE</a>
         </section>
 
         <section class="feed-sidebar-right__section">
@@ -28,7 +27,6 @@ export class FeedSidebarRight extends HTMLElement {
           <ul class="feed-sidebar-right__topics" id="fsr-topics">
             <li class="feed-sidebar-right__loading">A carregar...</li>
           </ul>
-          <a class="feed-sidebar-right__see-more" href="/pages/search.html">SEE MORE</a>
         </section>
       </div>
     `;
@@ -59,7 +57,7 @@ export class FeedSidebarRight extends HTMLElement {
             class="feed-sidebar-right__follow-btn ${u.followed_by_me ? 'feed-sidebar-right__follow-btn--followed' : ''}"
             data-username="${u.username}"
             data-following="${u.followed_by_me ? 'true' : 'false'}"
-          >${u.followed_by_me ? '✓' : '+'}</button>
+          >${u.followed_by_me ? 'Following' : 'Follow'}</button>
         </li>
       `).join('');
 
@@ -72,12 +70,12 @@ export class FeedSidebarRight extends HTMLElement {
             if (following) {
               await unfollowUser(username);
               btn.dataset.following = 'false';
-              btn.textContent = '+';
+              btn.textContent = 'Follow';
               btn.classList.remove('feed-sidebar-right__follow-btn--followed');
             } else {
               await followUser(username);
               btn.dataset.following = 'true';
-              btn.textContent = '✓';
+              btn.textContent = 'Following';
               btn.classList.add('feed-sidebar-right__follow-btn--followed');
             }
           } catch (err) {
