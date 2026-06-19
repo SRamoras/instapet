@@ -1,10 +1,48 @@
 :root {
-  /* Primary color */
-  --color-primary: #5EBBAB; /* Spearmint */
+  /* ── Design tokens ── */
 
-  /* Tons de apoio */
-  --color-dark: #4A9C8E;
-  --color-light: #E6F5F2;
-  --color-contrast: #DADAD9; /* Off-white */
-  --color-footer: #000000; /* Preto sólido para rodapés */  
+  /* Primary (teal) */
+  --primary-100: #D9EEE9;
+  --primary-200: #8ACCBF;
+  --primary-300: #5EBBAB;
+  --primary-400: #3D7E73;
+  --primary-500: #1F4640;
+  --primary-600: #061613;
+
+  /* Grey */
+  --grey-50:  #F8F8F7;
+  --grey-100: #E7E7E6;
+  --grey-200: #DADAD9;
+  --grey-300: #CECECD;
+  --grey-400: #C3C3C1;
+  --grey-500: #B7B7B5;
+  --grey-600: #878786;
+  --grey-700: #5A5A59;
+  --grey-800: #313130;
+  --grey-900: #0C0C0C;
+
+  /* ── Semantic colour aliases ── */
+  --color-primary:  var(--primary-300);
+  --color-dark:     var(--primary-400);
+  --color-light:    var(--primary-100);
+  --color-contrast: var(--grey-200);
+  --color-footer:   var(--primary-600);
+
+  /* ── Layout tokens ── */
+  --bg:          var(--grey-50);
+  --surface:     #fff;
+  --text:        var(--grey-900);
+  --text-muted:  var(--grey-600);
+  --text-body:   var(--grey-800);
+  --border:      var(--grey-200);
+  --border-md:   var(--grey-300);
+  --input-bg:    var(--grey-50);
+  --placeholder: var(--grey-400);
+  --subtle-bg:   var(--grey-100);
+  --hover-bg:    var(--primary-100);
+
+  --shadow-sm:   0 2px 10px rgba(6, 22, 19, 0.07);
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-full: 999px;
 }
