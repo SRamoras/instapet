@@ -16,13 +16,13 @@ export class FeedSidebarLeft extends HTMLElement {
 
     this.innerHTML = `
       <div class="feed-sidebar-left">
-        <div class="feed-sidebar-left__profile">
+        <a class="feed-sidebar-left__profile" href="/pages/profile.html">
           ${avatarHTML(displayName, avatar, 'feed-sidebar-left__avatar')}
           <div class="feed-sidebar-left__info">
             <span class="feed-sidebar-left__name">${displayName}</span>
             <span class="feed-sidebar-left__username">@${username}</span>
           </div>
-        </div>
+        </a>
 
         <div class="feed-sidebar-left__stats">
           <div class="feed-sidebar-left__stat">
@@ -40,13 +40,13 @@ export class FeedSidebarLeft extends HTMLElement {
         </div>
 
         <nav class="feed-sidebar-left__nav">
-          <a class="feed-sidebar-left__nav-link" href="/pages/feed.html">
+          <a class="feed-sidebar-left__nav-link" href="/pages/search.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             EXPLORE
           </a>
-<a class="feed-sidebar-left__nav-link" href="/pages/saved.html">
+          <a class="feed-sidebar-left__nav-link" href="/pages/profile.html?tab=saved">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
             </svg>

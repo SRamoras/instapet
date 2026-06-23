@@ -6,12 +6,20 @@
   flex-direction: column;
   gap: 18px;
   box-shadow: var(--shadow-sm);
+  
 }
 
 .feed-sidebar-left__profile {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 0.15s;
+}
+
+.feed-sidebar-left__profile:hover {
+  background: var(--hover-bg);
 }
 
 .feed-sidebar-left__avatar {
@@ -102,3 +110,4 @@
   background: var(--hover-bg);
   color: var(--color-primary);
 }
+
