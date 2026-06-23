@@ -11,23 +11,9 @@ export class AppFooter extends HTMLElement {
 
           <div class="footer__brand-col">
             <div class="footer__brand">
-              <span class="footer__brand-icon">🐾</span>
-              <span class="footer__brand-name">InstaPet</span>
+              <img class="footer__brand-img" src="/img/logoinstapet1.png" alt="InstaPet">
             </div>
             <p class="footer__tagline">A rede social<br>para ti e o teu pet.</p>
-            <div class="footer__socials">
-              <a class="footer__social-btn" href="#" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-                </svg>
-              </a>
-              <a class="footer__social-btn" href="#" aria-label="TikTok">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34l-.04-8.99a8.16 8.16 0 0 0 4.77 1.52V4.37a4.85 4.85 0 0 1-1-.68z"/>
-                </svg>
-              </a>
-            </div>
           </div>
 
           <div class="footer__links-col">

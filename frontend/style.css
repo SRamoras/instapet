@@ -96,11 +96,10 @@ body {
   gap: 4px;
 }
 
-.auth-page__logo {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.5px;
+.auth-page__logo-img {
+  height: 70px;
+  width: auto;
+  display: block;
 }
 
 .auth-page__tagline {

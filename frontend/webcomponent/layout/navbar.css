@@ -20,18 +20,10 @@
   color: var(--text);
 }
 
-.navbar__logo-icon { font-size: 22px; line-height: 1; }
-
-.navbar__logo-text {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.3px;
-}
-
-.navbar__logo-text strong {
-  color: var(--color-primary);
-  font-weight: 800;
+.navbar__logo-img {
+  height: 45px;
+  width: auto;
+  display: block;
 }
 
 /* Actions */
@@ -242,12 +234,8 @@
     height: 56px;
   }
 
-  .navbar__logo-text {
-    font-size: 16px;
-  }
-
-  .navbar__logo-icon {
-    font-size: 18px;
+  .navbar__logo-img {
+    height: 30px;
   }
 
   .navbar__dropdown {
