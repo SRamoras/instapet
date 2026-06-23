@@ -12,5 +12,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/instapet.db:/app/instapet.db
+      - ./backend:/app
+      - /app/.venv
     restart: unless-stopped

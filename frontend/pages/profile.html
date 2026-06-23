@@ -113,17 +113,52 @@
     .edit-form__avatar-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .edit-form__avatar-preview {
-      width: 48px;
-      height: 48px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--border);
       background: var(--subtle-bg);
       flex-shrink: 0;
+    }
+
+    .edit-form__avatar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .edit-form__avatar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1.5px dashed var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .edit-form__avatar-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .edit-form__avatar-filename {
+      font-size: 11px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 160px;
     }
 
     .edit-form__actions {
@@ -211,10 +246,20 @@
           <textarea class="edit-form__textarea" id="edit-bio" maxlength="200" placeholder="Fala um pouco sobre ti..."></textarea>
         </div>
         <div class="edit-form__group">
-          <label class="edit-form__label" for="edit-avatar">URL do avatar</label>
+          <label class="edit-form__label">Foto de perfil</label>
           <div class="edit-form__avatar-row">
             <img class="edit-form__avatar-preview" id="edit-avatar-preview" src="" alt="preview">
-            <input class="edit-form__input" id="edit-avatar" type="url" placeholder="https://...">
+            <div class="edit-form__avatar-actions">
+              <button type="button" class="edit-form__avatar-btn" id="edit-avatar-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                Alterar foto
+              </button>
+              <span class="edit-form__avatar-filename" id="edit-avatar-filename" hidden></span>
+              <input type="file" id="edit-avatar-file" accept="image/*" hidden>
+            </div>
           </div>
         </div>
         <p class="edit-form__error" id="edit-error" hidden></p>
@@ -235,27 +280,48 @@
     import '../webcomponent/profile/profile-grid.js';
     import { getMe, getUser, updateMe, followUser, unfollowUser } from '../services/users.js';
     import { getPosts } from '../services/posts.js';
+    import { uploadImage } from '../services/upload.js';
 
     const params        = new URLSearchParams(window.location.search);
     const usernameParam = params.get('user');
     const isOwnProfile  = !usernameParam;
 
     // ── Modal de edição ───────────────────────────────────────────
-    const modal        = document.getElementById('edit-modal');
-    const editForm     = document.getElementById('edit-form');
-    const editName     = document.getElementById('edit-display-name');
-    const editBio      = document.getElementById('edit-bio');
-    const editAvatar   = document.getElementById('edit-avatar');
-    const avatarPreview= document.getElementById('edit-avatar-preview');
-    const editError    = document.getElementById('edit-error');
-    const saveBtn      = document.getElementById('edit-save');
+    const modal           = document.getElementById('edit-modal');
+    const editForm        = document.getElementById('edit-form');
+    const editName        = document.getElementById('edit-display-name');
+    const editBio         = document.getElementById('edit-bio');
+    const avatarPreview   = document.getElementById('edit-avatar-preview');
+    const avatarBtn       = document.getElementById('edit-avatar-btn');
+    const avatarFile      = document.getElementById('edit-avatar-file');
+    const avatarFilename  = document.getElementById('edit-avatar-filename');
+    const editError       = document.getElementById('edit-error');
+    const saveBtn         = document.getElementById('edit-save');
+
+    let selectedAvatarFile = null;
+    let currentAvatarUrl   = '';
+
+    avatarBtn.addEventListener('click', () => avatarFile.click());
+
+    avatarFile.addEventListener('change', () => {
+      const file = avatarFile.files[0];
+      if (!file) return;
+      selectedAvatarFile = file;
+      avatarPreview.src  = URL.createObjectURL(file);
+      const label = file.name.length > 24 ? file.name.slice(0, 22) + '…' : file.name;
+      avatarFilename.textContent = label;
+      avatarFilename.hidden = false;
+    });
 
     function openModal(data) {
-      editName.value    = data.displayName || '';
-      editBio.value     = data.bio || '';
-      editAvatar.value  = data.avatar || '';
-      avatarPreview.src = data.avatar || '';
-      editError.hidden  = true;
+      editName.value        = data.displayName || '';
+      editBio.value         = data.bio || '';
+      avatarPreview.src     = data.avatar || '';
+      currentAvatarUrl      = data.avatar || '';
+      selectedAvatarFile    = null;
+      avatarFile.value      = '';
+      avatarFilename.hidden = true;
+      editError.hidden      = true;
       modal.classList.add('edit-modal--open');
       editName.focus();
     }
@@ -263,6 +329,9 @@
     function closeModal() {
       modal.classList.remove('edit-modal--open');
       editForm.reset();
+      selectedAvatarFile    = null;
+      avatarFile.value      = '';
+      avatarFilename.hidden = true;
     }
 
     document.getElementById('edit-modal-close').addEventListener('click', closeModal);
@@ -270,21 +339,26 @@
     document.getElementById('edit-modal-backdrop').addEventListener('click', closeModal);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    editAvatar.addEventListener('input', () => {
-      avatarPreview.src = editAvatar.value;
-    });
-
     editForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       editError.hidden = true;
       saveBtn.disabled = true;
-      saveBtn.textContent = 'A guardar...';
+
       try {
+        let avatar_url = currentAvatarUrl || null;
+
+        if (selectedAvatarFile) {
+          saveBtn.textContent = 'A carregar foto...';
+          const result = await uploadImage(selectedAvatarFile);
+          avatar_url = result.url;
+        }
+
+        saveBtn.textContent = 'A guardar...';
         const payload = {};
         const nameVal = editName.value.trim();
         if (nameVal) payload.display_name = nameVal;
-        payload.bio        = editBio.value.trim()    || null;
-        payload.avatar_url = editAvatar.value.trim() || null;
+        payload.bio        = editBio.value.trim() || null;
+        payload.avatar_url = avatar_url;
         await updateMe(payload);
         closeModal();
         window.location.reload();
@@ -298,7 +372,20 @@
     });
 
     // ── Perfil ───────────────────────────────────────────────────
+    document.addEventListener('profile-edit-open', (e) => openModal(e.detail));
+
+    document.addEventListener('profile-follow', async (e) => {
+      try {
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+        sessionStorage.setItem('feed-stale', '1');
+      } catch (err) { console.error('Erro ao seguir/deixar de seguir', err); }
+    });
+
     async function loadProfile() {
+      document.getElementById('profile-header-container').innerHTML = '';
+      document.getElementById('profile-grid-container').innerHTML = '';
+
       try {
         const user      = isOwnProfile ? await getMe() : await getUser(usernameParam);
         const posts     = await getPosts();
@@ -319,15 +406,6 @@
         header.setAttribute('followed-by-me',  !isOwnProfile && (user.followed_by_me ?? false) ? 'true' : 'false');
         document.getElementById('profile-header-container').appendChild(header);
 
-        document.addEventListener('profile-edit-open', (e) => openModal(e.detail));
-
-        document.addEventListener('profile-follow', async (e) => {
-          try {
-            if (e.detail.followed) await followUser(e.detail.username);
-            else await unfollowUser(e.detail.username);
-          } catch (err) { console.error('Erro ao seguir/deixar de seguir', err); }
-        });
-
         const grid = document.createElement('profile-grid');
         grid.setAttribute('own-profile', isOwnProfile ? 'true' : 'false');
         document.getElementById('profile-grid-container').appendChild(grid);
@@ -345,7 +423,10 @@
       }
     }
 
-    loadProfile();
+    window.addEventListener('pageshow', async () => {
+      sessionStorage.removeItem('profile-stale');
+      await loadProfile();
+    });
   </script>
 
 </body>
