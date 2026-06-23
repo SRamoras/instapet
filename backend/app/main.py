@@ -1,9 +1,13 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.database.database import create_db
-from app.routers import auth, posts
-from app.routers import users
+from app.routers import auth, posts, users, upload
+
+IMGS_DIR = Path(__file__).resolve().parent.parent / "imgs"
+IMGS_DIR.mkdir(exist_ok=True)
 
 
 @asynccontextmanager
@@ -23,9 +27,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/imgs", StaticFiles(directory=str(IMGS_DIR)), name="imgs")
+
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(posts.router)
+app.include_router(upload.router)
 
 
 @app.get("/")

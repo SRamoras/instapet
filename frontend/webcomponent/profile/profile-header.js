@@ -27,7 +27,7 @@ export class ProfileHeader extends HTMLElement {
               <span class="profile-header__username">@${username}</span>
             </div>
             ${editable
-              ? `<button class="profile-header__edit-btn">EDIT</button>`
+              ? `<button class="profile-header__edit-btn">EDITAR</button>`
               : `<button class="profile-header__follow-btn ${followedByMe ? 'profile-header__follow-btn--following' : ''}">
                    ${followedByMe ? 'A seguir' : 'Seguir'}
                  </button>`
@@ -37,15 +37,15 @@ export class ProfileHeader extends HTMLElement {
           <div class="profile-header__stats">
             <div class="profile-header__stat">
               <strong class="profile-header__stat-value">${likes}</strong>
-              <span class="profile-header__stat-label">Likes</span>
+              <span class="profile-header__stat-label">Gostos</span>
             </div>
             <div class="profile-header__stat">
               <strong class="profile-header__stat-value">${followers}</strong>
-              <span class="profile-header__stat-label">Followers</span>
+              <span class="profile-header__stat-label">Seguidores</span>
             </div>
             <div class="profile-header__stat">
               <strong class="profile-header__stat-value">${following}</strong>
-              <span class="profile-header__stat-label">Following</span>
+              <span class="profile-header__stat-label">A seguir</span>
             </div>
           </div>
 
@@ -66,10 +66,15 @@ export class ProfileHeader extends HTMLElement {
     if (!editable) {
       let followed = followedByMe;
       const btn = this.querySelector('.profile-header__follow-btn');
+      const followersValueEl = this.querySelectorAll('.profile-header__stat-value')[1];
       btn.addEventListener('click', () => {
         followed = !followed;
         btn.textContent = followed ? 'A seguir' : 'Seguir';
         btn.classList.toggle('profile-header__follow-btn--following', followed);
+        if (followersValueEl) {
+          const current = parseInt(followersValueEl.textContent || '0');
+          followersValueEl.textContent = Math.max(0, current + (followed ? 1 : -1));
+        }
         this.dispatchEvent(new CustomEvent('profile-follow', {
           bubbles: true,
           detail: { username, followed },

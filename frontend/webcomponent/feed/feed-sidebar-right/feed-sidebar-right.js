@@ -16,17 +16,19 @@ export class FeedSidebarRight extends HTMLElement {
     this.innerHTML = `
       <div class="feed-sidebar-right">
         <section class="feed-sidebar-right__section">
-          <h3 class="feed-sidebar-right__title">WHO TO FOLLOW</h3>
+          <h3 class="feed-sidebar-right__title">QUEM SEGUIR</h3>
           <ul class="feed-sidebar-right__list" id="fsr-suggestions">
             <li class="feed-sidebar-right__loading">A carregar...</li>
           </ul>
+          <a class="feed-sidebar-right__more-link" href="/pages/search.html">Ver mais</a>
         </section>
 
         <section class="feed-sidebar-right__section">
-          <h3 class="feed-sidebar-right__title">TRENDING TOPICS</h3>
+          <h3 class="feed-sidebar-right__title">EM TENDÊNCIA</h3>
           <ul class="feed-sidebar-right__topics" id="fsr-topics">
             <li class="feed-sidebar-right__loading">A carregar...</li>
           </ul>
+          <a class="feed-sidebar-right__more-link" href="/pages/search.html">Ver mais</a>
         </section>
       </div>
     `;
@@ -48,16 +50,18 @@ export class FeedSidebarRight extends HTMLElement {
 
       list.innerHTML = suggestions.map(u => `
         <li class="feed-sidebar-right__suggest">
-          ${avatarHTML(u.display_name || u.username, u.avatar_url || '', 'feed-sidebar-right__avatar')}
-          <div class="feed-sidebar-right__user-info">
-            <span class="feed-sidebar-right__user-name">${u.display_name || u.username}</span>
-            <span class="feed-sidebar-right__user-handle">@${u.username}</span>
-          </div>
+          <a class="feed-sidebar-right__user-link" href="/pages/profile.html?user=${u.username}">
+            ${avatarHTML(u.display_name || u.username, u.avatar_url || '', 'feed-sidebar-right__avatar')}
+            <div class="feed-sidebar-right__user-info">
+              <span class="feed-sidebar-right__user-name">${u.display_name || u.username}</span>
+              <span class="feed-sidebar-right__user-handle">@${u.username}</span>
+            </div>
+          </a>
           <button
             class="feed-sidebar-right__follow-btn ${u.followed_by_me ? 'feed-sidebar-right__follow-btn--followed' : ''}"
             data-username="${u.username}"
             data-following="${u.followed_by_me ? 'true' : 'false'}"
-          >${u.followed_by_me ? 'Following' : 'Follow'}</button>
+          >${u.followed_by_me ? 'A seguir' : 'Seguir'}</button>
         </li>
       `).join('');
 
@@ -70,14 +74,18 @@ export class FeedSidebarRight extends HTMLElement {
             if (following) {
               await unfollowUser(username);
               btn.dataset.following = 'false';
-              btn.textContent = 'Follow';
+              btn.textContent = 'Seguir';
               btn.classList.remove('feed-sidebar-right__follow-btn--followed');
             } else {
               await followUser(username);
               btn.dataset.following = 'true';
-              btn.textContent = 'Following';
+              btn.textContent = 'A seguir';
               btn.classList.add('feed-sidebar-right__follow-btn--followed');
             }
+            this.dispatchEvent(new CustomEvent('sidebar-follow-change', {
+              detail: { followed: !following },
+              bubbles: true,
+            }));
           } catch (err) {
             console.error('follow error', err);
           } finally {
@@ -101,7 +109,7 @@ export class FeedSidebarRight extends HTMLElement {
         return;
       }
 
-      list.innerHTML = tags.slice(0, 6).map(t => `
+      list.innerHTML = tags.slice(0, 8).map(t => `
         <li class="feed-sidebar-right__topic">
           <a class="feed-sidebar-right__topic-link" href="/pages/search.html?q=${encodeURIComponent(t)}">${t}</a>
         </li>

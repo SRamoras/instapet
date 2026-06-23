@@ -50,14 +50,14 @@ class NavBar extends HTMLElement {
                 <div class="navbar__dropdown-divider"></div>
               ` : ''}
               <a class="navbar__dropdown-item" href="/pages/profile.html">
-                <span class="material-symbols-outlined">person</span> Profile
+                <span class="material-symbols-outlined">person</span> Perfil
               </a>
               <a class="navbar__dropdown-item" href="/pages/profile.html?tab=saved">
-                <span class="material-symbols-outlined">bookmark</span> Saved
+                <span class="material-symbols-outlined">bookmark</span> Guardados
               </a>
               <div class="navbar__dropdown-divider"></div>
               <button class="navbar__dropdown-item navbar__logout-btn">
-                <span class="material-symbols-outlined">logout</span> Logout
+                <span class="material-symbols-outlined">logout</span> Sair
               </button>
             </div>
           </div>

@@ -27,15 +27,15 @@ export class FeedSidebarLeft extends HTMLElement {
         <div class="feed-sidebar-left__stats">
           <div class="feed-sidebar-left__stat">
             <strong class="feed-sidebar-left__stat-value">${likes}</strong>
-            <span class="feed-sidebar-left__stat-label">Likes</span>
+            <span class="feed-sidebar-left__stat-label">Gostos</span>
           </div>
           <div class="feed-sidebar-left__stat">
             <strong class="feed-sidebar-left__stat-value">${followers}</strong>
-            <span class="feed-sidebar-left__stat-label">Followers</span>
+            <span class="feed-sidebar-left__stat-label">Seguidores</span>
           </div>
           <div class="feed-sidebar-left__stat">
             <strong class="feed-sidebar-left__stat-value">${following}</strong>
-            <span class="feed-sidebar-left__stat-label">Following</span>
+            <span class="feed-sidebar-left__stat-label">A seguir</span>
           </div>
         </div>
 

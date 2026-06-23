@@ -35,6 +35,20 @@
   gap: 10px;
 }
 
+.feed-sidebar-right__user-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.feed-sidebar-right__user-link:hover .feed-sidebar-right__user-name {
+  color: var(--color-primary);
+}
+
 .feed-sidebar-right__avatar {
   width: 36px;
   height: 36px;
@@ -127,4 +141,18 @@
 .feed-sidebar-right__topic-link:hover {
   background: var(--color-primary);
   color: #fff;
+}
+
+.feed-sidebar-right__more-link {
+  display: block;
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+}
+
+.feed-sidebar-right__more-link:hover {
+  text-decoration: underline;
 }
