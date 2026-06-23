@@ -111,7 +111,7 @@
 
         if (!comments.length) {
           commentsList.innerHTML = '<p class="feed__status">Ainda não há comentários.</p>';
-          return;
+          return 0;
         }
 
         comments.forEach((comment) => {
@@ -124,16 +124,25 @@
           item.setAttribute('mine',         currentUserId && comment.author_id === currentUserId ? 'true' : 'false');
           commentsList.appendChild(item);
         });
+
+        return comments.length;
       } catch {
         commentsList.innerHTML = '<p class="feed__status feed__status--error">Erro ao carregar comentários.</p>';
+        return null;
       }
+    }
+
+    function updateCommentCounter(count) {
+      if (count === null) return;
+      const countEl = postContainer.querySelector('.post-detail__comment-count');
+      if (countEl) countEl.textContent = count;
     }
 
     document.addEventListener('comment-delete', async (e) => {
       if (!confirm('Apagar comentário?')) return;
       try {
         await deleteComment(postId, e.detail.commentId);
-        await loadComments();
+        updateCommentCounter(await loadComments());
       } catch {
         alert('Erro ao apagar comentário.');
       }
@@ -146,7 +155,8 @@
       }
       try {
         await createComment(postId, { content: e.detail.content });
-        await loadComments();
+        sessionStorage.setItem('feed-stale', '1');
+        updateCommentCounter(await loadComments());
       } catch {
         alert('Erro ao publicar comentário.');
       }
@@ -160,6 +170,8 @@
       try {
         if (e.detail.followed) await followUser(e.detail.username);
         else await unfollowUser(e.detail.username);
+        sessionStorage.setItem('profile-stale', '1');
+        sessionStorage.setItem('feed-stale', '1');
       } catch (err) { console.error('follow error', err); }
     });
 
@@ -174,6 +186,7 @@
       try {
         if (e.detail.saved) await savePost(e.detail.postId);
         else await unsavePost(e.detail.postId);
+        sessionStorage.setItem('feed-stale', '1');
       } catch (err) { console.error('save error', err); }
     });
 

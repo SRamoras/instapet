@@ -22,6 +22,7 @@ function buildError(status, detail) {
 
 export async function request(path, options = {}) {
   const res = await fetch(`${API_URL}${path}`, {
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });
@@ -37,6 +38,7 @@ export async function request(path, options = {}) {
 export async function authRequest(path, options = {}) {
   const token = localStorage.getItem('token');
   const res = await fetch(`${API_URL}${path}`, {
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

@@ -132,6 +132,25 @@
       } catch (err) { console.error('save error', err); }
     });
 
+    document.addEventListener('sidebar-follow-change', (e) => {
+      const statValues = document.querySelectorAll('.feed-sidebar-left__stat-value');
+      const followingEl = statValues[2];
+      if (followingEl) {
+        const current = parseInt(followingEl.textContent || '0');
+        followingEl.textContent = Math.max(0, current + (e.detail.followed ? 1 : -1));
+      }
+    });
+
+    window.addEventListener('pageshow', async (e) => {
+      const stale = sessionStorage.getItem('feed-stale') === '1';
+      if (e.persisted || stale) {
+        sessionStorage.removeItem('feed-stale');
+        leftSidebarContainer.innerHTML = '';
+        await loadSidebar();
+        await loadFeed();
+      }
+    });
+
     await loadSidebar();
     loadFeed();
   </script>
