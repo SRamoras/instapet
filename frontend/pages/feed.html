@@ -167,7 +167,7 @@
     });
 
     document.addEventListener('post-like', async (e) => {
-      const { postId, liked, likeBtn } = e.detail;
+      const { postId, liked, likeBtn, authorUsername } = e.detail;
       likeBtn.disabled = true;
       try {
         if (liked) await likePost(postId);
@@ -175,6 +175,11 @@
         likeBtn.classList.toggle('post-card__action-btn--liked', liked);
         const countEl = likeBtn.querySelector('span');
         if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
+        // update sidebar "Gostos" when liking/unliking own post
+        if (currentUser && authorUsername === currentUser.username) {
+          const gostosEl = document.querySelectorAll('.feed-sidebar-left__stat-value')[0];
+          if (gostosEl) gostosEl.textContent = Math.max(0, parseInt(gostosEl.textContent || '0') + (liked ? 1 : -1));
+        }
       } catch (err) {
         console.error('like error', err);
       } finally {

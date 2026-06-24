@@ -93,7 +93,7 @@ class PostCard extends HTMLElement {
       if (likeBtn.disabled) return;
       const isLiked = likeBtn.classList.contains('post-card__action-btn--liked');
       this.dispatchEvent(new CustomEvent('post-like', {
-        detail: { postId, liked: !isLiked, likeBtn },
+        detail: { postId, liked: !isLiked, likeBtn, authorUsername: username },
         bubbles: true, composed: true,
       }));
     });

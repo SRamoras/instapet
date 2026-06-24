@@ -162,11 +162,11 @@ def list_saved_posts(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_db),
 ):
-    posts = session.exec(                            
+    posts = session.exec(
         select(Post)
         .join(Save, Save.post_id == Post.id)
-        .where(Save.user_id == current_user.id)   
-        .order_by(Post.created_at.desc())
+        .where(Save.user_id == current_user.id)
+        .order_by(Save.created_at.desc())
     ).all()
 
     return [_enrich_post(post, session, current_user.id) for post in posts]
