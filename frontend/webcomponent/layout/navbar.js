@@ -60,10 +60,14 @@ class NavBar extends HTMLElement {
     try {
       const notifs = await getNotifications();
       const unread = notifs.filter(n => !n.read).length;
-      localStorage.setItem('notif_unread', unread);
+      localStorage.setItem('notif_unread', String(unread));
       this._updateBadge(notifs);
       this._updatePanel(notifs);
-    } catch { /* ignore */ }
+    } catch {
+      localStorage.setItem('notif_unread', '0');
+      const badge = this.querySelector('.navbar__notif-badge');
+      if (badge) badge.hidden = true;
+    }
   }
 
   _updateBadge(notifs) {
@@ -173,6 +177,7 @@ class NavBar extends HTMLElement {
       const isOpen = !notifPanel.hidden;
       notifPanel.hidden = isOpen;
       if (!isOpen) {
+        await this._fetchNotifications();
         await markAllRead().catch(() => {});
         localStorage.setItem('notif_unread', '0');
         const badge = this.querySelector('.navbar__notif-badge');
