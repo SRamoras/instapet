@@ -12,7 +12,6 @@ export class ProfileHeader extends HTMLElement {
     const displayName  = escapeHtml(this.getAttribute('display-name') || username);
     const avatar       = this.getAttribute('avatar') || '';
     const bio          = escapeHtml(this.getAttribute('bio') || '');
-    const posts        = this.getAttribute('posts') || '0';
     const likes        = this.getAttribute('likes') || '0';
     const followers    = this.getAttribute('followers') || '0';
     const following    = this.getAttribute('following') || '0';
@@ -38,21 +37,17 @@ export class ProfileHeader extends HTMLElement {
 
           <div class="profile-header__stats">
             <div class="profile-header__stat">
-              <strong class="profile-header__stat-value">${posts}</strong>
-              <span class="profile-header__stat-label">Posts</span>
-            </div>
-            <div class="profile-header__stat">
               <strong class="profile-header__stat-value">${likes}</strong>
               <span class="profile-header__stat-label">Gostos</span>
             </div>
-            <button class="profile-header__stat profile-header__stat--btn" data-list="followers">
+            <div class="profile-header__stat profile-header__stat--btn" data-list="followers" role="button" tabindex="0">
               <strong class="profile-header__stat-value">${followers}</strong>
               <span class="profile-header__stat-label">Seguidores</span>
-            </button>
-            <button class="profile-header__stat profile-header__stat--btn" data-list="following">
+            </div>
+            <div class="profile-header__stat profile-header__stat--btn" data-list="following" role="button" tabindex="0">
               <strong class="profile-header__stat-value">${following}</strong>
               <span class="profile-header__stat-label">A seguir</span>
-            </button>
+            </div>
           </div>
 
           ${bio ? `<p class="profile-header__bio">${bio}</p>` : ''}

@@ -91,11 +91,7 @@
 }
 
 .profile-header__stat--btn {
-  background: none;
-  border: none;
   cursor: pointer;
-  font-family: inherit;
-  text-align: left;
   padding: 4px 6px;
   margin: -4px -6px;
   border-radius: var(--radius-sm);
