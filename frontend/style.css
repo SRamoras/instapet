@@ -137,35 +137,28 @@ body {
   color: #D05050;
 }
 
-.feed-tabs {
+.feed-header {
   display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 0;
+  justify-content: flex-end;
+  margin-bottom: 12px;
 }
 
-.feed-tab {
-  font-size: 14px;
-  font-weight: 700;
+.feed-filter-select {
+  font-size: 13px;
+  font-weight: 600;
   font-family: inherit;
-  padding: 8px 18px;
-  border: none;
-  background: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.feed-tab:hover {
   color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
 }
 
-.feed-tab--active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+.feed-filter-select:focus {
+  border-color: var(--color-primary);
 }
 
 /* ── Profile layout (centered, no sidebar) ── */

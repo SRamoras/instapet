@@ -40,14 +40,14 @@ export class ProfileHeader extends HTMLElement {
               <strong class="profile-header__stat-value">${likes}</strong>
               <span class="profile-header__stat-label">Gostos</span>
             </div>
-            <div class="profile-header__stat">
+            <button class="profile-header__stat profile-header__stat--btn" data-list="followers">
               <strong class="profile-header__stat-value">${followers}</strong>
               <span class="profile-header__stat-label">Seguidores</span>
-            </div>
-            <div class="profile-header__stat">
+            </button>
+            <button class="profile-header__stat profile-header__stat--btn" data-list="following">
               <strong class="profile-header__stat-value">${following}</strong>
               <span class="profile-header__stat-label">A seguir</span>
-            </div>
+            </button>
           </div>
 
           ${bio ? `<p class="profile-header__bio">${bio}</p>` : ''}
@@ -63,6 +63,15 @@ export class ProfileHeader extends HTMLElement {
         }));
       });
     }
+
+    this.querySelectorAll('.profile-header__stat--btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.dispatchEvent(new CustomEvent('profile-stat-click', {
+          bubbles: true,
+          detail: { list: btn.dataset.list, username },
+        }));
+      });
+    });
 
     if (!editable) {
       let followed = followedByMe;

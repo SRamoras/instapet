@@ -83,6 +83,34 @@ def get_user_by_username(
     return _enrich_user(user, session, current_user.id if current_user else None)
 
 
+@router.get("/{username}/followers", response_model=list[UserRead])
+def get_followers(
+    username: str,
+    current_user: User | None = Depends(get_optional_user),
+    session: Session = Depends(get_db),
+):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Utilizador não encontrado")
+    follows = session.exec(select(Follow).where(Follow.following_id == user.id)).all()
+    current_id = current_user.id if current_user else None
+    return [_enrich_user(session.get(User, f.follower_id), session, current_id) for f in follows if session.get(User, f.follower_id)]
+
+
+@router.get("/{username}/following", response_model=list[UserRead])
+def get_following(
+    username: str,
+    current_user: User | None = Depends(get_optional_user),
+    session: Session = Depends(get_db),
+):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Utilizador não encontrado")
+    follows = session.exec(select(Follow).where(Follow.follower_id == user.id)).all()
+    current_id = current_user.id if current_user else None
+    return [_enrich_user(session.get(User, f.following_id), session, current_id) for f in follows if session.get(User, f.following_id)]
+
+
 @router.post("/{username}/follow", status_code=201)
 def follow_user(
     username: str,

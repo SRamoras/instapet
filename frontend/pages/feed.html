@@ -34,7 +34,7 @@
     import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
     import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
     import '../webcomponent/feed/post-form/post-form.js';
-    import { getFeedPosts, getExplorePosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
+    import { getPosts, getFeedPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
     import { getMe, followUser, unfollowUser } from '../services/users.js';
 
     if (!localStorage.getItem('token')) {
@@ -44,8 +44,8 @@
     const feedContainer         = document.getElementById('feed-container');
     const leftSidebarContainer  = document.getElementById('left-sidebar-container');
 
-    let currentUser = null;
-    let currentTab  = 'following';
+    let currentUser   = null;
+    let currentFilter = 'all';
 
     async function loadSidebar() {
       const sidebar = document.createElement('feed-sidebar-left');
@@ -85,51 +85,45 @@
       return card;
     }
 
-    function renderTabs() {
-      let tabs = feedContainer.querySelector('.feed-tabs');
-      if (!tabs) {
-        tabs = document.createElement('div');
-        tabs.className = 'feed-tabs';
-        tabs.innerHTML = `
-          <button class="feed-tab" data-tab="following">A seguir</button>
-          <button class="feed-tab" data-tab="explore">Explorar</button>
-        `;
-        tabs.addEventListener('click', async (e) => {
-          const btn = e.target.closest('.feed-tab');
-          if (!btn || btn.dataset.tab === currentTab) return;
-          currentTab = btn.dataset.tab;
-          await loadFeed();
-        });
-        feedContainer.prepend(tabs);
-      }
-      tabs.querySelectorAll('.feed-tab').forEach(btn => {
-        btn.classList.toggle('feed-tab--active', btn.dataset.tab === currentTab);
+    function buildFeedHeader() {
+      const header = document.createElement('div');
+      header.className = 'feed-header';
+      header.innerHTML = `
+        <select class="feed-filter-select" aria-label="Filtrar feed">
+          <option value="all">Todos os posts</option>
+          <option value="following">A seguir</option>
+        </select>
+      `;
+      const select = header.querySelector('.feed-filter-select');
+      select.value = currentFilter;
+      select.addEventListener('change', async () => {
+        currentFilter = select.value;
+        await loadFeed();
       });
+      return header;
     }
 
     async function loadFeed() {
       try {
-        const posts = currentTab === 'explore' ? await getExplorePosts() : await getFeedPosts();
+        const posts = currentFilter === 'following' ? await getFeedPosts() : await getPosts();
 
         feedContainer.innerHTML = '';
-        renderTabs();
+        feedContainer.appendChild(buildFeedHeader());
 
-        if (currentTab === 'following') {
-          const form = document.createElement('post-form');
-          if (currentUser) {
-            form.setAttribute('username',     currentUser.username ?? '');
-            form.setAttribute('display-name', currentUser.display_name ?? currentUser.username ?? '');
-            form.setAttribute('avatar',       currentUser.avatar_url ?? '');
-          }
-          feedContainer.appendChild(form);
+        const form = document.createElement('post-form');
+        if (currentUser) {
+          form.setAttribute('username',     currentUser.username ?? '');
+          form.setAttribute('display-name', currentUser.display_name ?? currentUser.username ?? '');
+          form.setAttribute('avatar',       currentUser.avatar_url ?? '');
         }
+        feedContainer.appendChild(form);
 
         if (!posts.length) {
           const empty = document.createElement('p');
           empty.className = 'feed__status';
-          empty.innerHTML = currentTab === 'following'
-            ? 'Ainda não segues ninguém. Muda para <strong>Explorar</strong> para encontrar utilizadores!'
-            : 'Não há mais posts para explorar.';
+          empty.innerHTML = currentFilter === 'following'
+            ? 'Ainda não segues ninguém. Muda para <strong>Todos os posts</strong> para descobrir utilizadores!'
+            : 'Ainda não há posts.';
           feedContainer.appendChild(empty);
           return;
         }

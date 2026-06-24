@@ -217,6 +217,163 @@
         border-radius: 12px;
       }
     }
+
+    .users-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .users-modal[hidden] { display: none; }
+
+    .users-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+    }
+
+    .users-modal__box {
+      position: relative;
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 0;
+      width: 100%;
+      max-width: 380px;
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(6,22,19,0.18);
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .users-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .users-modal__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .users-modal__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 20px;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .users-modal__close:hover { background: var(--hover-bg); color: var(--text); }
+
+    .users-modal__list {
+      list-style: none;
+      margin: 0;
+      padding: 8px 0;
+      overflow-y: auto;
+    }
+
+    .users-modal__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      transition: background 0.12s;
+    }
+
+    .users-modal__item:hover { background: var(--hover-bg); }
+
+    .users-modal__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .users-modal__avatar--initials {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .users-modal__info { flex: 1; min-width: 0; }
+
+    .users-modal__name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .users-modal__name:hover { text-decoration: underline; }
+
+    .users-modal__handle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .users-modal__follow-btn {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--color-primary);
+      background: none;
+      color: var(--color-primary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .users-modal__follow-btn:hover { background: var(--color-primary); color: #fff; }
+
+    .users-modal__follow-btn--following {
+      background: var(--color-light);
+      border-color: var(--border-md);
+      color: var(--text-muted);
+    }
+
+    .users-modal__follow-btn--following:hover {
+      background: #fdecea;
+      border-color: #c0392b;
+      color: #c0392b;
+    }
+
+    .users-modal__empty {
+      padding: 32px 20px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -271,6 +428,18 @@
     </div>
   </div>
 
+  <!-- Modal seguidores / a seguir -->
+  <div id="users-modal" class="users-modal" role="dialog" aria-modal="true" hidden>
+    <div class="users-modal__backdrop" id="users-modal-backdrop"></div>
+    <div class="users-modal__box">
+      <div class="users-modal__header">
+        <h2 class="users-modal__title" id="users-modal-title"></h2>
+        <button class="users-modal__close" id="users-modal-close" aria-label="Fechar">✕</button>
+      </div>
+      <ul class="users-modal__list" id="users-modal-list"></ul>
+    </div>
+  </div>
+
   <app-footer></app-footer>
 
   <script type="module">
@@ -278,7 +447,7 @@
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/profile/profile-header.js';
     import '../webcomponent/profile/profile-grid.js';
-    import { getMe, getUser, updateMe, followUser, unfollowUser } from '../services/users.js';
+    import { getMe, getUser, updateMe, followUser, unfollowUser, getFollowers, getFollowing } from '../services/users.js';
     import { getPosts } from '../services/posts.js';
     import { uploadImage } from '../services/upload.js';
 
@@ -374,6 +543,75 @@
         saveBtn.textContent = 'Guardar';
       }
     });
+
+    // ── Modal de seguidores / a seguir ───────────────────────────
+    const usersModal      = document.getElementById('users-modal');
+    const usersModalTitle = document.getElementById('users-modal-title');
+    const usersModalList  = document.getElementById('users-modal-list');
+
+    function closeUsersModal() { usersModal.hidden = true; usersModalList.innerHTML = ''; }
+
+    document.getElementById('users-modal-close').addEventListener('click', closeUsersModal);
+    document.getElementById('users-modal-backdrop').addEventListener('click', closeUsersModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUsersModal(); });
+
+    function buildUserItem(u, loggedInUsername) {
+      const isMe = loggedInUsername && u.username === loggedInUsername;
+      const initials = (u.display_name || u.username).slice(0, 1).toUpperCase();
+      const avatar = u.avatar_url
+        ? `<img class="users-modal__avatar" src="${u.avatar_url}" alt="${u.username}">`
+        : `<span class="users-modal__avatar--initials">${initials}</span>`;
+      const li = document.createElement('li');
+      li.className = 'users-modal__item';
+      li.innerHTML = `
+        ${avatar}
+        <div class="users-modal__info">
+          <a class="users-modal__name" href="/pages/profile.html?user=${u.username}">${u.display_name || u.username}</a>
+          <span class="users-modal__handle">@${u.username}</span>
+        </div>
+        ${!isMe ? `<button class="users-modal__follow-btn ${u.followed_by_me ? 'users-modal__follow-btn--following' : ''}" data-username="${u.username}">
+          ${u.followed_by_me ? 'A seguir' : 'Seguir'}
+        </button>` : ''}
+      `;
+      if (!isMe) {
+        let followed = u.followed_by_me;
+        const btn = li.querySelector('.users-modal__follow-btn');
+        btn.addEventListener('click', async () => {
+          try {
+            if (followed) await unfollowUser(u.username);
+            else await followUser(u.username);
+            followed = !followed;
+            btn.textContent = followed ? 'A seguir' : 'Seguir';
+            btn.classList.toggle('users-modal__follow-btn--following', followed);
+            sessionStorage.setItem('feed-stale', '1');
+          } catch {}
+        });
+      }
+      return li;
+    }
+
+    async function openUsersModal(list, username) {
+      usersModalTitle.textContent = list === 'followers' ? 'Seguidores' : 'A seguir';
+      usersModal.hidden = false;
+      usersModalList.innerHTML = '<li class="users-modal__empty">A carregar...</li>';
+      try {
+        let loggedInUsername = null;
+        if (localStorage.getItem('token')) {
+          try { loggedInUsername = (await getMe()).username; } catch {}
+        }
+        const users = list === 'followers' ? await getFollowers(username) : await getFollowing(username);
+        usersModalList.innerHTML = '';
+        if (!users.length) {
+          usersModalList.innerHTML = '<li class="users-modal__empty">Nenhum utilizador.</li>';
+          return;
+        }
+        users.forEach(u => usersModalList.appendChild(buildUserItem(u, loggedInUsername)));
+      } catch {
+        usersModalList.innerHTML = '<li class="users-modal__empty">Erro ao carregar.</li>';
+      }
+    }
+
+    document.addEventListener('profile-stat-click', (e) => openUsersModal(e.detail.list, e.detail.username));
 
     // ── Perfil ───────────────────────────────────────────────────
     document.addEventListener('profile-edit-open', (e) => openModal(e.detail));
