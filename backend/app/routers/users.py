@@ -6,6 +6,7 @@ from app.models.user import User
 from app.models.follow import Follow
 from app.models.post import Post
 from app.models.like import Like
+from app.models.notification import Notification
 from app.schemas.user import UserRead, UserUpdate
 from app.auth.dependencies import get_current_user, get_optional_user
 
@@ -125,6 +126,11 @@ def follow_user(
     if session.get(Follow, (current_user.id, user.id)):
         raise HTTPException(status.HTTP_409_CONFLICT, "Já segues este utilizador")
     session.add(Follow(follower_id=current_user.id, following_id=user.id))
+    session.add(Notification(
+        user_id=user.id,
+        actor_username=current_user.username,
+        type="follow",
+    ))
     session.commit()
     return {"detail": "A seguir"}
 

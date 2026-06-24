@@ -1,10 +1,33 @@
 import { avatarHTML } from '../ui/avatar.js';
 import { getMe } from '../../services/users.js';
+import { getNotifications, markAllRead } from '../../services/notifications.js';
 
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./navbar.css', import.meta.url);
 document.head.appendChild(link);
+
+function timeAgo(dateStr) {
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60)   return 'agora';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
+}
+
+function notifText(n) {
+  if (n.type === 'like')    return `<strong>@${n.actor_username}</strong> gostou do teu post`;
+  if (n.type === 'comment') return `<strong>@${n.actor_username}</strong> comentou no teu post`;
+  if (n.type === 'follow')  return `<strong>@${n.actor_username}</strong> começou a seguir-te`;
+  return n.actor_username;
+}
+
+function notifIcon(type) {
+  if (type === 'like')    return `<span class="notif-icon notif-icon--like material-symbols-outlined">favorite</span>`;
+  if (type === 'comment') return `<span class="notif-icon notif-icon--comment material-symbols-outlined">chat_bubble</span>`;
+  if (type === 'follow')  return `<span class="notif-icon notif-icon--follow material-symbols-outlined">person_add</span>`;
+  return '';
+}
 
 class NavBar extends HTMLElement {
   async connectedCallback() {
@@ -12,9 +35,63 @@ class NavBar extends HTMLElement {
     try {
       const me = await getMe();
       this._render(me.display_name || me.username, me.username, me.avatar_url || '');
+      this._startPolling();
     } catch {
-      // não autenticado — mostra avatar vazio
+      // not authenticated
     }
+  }
+
+  disconnectedCallback() {
+    clearInterval(this._pollTimer);
+  }
+
+  _startPolling() {
+    this._fetchNotifications();
+    this._pollTimer = setInterval(() => this._fetchNotifications(), 30000);
+  }
+
+  async _fetchNotifications() {
+    try {
+      const notifs = await getNotifications();
+      this._updateBadge(notifs);
+      this._updatePanel(notifs);
+    } catch { /* ignore */ }
+  }
+
+  _updateBadge(notifs) {
+    const unread = notifs.filter(n => !n.read).length;
+    const badge = this.querySelector('.navbar__notif-badge');
+    if (!badge) return;
+    badge.textContent = unread > 9 ? '9+' : unread;
+    badge.hidden = unread === 0;
+  }
+
+  _updatePanel(notifs) {
+    const list = this.querySelector('.navbar__notif-list');
+    if (!list) return;
+    if (!notifs.length) {
+      list.innerHTML = `<p class="navbar__notif-empty">Sem notificações</p>`;
+      return;
+    }
+    list.innerHTML = notifs.map(n => `
+      <div class="navbar__notif-item ${n.read ? '' : 'navbar__notif-item--unread'}" data-post="${n.post_id || ''}">
+        ${notifIcon(n.type)}
+        <div class="navbar__notif-body">
+          <span class="navbar__notif-text">${notifText(n)}</span>
+          <span class="navbar__notif-time">${timeAgo(n.created_at)}</span>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.navbar__notif-item[data-post]').forEach(el => {
+      const postId = el.dataset.post;
+      if (postId) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', () => {
+          window.location.href = `/pages/post.html?id=${postId}`;
+        });
+      }
+    });
   }
 
   _render(displayName, username, avatar) {
@@ -32,6 +109,22 @@ class NavBar extends HTMLElement {
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </a>
+
+          <div class="navbar__notif-wrap">
+            <button class="navbar__action-btn navbar__notif-btn" title="Notificações" aria-label="Notificações">
+              <span class="material-symbols-outlined navbar__icon" style="font-size:20px;width:20px;height:20px;">notifications</span>
+              <span class="navbar__notif-badge" hidden>0</span>
+            </button>
+            <div class="navbar__notif-panel" hidden>
+              <div class="navbar__notif-header">
+                <span class="navbar__notif-title">Notificações</span>
+                <button class="navbar__notif-read-all">Marcar todas como lidas</button>
+              </div>
+              <div class="navbar__notif-list">
+                <p class="navbar__notif-empty">Sem notificações</p>
+              </div>
+            </div>
+          </div>
 
           <div class="navbar__user">
             <button class="navbar__avatar-btn" aria-label="Menu do utilizador">
@@ -64,6 +157,34 @@ class NavBar extends HTMLElement {
       </nav>
     `;
 
+    // Bell toggle
+    const notifBtn   = this.querySelector('.navbar__notif-btn');
+    const notifPanel = this.querySelector('.navbar__notif-panel');
+    notifBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const isOpen = !notifPanel.hidden;
+      notifPanel.hidden = isOpen;
+      if (!isOpen) {
+        await markAllRead().catch(() => {});
+        const badge = this.querySelector('.navbar__notif-badge');
+        if (badge) badge.hidden = true;
+        this.querySelectorAll('.navbar__notif-item--unread').forEach(el => {
+          el.classList.remove('navbar__notif-item--unread');
+        });
+      }
+    });
+
+    this.querySelector('.navbar__notif-read-all').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await markAllRead().catch(() => {});
+      const badge = this.querySelector('.navbar__notif-badge');
+      if (badge) badge.hidden = true;
+      this.querySelectorAll('.navbar__notif-item--unread').forEach(el => {
+        el.classList.remove('navbar__notif-item--unread');
+      });
+    });
+
+    // Avatar dropdown toggle
     this.querySelector('.navbar__avatar-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       const dd = this.querySelector('.navbar__dropdown');
@@ -79,6 +200,7 @@ class NavBar extends HTMLElement {
       if (!this.contains(e.target)) {
         const dd = this.querySelector('.navbar__dropdown');
         if (dd) dd.hidden = true;
+        if (notifPanel) notifPanel.hidden = true;
       }
     }, { capture: true });
   }

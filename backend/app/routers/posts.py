@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 
 from app.database.database import get_db
-from app.models import Post, Tag, PostTag, Like, Save, Comment, User, Follow
+from app.models import Post, Tag, PostTag, Like, Save, Comment, User, Follow, Notification
 from app.schemas.post import PostCreate, PostRead, PostUpdate
 from app.schemas.comment import CommentCreate, CommentRead
 from app.auth.dependencies import get_current_user, get_optional_user
@@ -294,6 +294,13 @@ def like_post(
     if existing:
         raise HTTPException(status.HTTP_409_CONFLICT, "Já deste like")
     session.add(Like(user_id=current_user.id, post_id=post_id))
+    if post.author_id != current_user.id:
+        session.add(Notification(
+            user_id=post.author_id,
+            actor_username=current_user.username,
+            type="like",
+            post_id=post_id,
+        ))
     session.commit()
     return {"detail": "Like adicionado"}
 
@@ -360,6 +367,13 @@ def create_comment(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
     comment = Comment(content=data.content, author_id=current_user.id, post_id=post_id)
     session.add(comment)
+    if post.author_id != current_user.id:
+        session.add(Notification(
+            user_id=post.author_id,
+            actor_username=current_user.username,
+            type="comment",
+            post_id=post_id,
+        ))
     session.commit()
     session.refresh(comment)
     return CommentRead(
