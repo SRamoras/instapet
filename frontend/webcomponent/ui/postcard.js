@@ -89,22 +89,26 @@ class PostCard extends HTMLElement {
     if (liked) likeBtn.classList.add('post-card__action-btn--liked');
     if (saved) saveBtn.classList.add('post-card__action-btn--saved');
 
-    likeBtn.addEventListener('click', (e) => {
-      liked = !liked;
-      e.currentTarget.classList.toggle('post-card__action-btn--liked');
-      const countEl = e.currentTarget.querySelector('span');
-      countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
-      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId, liked }, bubbles: true, composed: true }));
+    likeBtn.addEventListener('click', () => {
+      if (likeBtn.disabled) return;
+      const isLiked = likeBtn.classList.contains('post-card__action-btn--liked');
+      this.dispatchEvent(new CustomEvent('post-like', {
+        detail: { postId, liked: !isLiked, likeBtn },
+        bubbles: true, composed: true,
+      }));
     });
 
     this.querySelector('.post-card__action-btn--comment').addEventListener('click', () => {
       window.location.href = `/pages/post.html?id=${postId}`;
     });
 
-    saveBtn.addEventListener('click', (e) => {
-      saved = !saved;
-      e.currentTarget.classList.toggle('post-card__action-btn--saved');
-      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId, saved }, bubbles: true, composed: true }));
+    saveBtn.addEventListener('click', () => {
+      if (saveBtn.disabled) return;
+      const isSaved = saveBtn.classList.contains('post-card__action-btn--saved');
+      this.dispatchEvent(new CustomEvent('post-save', {
+        detail: { postId, saved: !isSaved, saveBtn },
+        bubbles: true, composed: true,
+      }));
     });
   }
 }
