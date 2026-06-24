@@ -120,6 +120,16 @@
   font-weight: 700;
 }
 
+.post-card__caption-tag {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.post-card__caption-tag:hover {
+  text-decoration: underline;
+}
+
 .post-card__tags {
   display: flex;
   flex-wrap: wrap;

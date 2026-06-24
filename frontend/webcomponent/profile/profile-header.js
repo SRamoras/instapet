@@ -12,6 +12,7 @@ export class ProfileHeader extends HTMLElement {
     const displayName  = escapeHtml(this.getAttribute('display-name') || username);
     const avatar       = this.getAttribute('avatar') || '';
     const bio          = escapeHtml(this.getAttribute('bio') || '');
+    const posts        = this.getAttribute('posts') || '0';
     const likes        = this.getAttribute('likes') || '0';
     const followers    = this.getAttribute('followers') || '0';
     const following    = this.getAttribute('following') || '0';
@@ -36,6 +37,10 @@ export class ProfileHeader extends HTMLElement {
           </div>
 
           <div class="profile-header__stats">
+            <div class="profile-header__stat">
+              <strong class="profile-header__stat-value">${posts}</strong>
+              <span class="profile-header__stat-label">Posts</span>
+            </div>
             <div class="profile-header__stat">
               <strong class="profile-header__stat-value">${likes}</strong>
               <span class="profile-header__stat-label">Gostos</span>

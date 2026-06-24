@@ -50,3 +50,39 @@
   color: #c0392b;
   font-weight: 500;
 }
+
+.ui-input__password-wrap {
+  position: relative;
+  display: flex;
+}
+
+.ui-input__password-wrap .ui-input__field {
+  padding-right: 42px;
+}
+
+.ui-input__toggle-pw {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 10px 10px 0;
+  transition: color 0.15s;
+}
+
+.ui-input__toggle-pw:hover {
+  color: var(--color-primary);
+}
+
+.ui-input__toggle-pw svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}

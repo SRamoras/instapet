@@ -1,5 +1,13 @@
 import { avatarHTML } from './avatar.js';
 
+function linkifyCaption(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/#([a-zA-Z0-9_À-ɏ]+)/g,
+      (_, tag) => `<a class="post-card__caption-tag" href="/pages/search.html?q=${encodeURIComponent('#'+tag)}">#${tag}</a>`
+    );
+}
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./postcard.css', import.meta.url);
@@ -45,7 +53,7 @@ class PostCard extends HTMLElement {
         ` : ''}
 
         <div class="post-card__body">
-          ${caption ? `<p class="post-card__caption"><strong>@${username}</strong> ${caption}</p>` : ''}
+          ${caption ? `<p class="post-card__caption"><strong>@${username}</strong> ${linkifyCaption(caption)}</p>` : ''}
           ${tags.length ? `<div class="post-card__tags">${tags.map(t => `<a class="post-card__tag" href="/pages/search.html?q=${encodeURIComponent(t)}">#${t}</a>`).join('')}</div>` : ''}
 
           <div class="post-card__actions">
