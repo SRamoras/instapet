@@ -179,12 +179,8 @@ class NavBar extends HTMLElement {
         localStorage.setItem('notif_unread', '0');
         const badge = this.querySelector('.navbar__notif-badge');
         if (badge) badge.hidden = true;
+        await markAllRead().catch(() => {});
         await this._fetchNotifications();
-        if (badge) badge.hidden = true;
-        this.querySelectorAll('.navbar__notif-item--unread').forEach(el =>
-          el.classList.remove('navbar__notif-item--unread')
-        );
-        markAllRead().catch(() => {});
       }
     });
 
