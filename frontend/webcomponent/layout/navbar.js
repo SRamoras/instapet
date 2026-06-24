@@ -112,7 +112,7 @@ class NavBar extends HTMLElement {
     this.innerHTML = `
       <nav class="navbar">
         <a class="navbar__logo" href="/pages/feed.html">
-          <img class="navbar__logo-img" src="/img/logoinstapet1.png" alt="InstaPet">
+          <img class="navbar__logo-img" src="/img/instapetlogooficial.png" alt="InstaPet">
         </a>
 
         <div class="navbar__actions">

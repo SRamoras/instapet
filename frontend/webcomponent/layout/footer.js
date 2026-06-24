@@ -11,7 +11,7 @@ export class AppFooter extends HTMLElement {
 
           <div class="footer__brand-col">
             <div class="footer__brand">
-              <img class="footer__brand-img" src="/img/logoinstapet1.png" alt="InstaPet">
+              <img class="footer__brand-img" src="/img/instapetlogooficial.png" alt="InstaPet">
             </div>
             <p class="footer__tagline">A rede social<br>para ti e o teu pet.</p>
           </div>
