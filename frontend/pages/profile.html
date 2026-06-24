@@ -391,7 +391,21 @@
       document.getElementById('profile-grid-container').innerHTML = '';
 
       try {
-        const user      = isOwnProfile ? await getMe() : await getUser(usernameParam);
+        let user;
+        let isEditable = isOwnProfile;
+
+        if (isOwnProfile) {
+          user = await getMe();
+        } else {
+          user = await getUser(usernameParam);
+          if (localStorage.getItem('token')) {
+            try {
+              const me = await getMe();
+              isEditable = me.username === user.username;
+            } catch {}
+          }
+        }
+
         const posts     = await getPosts();
         const userPosts = posts.filter(p => p.author_username === user.username);
         const totalLikes= userPosts.reduce((sum, p) => sum + (p.like_count ?? 0), 0);
@@ -406,16 +420,16 @@
         header.setAttribute('followers',     user.follower_count  ?? 0);
         header.setAttribute('following',     user.following_count ?? 0);
         header.setAttribute('likes',         totalLikes);
-        header.setAttribute('editable',        isOwnProfile ? 'true' : 'false');
-        header.setAttribute('followed-by-me',  !isOwnProfile && (user.followed_by_me ?? false) ? 'true' : 'false');
+        header.setAttribute('editable',        isEditable ? 'true' : 'false');
+        header.setAttribute('followed-by-me',  !isEditable && (user.followed_by_me ?? false) ? 'true' : 'false');
         document.getElementById('profile-header-container').appendChild(header);
 
         const grid = document.createElement('profile-grid');
-        grid.setAttribute('own-profile', isOwnProfile ? 'true' : 'false');
+        grid.setAttribute('own-profile', isEditable ? 'true' : 'false');
         document.getElementById('profile-grid-container').appendChild(grid);
         grid.setPosts(userPosts);
 
-        if (params.get('tab') === 'saved' && isOwnProfile) {
+        if (params.get('tab') === 'saved' && isEditable) {
           const savedTab = grid.querySelector('[data-tab="saved"]');
           if (savedTab) savedTab.click();
         }
