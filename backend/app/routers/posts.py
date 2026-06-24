@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 
 from app.database.database import get_db
-from app.models import Post, Tag, PostTag, Like, Save, Comment, User
+from app.models import Post, Tag, PostTag, Like, Save, Comment, User, Follow
 from app.schemas.post import PostCreate, PostRead, PostUpdate
 from app.schemas.comment import CommentCreate, CommentRead
 from app.auth.dependencies import get_current_user, get_optional_user
@@ -164,6 +164,32 @@ def list_saved_posts(
     ).all()
 
     return [_enrich_post(post, session, current_user.id) for post in posts]
+@router.get("/feed", response_model=list[PostRead])
+def get_following_feed(
+    skip: int = 0,
+    limit: int = Query(default=20, le=100),
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    follows = session.exec(
+        select(Follow).where(Follow.follower_id == current_user.id)
+    ).all()
+    following_ids = [f.following_id for f in follows]
+
+    if not following_ids:
+        return []
+
+    posts = session.exec(
+        select(Post)
+        .where(Post.author_id.in_(following_ids))
+        .order_by(Post.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
+    return [_enrich_post(p, session, current_user.id) for p in posts]
+
+
 @router.get("/{post_id}", response_model=PostRead)
 def get_post(
     post_id: int,

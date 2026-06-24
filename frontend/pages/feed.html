@@ -34,7 +34,7 @@
     import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
     import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
     import '../webcomponent/feed/post-form/post-form.js';
-    import { getPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
+    import { getFeedPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
     import { getMe } from '../services/users.js';
 
     if (!localStorage.getItem('token')) {
@@ -83,7 +83,7 @@
 
     async function loadFeed() {
       try {
-        const posts = await getPosts();
+        const posts = await getFeedPosts();
         feedContainer.innerHTML = '';
 
         const form = document.createElement('post-form');
@@ -97,7 +97,7 @@
         if (!posts.length) {
           const empty = document.createElement('p');
           empty.className = 'feed__status';
-          empty.textContent = 'Nenhum post ainda. Seja o primeiro!';
+          empty.innerHTML = 'Ainda não segues ninguém. <a href="/pages/search.html">Explora a comunidade</a> para encontrar utilizadores!';
           feedContainer.appendChild(empty);
           return;
         }
