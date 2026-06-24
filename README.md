@@ -242,7 +242,7 @@ Full interactive docs at http://localhost:8000/docs (Swagger UI).
 | Area | Purpose | Rough scope |
 |------|---------|-------------|
 | Backend project structure | Scaffolding the FastAPI folder layout (routers/, models/, schemas/, auth/) and wiring the app entry point (`main.py`) | Initial scaffold; manually adjusted throughout |
-| SQLModel data models | First draft of `User`, `Post`, `Like`, `Save`, `Comment`, `Follow`, `Tag`, `PostTag` models and their field types/constraints | ~80% AI-drafted, reviewed and corrected by Diogo |
+| SQLModel data models | First draft of `User`, `Post`, `Like`, `Save`, `Comment`, `Follow`, `Tag`, `PostTag`, `Notification` models and their field types/constraints | ~80% AI-drafted, reviewed and corrected by Diogo |
 | JWT authentication | Implementation of `hash_password`, `verify_password`, `create_access_token`, `decode_access_token` in `auth/jwt.py` and the `get_current_user` dependency | ~70% AI-drafted |
 | FastAPI routers | First pass of all CRUD endpoints in `routers/posts.py`, `routers/users.py`, `routers/auth.py`; `_enrich_post` and `_enrich_user` helper pattern | AI-drafted, then debugged and extended manually |
 | Security hardening | Identifying that `JWT_SECRET` was hardcoded → moved to `os.environ["JWT_SECRET"]`; flagging `innerHTML` XSS risk → replaced with `textContent`/`createElement`; removing debug logs | Identified by Claude, applied and verified by Diogo |
