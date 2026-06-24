@@ -6,6 +6,7 @@ from app.models.user import User
 from app.models.follow import Follow
 from app.models.post import Post
 from app.models.like import Like
+from app.models.notification import Notification
 from app.schemas.user import UserRead, UserUpdate
 from app.auth.dependencies import get_current_user, get_optional_user
 
@@ -83,6 +84,34 @@ def get_user_by_username(
     return _enrich_user(user, session, current_user.id if current_user else None)
 
 
+@router.get("/{username}/followers", response_model=list[UserRead])
+def get_followers(
+    username: str,
+    current_user: User | None = Depends(get_optional_user),
+    session: Session = Depends(get_db),
+):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Utilizador não encontrado")
+    follows = session.exec(select(Follow).where(Follow.following_id == user.id)).all()
+    current_id = current_user.id if current_user else None
+    return [_enrich_user(session.get(User, f.follower_id), session, current_id) for f in follows if session.get(User, f.follower_id)]
+
+
+@router.get("/{username}/following", response_model=list[UserRead])
+def get_following(
+    username: str,
+    current_user: User | None = Depends(get_optional_user),
+    session: Session = Depends(get_db),
+):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Utilizador não encontrado")
+    follows = session.exec(select(Follow).where(Follow.follower_id == user.id)).all()
+    current_id = current_user.id if current_user else None
+    return [_enrich_user(session.get(User, f.following_id), session, current_id) for f in follows if session.get(User, f.following_id)]
+
+
 @router.post("/{username}/follow", status_code=201)
 def follow_user(
     username: str,
@@ -97,6 +126,11 @@ def follow_user(
     if session.get(Follow, (current_user.id, user.id)):
         raise HTTPException(status.HTTP_409_CONFLICT, "Já segues este utilizador")
     session.add(Follow(follower_id=current_user.id, following_id=user.id))
+    session.add(Notification(
+        user_id=user.id,
+        actor_username=current_user.username,
+        type="follow",
+    ))
     session.commit()
     return {"detail": "A seguir"}
 

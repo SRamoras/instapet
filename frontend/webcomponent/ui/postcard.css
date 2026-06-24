@@ -34,6 +34,37 @@
   text-decoration: underline;
 }
 
+.post-card__follow-btn {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-primary);
+  background: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.post-card__follow-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.post-card__follow-btn--following {
+  background: var(--color-light);
+  border-color: var(--border-md);
+  color: var(--text-muted);
+}
+
+.post-card__follow-btn--following:hover {
+  background: #fdecea;
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
 .post-card__more-link {
   display: flex;
   align-items: center;
@@ -87,6 +118,16 @@
 
 .post-card__caption strong {
   font-weight: 700;
+}
+
+.post-card__caption-tag {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.post-card__caption-tag:hover {
+  text-decoration: underline;
 }
 
 .post-card__tags {

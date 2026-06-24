@@ -12,7 +12,16 @@
 
   <div class="layout">
 
-    <aside class="sidebar" id="left-sidebar-container"></aside>
+    <aside class="sidebar">
+      <div id="left-sidebar-container"></div>
+      <div class="feed-filter-widget">
+        <span class="feed-filter-widget__label">Mostrar</span>
+        <div class="feed-filter-widget__options" id="feed-filter-options">
+          <button class="feed-filter-widget__btn feed-filter-widget__btn--active" data-value="all">Todos os posts</button>
+          <button class="feed-filter-widget__btn" data-value="following">A seguir</button>
+        </div>
+      </div>
+    </aside>
 
     <main class="feed" id="feed-container">
       <p class="feed__status">A carregar posts...</p>
@@ -34,19 +43,32 @@
     import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
     import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
     import '../webcomponent/feed/post-form/post-form.js';
-    import { getPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
-    import { getMe } from '../services/users.js';
+    import { getPosts, getFeedPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
+    import { getMe, followUser, unfollowUser } from '../services/users.js';
 
     if (!localStorage.getItem('token')) {
       window.location.replace('/pages/login.html');
     }
 
-    const feedContainer         = document.getElementById('feed-container');
-    const leftSidebarContainer  = document.getElementById('left-sidebar-container');
+    const feedContainer        = document.getElementById('feed-container');
+    const leftSidebarContainer = document.getElementById('left-sidebar-container');
+    const filterOptions        = document.getElementById('feed-filter-options');
 
-    let currentUser = null;
+    let currentUser   = null;
+    let currentFilter = 'all';
+
+    filterOptions.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.feed-filter-widget__btn');
+      if (!btn || btn.dataset.value === currentFilter) return;
+      currentFilter = btn.dataset.value;
+      filterOptions.querySelectorAll('.feed-filter-widget__btn').forEach(b =>
+        b.classList.toggle('feed-filter-widget__btn--active', b.dataset.value === currentFilter)
+      );
+      await loadFeed();
+    });
 
     async function loadSidebar() {
+      leftSidebarContainer.innerHTML = '';
       const sidebar = document.createElement('feed-sidebar-left');
       try {
         currentUser = await getMe();
@@ -67,23 +89,27 @@
     }
 
     function buildPostCard(post) {
+      const isOwn = currentUser && post.author_username === currentUser.username;
       const card = document.createElement('post-card');
-      card.setAttribute('post-id',      post.id);
-      card.setAttribute('username',     post.author_username ?? 'user');
-      card.setAttribute('avatar',       post.author_avatar_url ?? '');
-      card.setAttribute('caption',      post.content ?? '');
-      card.setAttribute('image',        post.image_url ?? '');
-      card.setAttribute('likes',        post.like_count ?? 0);
-      card.setAttribute('comments',     post.comment_count ?? 0);
-      card.setAttribute('liked-by-me',  post.liked_by_me ? 'true' : 'false');
-      card.setAttribute('saved-by-me',  post.saved_by_me ? 'true' : 'false');
-      card.setAttribute('tags',         JSON.stringify(post.tags ?? []));
+      card.setAttribute('post-id',         post.id);
+      card.setAttribute('username',        post.author_username ?? 'user');
+      card.setAttribute('avatar',          post.author_avatar_url ?? '');
+      card.setAttribute('caption',         post.content ?? '');
+      card.setAttribute('image',           post.image_url ?? '');
+      card.setAttribute('likes',           post.like_count ?? 0);
+      card.setAttribute('comments',        post.comment_count ?? 0);
+      card.setAttribute('liked-by-me',     post.liked_by_me ? 'true' : 'false');
+      card.setAttribute('saved-by-me',     post.saved_by_me ? 'true' : 'false');
+      card.setAttribute('followed-author', post.author_followed_by_me ? 'true' : 'false');
+      card.setAttribute('own-post',        isOwn ? 'true' : 'false');
+      card.setAttribute('tags',            JSON.stringify(post.tags ?? []));
       return card;
     }
 
     async function loadFeed() {
       try {
-        const posts = await getPosts();
+        const posts = currentFilter === 'following' ? await getFeedPosts() : await getPosts();
+
         feedContainer.innerHTML = '';
 
         const form = document.createElement('post-form');
@@ -97,7 +123,9 @@
         if (!posts.length) {
           const empty = document.createElement('p');
           empty.className = 'feed__status';
-          empty.textContent = 'Nenhum post ainda. Seja o primeiro!';
+          empty.innerHTML = currentFilter === 'following'
+            ? 'Ainda não segues ninguém. Muda para <strong>Todos os posts</strong> para descobrir utilizadores!'
+            : 'Ainda não há posts.';
           feedContainer.appendChild(empty);
           return;
         }
@@ -115,9 +143,10 @@
 
         const card = buildPostCard({
           ...newPost,
-          author_username: currentUser?.username ?? '',
-          liked_by_me: false,
-          saved_by_me: false,
+          author_username:        currentUser?.username ?? '',
+          author_followed_by_me:  false,
+          liked_by_me:            false,
+          saved_by_me:            false,
         });
 
         const form = feedContainer.querySelector('post-form');
@@ -128,18 +157,48 @@
       }
     });
 
-    document.addEventListener('post-like', async (e) => {
+    document.addEventListener('post-follow', async (e) => {
       try {
-        if (e.detail.liked) await likePost(e.detail.postId);
-        else await unlikePost(e.detail.postId);
-      } catch (err) { console.error('like error', err); }
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+        // update "A seguir" counter in left sidebar immediately
+        document.dispatchEvent(new CustomEvent('sidebar-follow-change', { detail: { followed: e.detail.followed } }));
+      } catch (err) { console.error('follow error', err); }
+    });
+
+    document.addEventListener('post-like', async (e) => {
+      const { postId, liked, likeBtn, authorUsername } = e.detail;
+      likeBtn.disabled = true;
+      try {
+        if (liked) await likePost(postId);
+        else await unlikePost(postId);
+        likeBtn.classList.toggle('post-card__action-btn--liked', liked);
+        const countEl = likeBtn.querySelector('span');
+        if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
+        // update sidebar "Gostos" when liking/unliking own post
+        if (currentUser && authorUsername === currentUser.username) {
+          const gostosEl = document.querySelectorAll('.feed-sidebar-left__stat-value')[0];
+          if (gostosEl) gostosEl.textContent = Math.max(0, parseInt(gostosEl.textContent || '0') + (liked ? 1 : -1));
+        }
+      } catch (err) {
+        console.error('like error', err);
+      } finally {
+        likeBtn.disabled = false;
+      }
     });
 
     document.addEventListener('post-save', async (e) => {
+      const { postId, saved, saveBtn } = e.detail;
+      saveBtn.disabled = true;
       try {
-        if (e.detail.saved) await savePost(e.detail.postId);
-        else await unsavePost(e.detail.postId);
-      } catch (err) { console.error('save error', err); }
+        if (saved) await savePost(postId);
+        else await unsavePost(postId);
+        saveBtn.classList.toggle('post-card__action-btn--saved', saved);
+      } catch (err) {
+        console.error('save error', err);
+      } finally {
+        saveBtn.disabled = false;
+      }
     });
 
     document.addEventListener('sidebar-follow-change', (e) => {
@@ -151,18 +210,16 @@
       }
     });
 
+    // on bfcache navigation, always reload fresh data
     window.addEventListener('pageshow', async (e) => {
-      const stale = sessionStorage.getItem('feed-stale') === '1';
-      if (e.persisted || stale) {
-        sessionStorage.removeItem('feed-stale');
-        leftSidebarContainer.innerHTML = '';
-        await loadSidebar();
-        await loadFeed();
-      }
+      if (!e.persisted) return;
+      sessionStorage.removeItem('feed-stale');
+      await loadSidebar();
+      await loadFeed();
     });
 
     await loadSidebar();
-    loadFeed();
+    await loadFeed();
   </script>
 
 </body>

@@ -137,6 +137,55 @@ body {
   color: #D05050;
 }
 
+.feed-filter-widget {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feed-filter-widget__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.feed-filter-widget__options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feed-filter-widget__btn {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.feed-filter-widget__btn:hover {
+  background: var(--hover-bg);
+  color: var(--color-primary);
+}
+
+.feed-filter-widget__btn--active {
+  background: var(--color-light);
+  color: var(--color-dark);
+  font-weight: 700;
+}
+
 /* ── Profile layout (centered, no sidebar) ── */
 .profile-layout {
   max-width: 660px;

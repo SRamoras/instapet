@@ -271,8 +271,8 @@
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/ui/postcard.js';
     import { avatarHTML } from '../webcomponent/ui/avatar.js';
-    import { getPosts, getPopularTags } from '../services/posts.js';
-    import { getUsers } from '../services/users.js';
+    import { getPosts, getPopularTags, likePost, unlikePost, savePost, unsavePost } from '../services/posts.js';
+    import { getUsers, getMe, followUser, unfollowUser } from '../services/users.js';
 
     const searchForm  = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
@@ -280,10 +280,44 @@
     const acList      = document.getElementById('autocomplete');
     const modeBtns    = document.querySelectorAll('.search-page__mode');
 
-    let mode     = 'tags';
-    let allUsers = [];
-    let allTags  = [];
+    let mode      = 'tags';
+    let allUsers  = [];
+    let allTags   = [];
     let activeIdx = -1;
+    let currentUser = null;
+
+    try { currentUser = await getMe(); } catch {}
+
+    document.addEventListener('post-like', async (e) => {
+      const { postId, liked, likeBtn } = e.detail;
+      likeBtn.disabled = true;
+      try {
+        if (liked) await likePost(postId);
+        else await unlikePost(postId);
+        likeBtn.classList.toggle('post-card__action-btn--liked', liked);
+        const countEl = likeBtn.querySelector('span');
+        if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
+      } catch (err) { console.error('like error', err); }
+      finally { likeBtn.disabled = false; }
+    });
+
+    document.addEventListener('post-save', async (e) => {
+      const { postId, saved, saveBtn } = e.detail;
+      saveBtn.disabled = true;
+      try {
+        if (saved) await savePost(postId);
+        else await unsavePost(postId);
+        saveBtn.classList.toggle('post-card__action-btn--saved', saved);
+      } catch (err) { console.error('save error', err); }
+      finally { saveBtn.disabled = false; }
+    });
+
+    document.addEventListener('post-follow', async (e) => {
+      try {
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+      } catch (err) { console.error('follow error', err); }
+    });
 
     getUsers().then(u => { allUsers = u; }).catch(() => {});
     getPopularTags().then(t => { allTags = t; }).catch(() => {});
@@ -428,17 +462,20 @@
         const wrap = document.createElement('div');
         wrap.className = 'search-results__list';
         posts.forEach(post => {
+          const isOwn = currentUser && post.author_username === currentUser.username;
           const card = document.createElement('post-card');
-          card.setAttribute('post-id',     post.id);
-          card.setAttribute('username',    post.author_username ?? 'user');
-          card.setAttribute('avatar',      post.author_avatar_url ?? '');
-          card.setAttribute('caption',     post.content ?? '');
-          card.setAttribute('image',       post.image_url ?? '');
-          card.setAttribute('likes',       post.like_count ?? 0);
-          card.setAttribute('comments',    post.comment_count ?? 0);
-          card.setAttribute('liked-by-me', post.liked_by_me ? 'true' : 'false');
-          card.setAttribute('saved-by-me', post.saved_by_me ? 'true' : 'false');
-          card.setAttribute('tags',        JSON.stringify(post.tags ?? []));
+          card.setAttribute('post-id',         post.id);
+          card.setAttribute('username',         post.author_username ?? 'user');
+          card.setAttribute('avatar',           post.author_avatar_url ?? '');
+          card.setAttribute('caption',          post.content ?? '');
+          card.setAttribute('image',            post.image_url ?? '');
+          card.setAttribute('likes',            post.like_count ?? 0);
+          card.setAttribute('comments',         post.comment_count ?? 0);
+          card.setAttribute('liked-by-me',      post.liked_by_me ? 'true' : 'false');
+          card.setAttribute('saved-by-me',      post.saved_by_me ? 'true' : 'false');
+          card.setAttribute('followed-author',  post.author_followed_by_me ? 'true' : 'false');
+          card.setAttribute('own-post',         isOwn ? 'true' : 'false');
+          card.setAttribute('tags',             JSON.stringify(post.tags ?? []));
           wrap.appendChild(card);
         });
         resultsEl.appendChild(wrap);

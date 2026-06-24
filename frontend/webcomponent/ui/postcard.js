@@ -1,5 +1,13 @@
 import { avatarHTML } from './avatar.js';
 
+function linkifyCaption(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/#([a-zA-Z0-9_À-ɏ]+)/g,
+      (_, tag) => `<a class="post-card__caption-tag" href="/pages/search.html?q=${encodeURIComponent('#'+tag)}">#${tag}</a>`
+    );
+}
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = new URL('./postcard.css', import.meta.url);
@@ -16,6 +24,8 @@ class PostCard extends HTMLElement {
     const comments = this.getAttribute('comments') || '0';
     let liked = this.getAttribute('liked-by-me') === 'true';
     let saved = this.getAttribute('saved-by-me') === 'true';
+    let followed = this.getAttribute('followed-author') === 'true';
+    const ownPost  = this.getAttribute('own-post') === 'true';
     let tags = [];
     try { tags = JSON.parse(this.getAttribute('tags') || '[]'); } catch {}
 
@@ -24,6 +34,11 @@ class PostCard extends HTMLElement {
         <header class="post-card__header">
           ${avatarHTML(username, avatar, 'post-card__avatar')}
           <a class="post-card__username" href="/pages/profile.html?user=${username}">@${username}</a>
+          ${!ownPost ? `
+            <button class="post-card__follow-btn ${followed ? 'post-card__follow-btn--following' : ''}" data-username="${username}">
+              ${followed ? 'A seguir' : 'Seguir'}
+            </button>
+          ` : ''}
           <a class="post-card__more-link" href="/pages/post.html?id=${postId}" title="Ver post">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>
@@ -38,7 +53,7 @@ class PostCard extends HTMLElement {
         ` : ''}
 
         <div class="post-card__body">
-          ${caption ? `<p class="post-card__caption"><strong>@${username}</strong> ${caption}</p>` : ''}
+          ${caption ? `<p class="post-card__caption"><strong>@${username}</strong> ${linkifyCaption(caption)}</p>` : ''}
           ${tags.length ? `<div class="post-card__tags">${tags.map(t => `<a class="post-card__tag" href="/pages/search.html?q=${encodeURIComponent(t)}">#${t}</a>`).join('')}</div>` : ''}
 
           <div class="post-card__actions">
@@ -66,28 +81,42 @@ class PostCard extends HTMLElement {
       </article>
     `;
 
+    const followBtn = this.querySelector('.post-card__follow-btn');
+    if (followBtn) {
+      followBtn.addEventListener('click', () => {
+        followed = !followed;
+        followBtn.textContent = followed ? 'A seguir' : 'Seguir';
+        followBtn.classList.toggle('post-card__follow-btn--following', followed);
+        this.dispatchEvent(new CustomEvent('post-follow', { detail: { username, followed }, bubbles: true, composed: true }));
+      });
+    }
+
     const likeBtn = this.querySelector('.post-card__action-btn--like');
     const saveBtn = this.querySelector('.post-card__action-btn--save');
 
     if (liked) likeBtn.classList.add('post-card__action-btn--liked');
     if (saved) saveBtn.classList.add('post-card__action-btn--saved');
 
-    likeBtn.addEventListener('click', (e) => {
-      liked = !liked;
-      e.currentTarget.classList.toggle('post-card__action-btn--liked');
-      const countEl = e.currentTarget.querySelector('span');
-      countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
-      this.dispatchEvent(new CustomEvent('post-like', { detail: { postId, liked }, bubbles: true, composed: true }));
+    likeBtn.addEventListener('click', () => {
+      if (likeBtn.disabled) return;
+      const isLiked = likeBtn.classList.contains('post-card__action-btn--liked');
+      this.dispatchEvent(new CustomEvent('post-like', {
+        detail: { postId, liked: !isLiked, likeBtn, authorUsername: username },
+        bubbles: true, composed: true,
+      }));
     });
 
     this.querySelector('.post-card__action-btn--comment').addEventListener('click', () => {
       window.location.href = `/pages/post.html?id=${postId}`;
     });
 
-    saveBtn.addEventListener('click', (e) => {
-      saved = !saved;
-      e.currentTarget.classList.toggle('post-card__action-btn--saved');
-      this.dispatchEvent(new CustomEvent('post-save', { detail: { postId, saved }, bubbles: true, composed: true }));
+    saveBtn.addEventListener('click', () => {
+      if (saveBtn.disabled) return;
+      const isSaved = saveBtn.classList.contains('post-card__action-btn--saved');
+      this.dispatchEvent(new CustomEvent('post-save', {
+        detail: { postId, saved: !isSaved, saveBtn },
+        bubbles: true, composed: true,
+      }));
     });
   }
 }

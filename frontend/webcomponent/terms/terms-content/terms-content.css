@@ -4,35 +4,96 @@
   padding: 32px;
   box-shadow: var(--shadow-sm);
   max-width: 780px;
-  margin: 0 auto;
+  margin: 0 auto 24px;
+}
+
+.terms-content__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.terms-content__header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.terms-content__header-icon .material-symbols-outlined {
+  font-size: 24px;
+  color: var(--color-primary);
 }
 
 .terms-content__title {
   font-size: 22px;
   font-weight: 800;
   color: var(--text);
-  margin: 0 0 6px;
+  margin: 0 0 4px;
 }
 
 .terms-content__date {
   font-size: 13px;
   color: var(--text-muted);
-  margin: 0 0 28px;
+  margin: 0;
+}
+
+.terms-content__intro {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.terms-content__divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
 }
 
 .terms-content__section {
-  margin-bottom: 22px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--subtle-bg);
 }
 
 .terms-content__section:last-child {
   margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.terms-content__section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.terms-content__section-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-light);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .terms-content__section-title {
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .terms-content__section-text {
@@ -40,6 +101,7 @@
   color: var(--text-body);
   line-height: 1.7;
   margin: 0;
+  padding-left: 36px;
 }
 
 @media (max-width: 600px) {
@@ -50,5 +112,9 @@
 
   .terms-content__title {
     font-size: 18px;
+  }
+
+  .terms-content__section-text {
+    padding-left: 0;
   }
 }

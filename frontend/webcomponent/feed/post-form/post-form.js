@@ -9,37 +9,46 @@ const MAX_CHARS = 280;
 
 export class PostForm extends HTMLElement {
   connectedCallback() {
-    const username    = this.getAttribute('username') || '';
-    const displayName = this.getAttribute('display-name') || username;
-    const avatar      = this.getAttribute('avatar') || '';
-
     this.innerHTML = `
       <div class="post-form">
         <h3 class="post-form__title">Criar publicação</h3>
 
-        <textarea
-          class="post-form__textarea"
-          placeholder="O que se passa com o teu pet? 🐾"
-          maxlength="${MAX_CHARS}"
-          rows="3"
-        ></textarea>
+        <div class="post-form__field">
+          <label class="post-form__label">Descrição</label>
+          <textarea
+            class="post-form__textarea"
+            placeholder="O que se passa com o teu pet? 🐾"
+            maxlength="${MAX_CHARS}"
+            rows="3"
+          ></textarea>
+          <span class="post-form__char-count">0 / ${MAX_CHARS}</span>
+        </div>
 
         <div class="post-form__secondary">
-          <div class="post-form__file-wrap">
-            <input type="file" class="post-form__file-input" accept="image/*" hidden>
-            <button type="button" class="post-form__file-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-              <span>Adicionar foto</span>
-            </button>
+          <div class="post-form__field">
+            <label class="post-form__label">
+              Foto
+              <span class="post-form__required">*</span>
+            </label>
+            <div class="post-form__file-wrap">
+              <input type="file" class="post-form__file-input" accept="image/*" hidden>
+              <button type="button" class="post-form__file-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span>Adicionar foto</span>
+              </button>
+            </div>
           </div>
-          <input
-            class="post-form__tags-input"
-            type="text"
-            placeholder="Tags (ex: gatos, cães, funny)"
-          >
+          <div class="post-form__field">
+            <label class="post-form__label">Tags</label>
+            <input
+              class="post-form__tags-input"
+              type="text"
+              placeholder="#dogs #gato #funny #cute #pets"
+            >
+          </div>
         </div>
 
         <div class="post-form__preview-wrap" hidden>
@@ -48,7 +57,7 @@ export class PostForm extends HTMLElement {
         </div>
 
         <div class="post-form__footer">
-          <span class="post-form__char-count">0 / ${MAX_CHARS}</span>
+          <span class="post-form__hint">* campo obrigatório</span>
           <button class="post-form__submit" disabled>Publicar</button>
         </div>
         <span class="post-form__error" hidden></span>
@@ -68,11 +77,15 @@ export class PostForm extends HTMLElement {
 
     let selectedFile = null;
 
+    const updateSubmit = () => {
+      submitBtn.disabled = !textarea.value.trim() || !selectedFile;
+    };
+
     textarea.addEventListener('input', () => {
       const len = textarea.value.length;
       charCount.textContent = `${len} / ${MAX_CHARS}`;
       charCount.classList.toggle('post-form__char-count--warn', len > MAX_CHARS * 0.85);
-      submitBtn.disabled = len === 0;
+      updateSubmit();
     });
 
     fileBtn.addEventListener('click', () => fileInput.click());
@@ -85,6 +98,9 @@ export class PostForm extends HTMLElement {
       previewWrap.hidden = false;
       const label = file.name.length > 22 ? file.name.slice(0, 20) + '…' : file.name;
       fileBtn.querySelector('span').textContent = label;
+      fileBtn.classList.add('post-form__file-btn--has-file');
+      errorEl.hidden = true;
+      updateSubmit();
     });
 
     removeBtn.addEventListener('click', () => {
@@ -92,28 +108,35 @@ export class PostForm extends HTMLElement {
       fileInput.value = '';
       previewImg.src = '';
       previewWrap.hidden = true;
+      fileBtn.querySelector('span').textContent = 'Adicionar foto';
+      fileBtn.classList.remove('post-form__file-btn--has-file');
+      updateSubmit();
     });
 
     submitBtn.addEventListener('click', async () => {
       const content = textarea.value.trim();
       if (!content) return;
+      if (!selectedFile) {
+        errorEl.textContent = 'É necessário adicionar uma foto para publicar.';
+        errorEl.hidden = false;
+        fileBtn.focus();
+        return;
+      }
 
       submitBtn.disabled = true;
       errorEl.hidden = true;
 
       let image_url;
-      if (selectedFile) {
-        submitBtn.textContent = 'A carregar foto...';
-        try {
-          const result = await uploadImage(selectedFile);
-          image_url = result.url;
-        } catch (err) {
-          errorEl.textContent = err.message || 'Erro ao carregar a foto.';
-          errorEl.hidden = false;
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Publicar';
-          return;
-        }
+      submitBtn.textContent = 'A carregar foto...';
+      try {
+        const result = await uploadImage(selectedFile);
+        image_url = result.url;
+      } catch (err) {
+        errorEl.textContent = err.message || 'Erro ao carregar a foto.';
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Publicar';
+        return;
       }
 
       submitBtn.textContent = 'A publicar...';
@@ -138,10 +161,12 @@ export class PostForm extends HTMLElement {
       previewImg.src      = '';
       previewWrap.hidden  = true;
       fileBtn.querySelector('span').textContent = 'Adicionar foto';
+      fileBtn.classList.remove('post-form__file-btn--has-file');
       charCount.textContent = `0 / ${MAX_CHARS}`;
       charCount.classList.remove('post-form__char-count--warn');
       submitBtn.disabled  = true;
       submitBtn.textContent = 'Publicar';
+      errorEl.hidden = true;
     };
 
     document.addEventListener('post-created',      reset);

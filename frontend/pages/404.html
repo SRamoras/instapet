@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InstaPet – Página não encontrada</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 140px);
+      text-align: center;
+      padding: 40px 24px;
+      gap: 20px;
+    }
+
+    .not-found__code {
+      font-size: 96px;
+      font-weight: 800;
+      color: var(--color-light);
+      line-height: 1;
+      letter-spacing: -4px;
+      position: relative;
+    }
+
+    .not-found__code span {
+      color: var(--color-primary);
+    }
+
+    .not-found__paw {
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .not-found__title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .not-found__text {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin: 0;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    .not-found__actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .not-found__btn {
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .not-found__btn--primary {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+    }
+
+    .not-found__btn--primary:hover {
+      background: var(--color-dark);
+    }
+
+    .not-found__btn--secondary {
+      background: none;
+      color: var(--color-primary);
+      border: 1.5px solid var(--color-primary);
+    }
+
+    .not-found__btn--secondary:hover {
+      background: var(--color-light);
+    }
+  </style>
+</head>
+<body>
+  <nav-bar></nav-bar>
+
+  <div class="not-found">
+    <div class="not-found__paw">🐾</div>
+    <div class="not-found__code"><span>4</span>0<span>4</span></div>
+    <h1 class="not-found__title">Página não encontrada</h1>
+    <p class="not-found__text">
+      Parece que o teu pet andou a explorar por aqui e não encontrou nada.
+      Esta página não existe ou foi removida.
+    </p>
+    <div class="not-found__actions">
+      <a class="not-found__btn not-found__btn--primary" href="/pages/feed.html">Voltar ao feed</a>
+      <a class="not-found__btn not-found__btn--secondary" href="/pages/search.html">Explorar</a>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+
+  <script type="module">
+    import '../webcomponent/layout/navbar.js';
+    import '../webcomponent/layout/footer.js';
+  </script>
+</body>
+</html>

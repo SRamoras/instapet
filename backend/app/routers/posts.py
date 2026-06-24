@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 
 from app.database.database import get_db
-from app.models import Post, Tag, PostTag, Like, Save, Comment, User
+from app.models import Post, Tag, PostTag, Like, Save, Comment, User, Follow, Notification
 from app.schemas.post import PostCreate, PostRead, PostUpdate
 from app.schemas.comment import CommentCreate, CommentRead
 from app.auth.dependencies import get_current_user, get_optional_user
@@ -57,6 +57,11 @@ def _enrich_post(
         if current_user_id else False
     )
 
+    author_followed_by_me = (
+        session.get(Follow, (current_user_id, post.author_id)) is not None
+        if current_user_id else False
+    )
+
     # ── RESPONSE ───────────────────────────
     return PostRead(
         id=post.id,
@@ -72,6 +77,7 @@ def _enrich_post(
         comment_count=len(comments),
         liked_by_me=liked_by_me,
         saved_by_me=saved_by_me,
+        author_followed_by_me=author_followed_by_me,
     )
 
 def _get_or_create_tags(session: Session, tag_names: list[str]) -> list[Tag]:
@@ -156,14 +162,64 @@ def list_saved_posts(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_db),
 ):
-    posts = session.exec(                            
+    posts = session.exec(
         select(Post)
         .join(Save, Save.post_id == Post.id)
-        .where(Save.user_id == current_user.id)   
-        .order_by(Post.created_at.desc())
+        .where(Save.user_id == current_user.id)
+        .order_by(Save.created_at.desc())
     ).all()
 
     return [_enrich_post(post, session, current_user.id) for post in posts]
+@router.get("/feed", response_model=list[PostRead])
+def get_following_feed(
+    skip: int = 0,
+    limit: int = Query(default=20, le=100),
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    follows = session.exec(
+        select(Follow).where(Follow.follower_id == current_user.id)
+    ).all()
+    following_ids = [f.following_id for f in follows]
+
+    if not following_ids:
+        return []
+
+    posts = session.exec(
+        select(Post)
+        .where(Post.author_id.in_(following_ids))
+        .order_by(Post.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
+    return [_enrich_post(p, session, current_user.id) for p in posts]
+
+
+@router.get("/explore", response_model=list[PostRead])
+def get_explore_feed(
+    skip: int = 0,
+    limit: int = Query(default=20, le=100),
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_db),
+):
+    follows = session.exec(
+        select(Follow).where(Follow.follower_id == current_user.id)
+    ).all()
+    excluded_ids = {f.following_id for f in follows}
+    excluded_ids.add(current_user.id)
+
+    posts = session.exec(
+        select(Post)
+        .where(Post.author_id.notin_(excluded_ids))
+        .order_by(Post.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
+    return [_enrich_post(p, session, current_user.id) for p in posts]
+
+
 @router.get("/{post_id}", response_model=PostRead)
 def get_post(
     post_id: int,
@@ -238,6 +294,13 @@ def like_post(
     if existing:
         raise HTTPException(status.HTTP_409_CONFLICT, "Já deste like")
     session.add(Like(user_id=current_user.id, post_id=post_id))
+    if post.author_id != current_user.id:
+        session.add(Notification(
+            user_id=post.author_id,
+            actor_username=current_user.username,
+            type="like",
+            post_id=post_id,
+        ))
     session.commit()
     return {"detail": "Like adicionado"}
 
@@ -304,6 +367,13 @@ def create_comment(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Post não encontrado")
     comment = Comment(content=data.content, author_id=current_user.id, post_id=post_id)
     session.add(comment)
+    if post.author_id != current_user.id:
+        session.add(Notification(
+            user_id=post.author_id,
+            actor_username=current_user.username,
+            type="comment",
+            post_id=post_id,
+        ))
     session.commit()
     session.refresh(comment)
     return CommentRead(

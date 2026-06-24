@@ -176,18 +176,34 @@
     });
 
     document.addEventListener('post-like', async (e) => {
+      const { postId, liked, likeBtn } = e.detail;
+      likeBtn.disabled = true;
       try {
-        if (e.detail.liked) await likePost(e.detail.postId);
-        else await unlikePost(e.detail.postId);
-      } catch (err) { console.error('like error', err); }
+        if (liked) await likePost(postId);
+        else await unlikePost(postId);
+        likeBtn.classList.toggle('post-detail__action-btn--liked', liked);
+        const countEl = likeBtn.querySelector('.post-detail__like-count');
+        if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
+      } catch (err) {
+        console.error('like error', err);
+      } finally {
+        likeBtn.disabled = false;
+      }
     });
 
     document.addEventListener('post-save', async (e) => {
+      const { postId, saved, saveBtn } = e.detail;
+      saveBtn.disabled = true;
       try {
-        if (e.detail.saved) await savePost(e.detail.postId);
-        else await unsavePost(e.detail.postId);
+        if (saved) await savePost(postId);
+        else await unsavePost(postId);
+        saveBtn.classList.toggle('post-detail__action-btn--saved', saved);
         sessionStorage.setItem('feed-stale', '1');
-      } catch (err) { console.error('save error', err); }
+      } catch (err) {
+        console.error('save error', err);
+      } finally {
+        saveBtn.disabled = false;
+      }
     });
 
     document.addEventListener('post-delete', async (e) => {

@@ -27,3 +27,4 @@ class PostRead(SQLModel):
     save_count: int
     liked_by_me: bool
     saved_by_me: bool
+    author_followed_by_me: bool = False
