@@ -34,8 +34,8 @@
     import '../webcomponent/feed/feed-sidebar-left/feed-sidebar-left.js';
     import '../webcomponent/feed/feed-sidebar-right/feed-sidebar-right.js';
     import '../webcomponent/feed/post-form/post-form.js';
-    import { getFeedPosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
-    import { getMe } from '../services/users.js';
+    import { getFeedPosts, getExplorePosts, likePost, unlikePost, savePost, unsavePost, createPost } from '../services/posts.js';
+    import { getMe, followUser, unfollowUser } from '../services/users.js';
 
     if (!localStorage.getItem('token')) {
       window.location.replace('/pages/login.html');
@@ -45,6 +45,7 @@
     const leftSidebarContainer  = document.getElementById('left-sidebar-container');
 
     let currentUser = null;
+    let currentTab  = 'following';
 
     async function loadSidebar() {
       const sidebar = document.createElement('feed-sidebar-left');
@@ -67,37 +68,68 @@
     }
 
     function buildPostCard(post) {
+      const isOwn = currentUser && post.author_username === currentUser.username;
       const card = document.createElement('post-card');
-      card.setAttribute('post-id',      post.id);
-      card.setAttribute('username',     post.author_username ?? 'user');
-      card.setAttribute('avatar',       post.author_avatar_url ?? '');
-      card.setAttribute('caption',      post.content ?? '');
-      card.setAttribute('image',        post.image_url ?? '');
-      card.setAttribute('likes',        post.like_count ?? 0);
-      card.setAttribute('comments',     post.comment_count ?? 0);
-      card.setAttribute('liked-by-me',  post.liked_by_me ? 'true' : 'false');
-      card.setAttribute('saved-by-me',  post.saved_by_me ? 'true' : 'false');
-      card.setAttribute('tags',         JSON.stringify(post.tags ?? []));
+      card.setAttribute('post-id',         post.id);
+      card.setAttribute('username',        post.author_username ?? 'user');
+      card.setAttribute('avatar',          post.author_avatar_url ?? '');
+      card.setAttribute('caption',         post.content ?? '');
+      card.setAttribute('image',           post.image_url ?? '');
+      card.setAttribute('likes',           post.like_count ?? 0);
+      card.setAttribute('comments',        post.comment_count ?? 0);
+      card.setAttribute('liked-by-me',     post.liked_by_me ? 'true' : 'false');
+      card.setAttribute('saved-by-me',     post.saved_by_me ? 'true' : 'false');
+      card.setAttribute('followed-author', post.author_followed_by_me ? 'true' : 'false');
+      card.setAttribute('own-post',        isOwn ? 'true' : 'false');
+      card.setAttribute('tags',            JSON.stringify(post.tags ?? []));
       return card;
+    }
+
+    function renderTabs() {
+      let tabs = feedContainer.querySelector('.feed-tabs');
+      if (!tabs) {
+        tabs = document.createElement('div');
+        tabs.className = 'feed-tabs';
+        tabs.innerHTML = `
+          <button class="feed-tab" data-tab="following">A seguir</button>
+          <button class="feed-tab" data-tab="explore">Explorar</button>
+        `;
+        tabs.addEventListener('click', async (e) => {
+          const btn = e.target.closest('.feed-tab');
+          if (!btn || btn.dataset.tab === currentTab) return;
+          currentTab = btn.dataset.tab;
+          await loadFeed();
+        });
+        feedContainer.prepend(tabs);
+      }
+      tabs.querySelectorAll('.feed-tab').forEach(btn => {
+        btn.classList.toggle('feed-tab--active', btn.dataset.tab === currentTab);
+      });
     }
 
     async function loadFeed() {
       try {
-        const posts = await getFeedPosts();
-        feedContainer.innerHTML = '';
+        const posts = currentTab === 'explore' ? await getExplorePosts() : await getFeedPosts();
 
-        const form = document.createElement('post-form');
-        if (currentUser) {
-          form.setAttribute('username',     currentUser.username ?? '');
-          form.setAttribute('display-name', currentUser.display_name ?? currentUser.username ?? '');
-          form.setAttribute('avatar',       currentUser.avatar_url ?? '');
+        feedContainer.innerHTML = '';
+        renderTabs();
+
+        if (currentTab === 'following') {
+          const form = document.createElement('post-form');
+          if (currentUser) {
+            form.setAttribute('username',     currentUser.username ?? '');
+            form.setAttribute('display-name', currentUser.display_name ?? currentUser.username ?? '');
+            form.setAttribute('avatar',       currentUser.avatar_url ?? '');
+          }
+          feedContainer.appendChild(form);
         }
-        feedContainer.appendChild(form);
 
         if (!posts.length) {
           const empty = document.createElement('p');
           empty.className = 'feed__status';
-          empty.innerHTML = 'Ainda não segues ninguém. <a href="/pages/search.html">Explora a comunidade</a> para encontrar utilizadores!';
+          empty.innerHTML = currentTab === 'following'
+            ? 'Ainda não segues ninguém. Muda para <strong>Explorar</strong> para encontrar utilizadores!'
+            : 'Não há mais posts para explorar.';
           feedContainer.appendChild(empty);
           return;
         }
@@ -126,6 +158,14 @@
         console.error('create post error', err);
         document.dispatchEvent(new Event('post-create-error'));
       }
+    });
+
+    document.addEventListener('post-follow', async (e) => {
+      try {
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+        sessionStorage.setItem('feed-stale', '1');
+      } catch (err) { console.error('follow error', err); }
     });
 
     document.addEventListener('post-like', async (e) => {

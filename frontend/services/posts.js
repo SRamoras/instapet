@@ -1,7 +1,8 @@
 import { request, authRequest } from './api.js';
 
 export const getPosts = (params = '') => authRequest(`/posts/${params}`);
-export const getFeedPosts = () => authRequest('/posts/feed');
+export const getFeedPosts     = () => authRequest('/posts/feed');
+export const getExplorePosts  = () => authRequest('/posts/explore');
 export const getPopularTags = () => authRequest('/posts/tags');
 export const getPost = (id) => authRequest(`/posts/${id}`);
 export const createPost = (data) => authRequest('/posts/', { method: 'POST', body: JSON.stringify(data) });

@@ -16,6 +16,8 @@ class PostCard extends HTMLElement {
     const comments = this.getAttribute('comments') || '0';
     let liked = this.getAttribute('liked-by-me') === 'true';
     let saved = this.getAttribute('saved-by-me') === 'true';
+    let followed = this.getAttribute('followed-author') === 'true';
+    const ownPost  = this.getAttribute('own-post') === 'true';
     let tags = [];
     try { tags = JSON.parse(this.getAttribute('tags') || '[]'); } catch {}
 
@@ -24,6 +26,11 @@ class PostCard extends HTMLElement {
         <header class="post-card__header">
           ${avatarHTML(username, avatar, 'post-card__avatar')}
           <a class="post-card__username" href="/pages/profile.html?user=${username}">@${username}</a>
+          ${!ownPost ? `
+            <button class="post-card__follow-btn ${followed ? 'post-card__follow-btn--following' : ''}" data-username="${username}">
+              ${followed ? 'A seguir' : 'Seguir'}
+            </button>
+          ` : ''}
           <a class="post-card__more-link" href="/pages/post.html?id=${postId}" title="Ver post">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>
@@ -65,6 +72,16 @@ class PostCard extends HTMLElement {
         </div>
       </article>
     `;
+
+    const followBtn = this.querySelector('.post-card__follow-btn');
+    if (followBtn) {
+      followBtn.addEventListener('click', () => {
+        followed = !followed;
+        followBtn.textContent = followed ? 'A seguir' : 'Seguir';
+        followBtn.classList.toggle('post-card__follow-btn--following', followed);
+        this.dispatchEvent(new CustomEvent('post-follow', { detail: { username, followed }, bubbles: true, composed: true }));
+      });
+    }
 
     const likeBtn = this.querySelector('.post-card__action-btn--like');
     const saveBtn = this.querySelector('.post-card__action-btn--save');
