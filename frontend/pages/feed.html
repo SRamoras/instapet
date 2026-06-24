@@ -12,7 +12,16 @@
 
   <div class="layout">
 
-    <aside class="sidebar" id="left-sidebar-container"></aside>
+    <aside class="sidebar">
+      <div id="left-sidebar-container"></div>
+      <div class="feed-filter-widget">
+        <span class="feed-filter-widget__label">Mostrar</span>
+        <div class="feed-filter-widget__options" id="feed-filter-options">
+          <button class="feed-filter-widget__btn feed-filter-widget__btn--active" data-value="all">Todos os posts</button>
+          <button class="feed-filter-widget__btn" data-value="following">A seguir</button>
+        </div>
+      </div>
+    </aside>
 
     <main class="feed" id="feed-container">
       <p class="feed__status">A carregar posts...</p>
@@ -20,13 +29,6 @@
 
     <aside class="sidebar">
       <feed-sidebar-right></feed-sidebar-right>
-      <div class="feed-filter-widget">
-        <label class="feed-filter-label" for="feed-filter-select">Mostrar</label>
-        <select class="feed-filter-select" id="feed-filter-select">
-          <option value="all">Todos os posts</option>
-          <option value="following">A seguir</option>
-        </select>
-      </div>
     </aside>
 
   </div>
@@ -50,13 +52,18 @@
 
     const feedContainer        = document.getElementById('feed-container');
     const leftSidebarContainer = document.getElementById('left-sidebar-container');
-    const filterSelect         = document.getElementById('feed-filter-select');
+    const filterOptions        = document.getElementById('feed-filter-options');
 
     let currentUser   = null;
     let currentFilter = 'all';
 
-    filterSelect.addEventListener('change', async () => {
-      currentFilter = filterSelect.value;
+    filterOptions.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.feed-filter-widget__btn');
+      if (!btn || btn.dataset.value === currentFilter) return;
+      currentFilter = btn.dataset.value;
+      filterOptions.querySelectorAll('.feed-filter-widget__btn').forEach(b =>
+        b.classList.toggle('feed-filter-widget__btn--active', b.dataset.value === currentFilter)
+      );
       await loadFeed();
     });
 
