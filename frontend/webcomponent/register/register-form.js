@@ -29,14 +29,14 @@ export class RegisterForm extends HTMLElement {
           <form id="register-form" class="register-form__body" novalidate>
 
             <div class="ui-input" id="field-username">
-              <label class="ui-input__label" for="rf-username">Nome de exibição</label>
-              <input class="ui-input__field" id="rf-username" name="username" type="text" placeholder="Diogo Silva" autocomplete="name">
+              <label class="ui-input__label" for="rf-display_name">Nome do utilizador</label>
+              <input class="ui-input__field" id="rf-username" name="username" type="text" placeholder="diogo123" autocomplete="name">
               <span class="ui-input__error" hidden></span>
             </div>
 
             <div class="ui-input" id="field-display_name">
-              <label class="ui-input__label" for="rf-display_name">Nome do utilizador</label>
-              <input class="ui-input__field" id="rf-display_name" name="display_name" type="text" placeholder="Diogo123" autocomplete="username">
+              <label class="ui-input__label" for="rf-username">Nome de exibição</label>
+              <input class="ui-input__field" id="rf-display_name" name="display_name" type="text" placeholder="Diogo Silva" autocomplete="username">
               <span class="ui-input__error" hidden></span>
             </div>
 
