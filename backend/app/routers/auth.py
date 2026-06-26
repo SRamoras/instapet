@@ -6,6 +6,7 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserRead
 from app.schemas.auth import Token, LoginRequest
 from app.auth.jwt import hash_password, verify_password, create_access_token
+from app.services.user_service import enrich_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -26,7 +27,7 @@ def register(data: UserCreate, session: Session = Depends(get_db)):
     session.add(user)
     session.commit()
     session.refresh(user)
-    return user
+    return enrich_user(user, session, user.id)
 
 
 @router.post("/login", response_model=Token)
