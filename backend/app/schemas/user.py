@@ -11,7 +11,7 @@ class UserCreate(SQLModel):
     username: str
     email: str
     password: str
-    display_name: str | None = None
+    display_name: str
 
     @field_validator('username')
     @classmethod
