@@ -1,5 +1,5 @@
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
 from app.auth.dependencies import get_current_user
 from app.models import User
 import uuid
@@ -14,6 +14,7 @@ EXT_MAP   = {"image/jpeg": "jpg", "image/png": "png", "image/gif": "gif", "image
 
 @router.post("/")
 async def upload_image(
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
 ):
@@ -30,4 +31,5 @@ async def upload_image(
     IMGS_DIR.mkdir(exist_ok=True)
     (IMGS_DIR / filename).write_bytes(content)
 
-    return {"url": f"http://localhost:8000/imgs/{filename}"}
+    base_url = str(request.base_url).rstrip("/")
+    return {"url": f"{base_url}/imgs/{filename}"}

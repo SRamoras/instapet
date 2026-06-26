@@ -5,263 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InstaPet – Explorar</title>
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .search-page {
-      max-width: 600px;
-      margin: 32px auto;
-      padding: 0 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-height: calc(100vh - 62px - 32px);
-    }
-
-    .search-page__bar-wrap {
-      position: relative;
-    }
-
-    .search-page__bar {
-      display: flex;
-      align-items: center;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: border-color 0.15s;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .search-page__bar:focus-within {
-      border-color: var(--color-primary);
-    }
-
-    .search-page__icon {
-      width: 18px;
-      height: 18px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-      margin-left: 14px;
-    }
-
-    .search-page__input {
-      flex: 1;
-      border: none;
-      outline: none;
-      padding: 12px 14px;
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--text);
-      background: transparent;
-    }
-
-    .search-page__input::placeholder { color: var(--placeholder); }
-
-    /* Autocomplete */
-    .autocomplete {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(6,22,19,0.13);
-      z-index: 200;
-      list-style: none;
-      padding: 6px;
-      margin: 0;
-    }
-
-    .autocomplete[hidden] { display: none; }
-
-    .autocomplete__item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--text);
-      transition: background 0.1s;
-      text-decoration: none;
-    }
-
-    .autocomplete__item:hover,
-    .autocomplete__item--active {
-      background: var(--hover-bg);
-    }
-
-    .autocomplete__item mark {
-      background: none;
-      color: var(--color-primary);
-      font-weight: 700;
-    }
-
-    .autocomplete__avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .autocomplete__user-info {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      min-width: 0;
-    }
-
-    .autocomplete__user-name {
-      font-weight: 700;
-      font-size: 13px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .autocomplete__user-handle {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .autocomplete__tag-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background: var(--color-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--color-primary);
-      flex-shrink: 0;
-    }
-
-    /* Modes */
-    .search-page__modes {
-      display: flex;
-      gap: 8px;
-    }
-
-    .search-page__mode {
-      flex: 1;
-      padding: 9px 0;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-
-    .search-page__mode--active {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: #fff;
-    }
-
-    /* User result */
-    .user-result {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 14px 16px;
-      box-shadow: var(--shadow-sm);
-      text-decoration: none;
-      color: inherit;
-      transition: box-shadow 0.15s;
-    }
-
-    .user-result:hover { box-shadow: 0 4px 16px rgba(6,22,19,0.1); }
-
-    .user-result__avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .user-result__info { flex: 1; min-width: 0; }
-
-    .user-result__name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .user-result__handle { font-size: 13px; color: var(--text-muted); }
-
-    .user-result__stats {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .search-results__list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    @media (max-width: 600px) {
-      .search-page {
-        margin: 14px auto;
-        padding: 0 12px;
-        gap: 12px;
-      }
-
-      .user-result__stats {
-        display: none;
-      }
-
-      .search-page__mode {
-        font-size: 12px;
-        padding: 8px 0;
-      }
-    }
-  </style>
 </head>
 <body>
 
   <nav-bar></nav-bar>
 
   <div class="search-page">
-
-    <div class="search-page__bar-wrap">
-      <form class="search-page__bar" id="search-form">
-        <svg class="search-page__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input class="search-page__input" id="search-input" type="search" autocomplete="off" placeholder="Pesquisar por tag...">
-      </form>
-      <ul class="autocomplete" id="autocomplete" hidden></ul>
-    </div>
-
-    <div class="search-page__modes">
-      <button class="search-page__mode search-page__mode--active" data-mode="tags">Tags</button>
-      <button class="search-page__mode" data-mode="users">Pessoas</button>
-    </div>
-
+    <search-bar id="search-bar"></search-bar>
     <div id="search-results">
       <p class="feed__status">Pesquisa algo para começar.</p>
     </div>
-
   </div>
 
   <app-footer></app-footer>
@@ -270,181 +23,40 @@
     import '../webcomponent/layout/navbar.js';
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/ui/postcard.js';
+    import '../webcomponent/search/search-bar/search-bar.js';
     import { avatarHTML } from '../webcomponent/ui/avatar.js';
     import { getPosts, getPopularTags, likePost, unlikePost, savePost, unsavePost } from '../services/posts.js';
     import { getUsers, getMe, followUser, unfollowUser } from '../services/users.js';
 
-    const searchForm  = document.getElementById('search-form');
-    const searchInput = document.getElementById('search-input');
-    const resultsEl   = document.getElementById('search-results');
-    const acList      = document.getElementById('autocomplete');
-    const modeBtns    = document.querySelectorAll('.search-page__mode');
+    const searchBar = document.getElementById('search-bar');
+    const resultsEl = document.getElementById('search-results');
 
-    let mode      = 'tags';
-    let allUsers  = [];
-    let allTags   = [];
-    let activeIdx = -1;
     let currentUser = null;
+    let allUsers    = [];
 
     try { currentUser = await getMe(); } catch {}
 
-    document.addEventListener('post-like', async (e) => {
-      const { postId, liked, likeBtn } = e.detail;
-      likeBtn.disabled = true;
-      try {
-        if (liked) await likePost(postId);
-        else await unlikePost(postId);
-        likeBtn.classList.toggle('post-card__action-btn--liked', liked);
-        const countEl = likeBtn.querySelector('span');
-        if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
-      } catch (err) { console.error('like error', err); }
-      finally { likeBtn.disabled = false; }
-    });
+    getUsers().then(u => { allUsers = u; searchBar.setUsers(u); }).catch(() => {});
+    getPopularTags().then(t => searchBar.setTags(t)).catch(() => {});
 
-    document.addEventListener('post-save', async (e) => {
-      const { postId, saved, saveBtn } = e.detail;
-      saveBtn.disabled = true;
-      try {
-        if (saved) await savePost(postId);
-        else await unsavePost(postId);
-        saveBtn.classList.toggle('post-card__action-btn--saved', saved);
-      } catch (err) { console.error('save error', err); }
-      finally { saveBtn.disabled = false; }
-    });
-
-    document.addEventListener('post-follow', async (e) => {
-      try {
-        if (e.detail.followed) await followUser(e.detail.username);
-        else await unfollowUser(e.detail.username);
-      } catch (err) { console.error('follow error', err); }
-    });
-
-    getUsers().then(u => { allUsers = u; }).catch(() => {});
-    getPopularTags().then(t => { allTags = t; }).catch(() => {});
-
-    // ── Mode toggle ───────────────────────────────────────────────
-    modeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        modeBtns.forEach(b => b.classList.remove('search-page__mode--active'));
-        btn.classList.add('search-page__mode--active');
-        mode = btn.dataset.mode;
-        searchInput.placeholder = mode === 'tags' ? 'Pesquisar por tag...' : 'Pesquisar pessoas...';
-        searchInput.focus();
-        const q = searchInput.value.trim();
-        hideAC();
-        if (q) runSearch(q);
-        else resultsEl.innerHTML = '<p class="feed__status">Pesquisa algo para começar.</p>';
-      });
-    });
-
-    // ── Autocomplete ──────────────────────────────────────────────
-    function highlight(text, query) {
-      const idx = text.toLowerCase().indexOf(query.toLowerCase());
-      if (idx === -1) return text;
-      return text.slice(0, idx)
-        + `<mark>${text.slice(idx, idx + query.length)}</mark>`
-        + text.slice(idx + query.length);
+    // ── URL params ────────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode')) searchBar.setMode(params.get('mode'));
+    if (params.get('q')) {
+      searchBar.setValue(params.get('q'));
+      runSearch(params.get('q'), params.get('mode') || 'tags');
     }
 
-    function showAC(items) {
-      activeIdx = -1;
-      if (!items.length) { hideAC(); return; }
-      acList.innerHTML = items.map((item, i) => item.html).join('');
-      acList.hidden = false;
-
-      acList.querySelectorAll('.autocomplete__item').forEach((el, i) => {
-        el.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          searchInput.value = items[i].value;
-          hideAC();
-          runSearch(items[i].value);
-        });
-      });
-    }
-
-    function hideAC() {
-      acList.hidden = true;
-      activeIdx = -1;
-    }
-
-    function buildSuggestions(q) {
-      if (!q) return [];
-      const lower = q.toLowerCase().replace(/^#/, '');
-
-      if (mode === 'tags') {
-        return allTags
-          .filter(t => t.replace(/^#/, '').includes(lower))
-          .slice(0, 6)
-          .map(t => ({
-            value: t.replace(/^#/, ''),
-            html: `<li class="autocomplete__item">
-              <div class="autocomplete__tag-icon">#</div>
-              <span>${highlight(t, q.startsWith('#') ? q : '#' + lower)}</span>
-            </li>`,
-          }));
-      } else {
-        return allUsers
-          .filter(u =>
-            u.username.toLowerCase().includes(lower) ||
-            (u.display_name || '').toLowerCase().includes(lower)
-          )
-          .slice(0, 6)
-          .map(u => ({
-            value: u.username,
-            html: `<li class="autocomplete__item">
-              ${avatarHTML(u.display_name || u.username, u.avatar_url || '', 'autocomplete__avatar')}
-              <div class="autocomplete__user-info">
-                <span class="autocomplete__user-name">${highlight(u.display_name || u.username, q)}</span>
-                <span class="autocomplete__user-handle">@${highlight(u.username, lower)}</span>
-              </div>
-            </li>`,
-          }));
-      }
-    }
-
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.trim();
-      if (!q) { hideAC(); return; }
-      showAC(buildSuggestions(q));
-      if (mode === 'users') runSearch(q);
+    // ── Search events ─────────────────────────────────────────────
+    searchBar.addEventListener('search-submit', (e) => {
+      runSearch(e.detail.query, e.detail.mode);
     });
 
-    // Keyboard navigation
-    searchInput.addEventListener('keydown', (e) => {
-      const items = acList.querySelectorAll('.autocomplete__item');
-      if (!items.length || acList.hidden) return;
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        activeIdx = Math.min(activeIdx + 1, items.length - 1);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        activeIdx = Math.max(activeIdx - 1, 0);
-      } else if (e.key === 'Escape') {
-        hideAC();
-        return;
-      } else { return; }
-
-      items.forEach((el, i) => el.classList.toggle('autocomplete__item--active', i === activeIdx));
-      const suggestions = buildSuggestions(searchInput.value.trim());
-      if (suggestions[activeIdx]) searchInput.value = suggestions[activeIdx].value;
+    searchBar.addEventListener('search-input', (e) => {
+      if (e.detail.mode === 'users') runSearch(e.detail.query, e.detail.mode);
     });
 
-    searchInput.addEventListener('blur', () => setTimeout(hideAC, 150));
-    searchInput.addEventListener('focus', () => {
-      const q = searchInput.value.trim();
-      if (q) showAC(buildSuggestions(q));
-    });
-
-    // ── Submit ────────────────────────────────────────────────────
-    searchForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const q = searchInput.value.trim();
-      hideAC();
-      if (q) runSearch(q);
-    });
-
-    async function runSearch(query) {
+    async function runSearch(query, mode) {
       if (mode === 'tags') await searchTags(query);
       else searchUsers(query);
     }
@@ -486,7 +98,7 @@
 
     // ── Users search ──────────────────────────────────────────────
     function searchUsers(query) {
-      const q = query.toLowerCase();
+      const q       = query.toLowerCase();
       const matches = allUsers.filter(u =>
         u.username.toLowerCase().includes(q) ||
         (u.display_name || '').toLowerCase().includes(q)
@@ -515,18 +127,37 @@
       resultsEl.appendChild(wrap);
     }
 
-    // ── URL params ────────────────────────────────────────────────
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('mode')) {
-      const m = params.get('mode');
-      modeBtns.forEach(b => b.classList.toggle('search-page__mode--active', b.dataset.mode === m));
-      mode = m;
-      searchInput.placeholder = mode === 'tags' ? 'Pesquisar por tag...' : 'Pesquisar pessoas...';
-    }
-    if (params.get('q')) {
-      searchInput.value = params.get('q');
-      runSearch(params.get('q'));
-    }
+    // ── Post interaction events ───────────────────────────────────
+    document.addEventListener('post-like', async (e) => {
+      const { postId, liked, likeBtn } = e.detail;
+      likeBtn.disabled = true;
+      try {
+        if (liked) await likePost(postId);
+        else await unlikePost(postId);
+        likeBtn.classList.toggle('post-card__action-btn--liked', liked);
+        const countEl = likeBtn.querySelector('span');
+        if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent || '0') + (liked ? 1 : -1));
+      } catch (err) { console.error('like error', err); }
+      finally { likeBtn.disabled = false; }
+    });
+
+    document.addEventListener('post-save', async (e) => {
+      const { postId, saved, saveBtn } = e.detail;
+      saveBtn.disabled = true;
+      try {
+        if (saved) await savePost(postId);
+        else await unsavePost(postId);
+        saveBtn.classList.toggle('post-card__action-btn--saved', saved);
+      } catch (err) { console.error('save error', err); }
+      finally { saveBtn.disabled = false; }
+    });
+
+    document.addEventListener('post-follow', async (e) => {
+      try {
+        if (e.detail.followed) await followUser(e.detail.username);
+        else await unfollowUser(e.detail.username);
+      } catch (err) { console.error('follow error', err); }
+    });
   </script>
 
 </body>

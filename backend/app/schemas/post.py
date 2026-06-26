@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 
 class PostCreate(SQLModel):
     content: str
-    image_url: str | None = None
+    image_url: str
     tags: list[str] = []
 
 
@@ -16,7 +16,7 @@ class PostUpdate(SQLModel):
 class PostRead(SQLModel):
     id: int
     content: str
-    image_url: str | None
+    image_url: str
     created_at: datetime
     author_id: int
     author_username: str

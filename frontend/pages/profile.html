@@ -5,376 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InstaPet – Perfil</title>
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .edit-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .edit-modal--open {
-      display: flex;
-    }
-
-    .edit-modal__backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-    }
-
-    .edit-modal__box {
-      position: relative;
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 28px 28px 24px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 8px 32px rgba(6,22,19,0.18);
-      z-index: 1;
-    }
-
-    .edit-modal__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-    }
-
-    .edit-modal__title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin: 0;
-    }
-
-    .edit-modal__close {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-size: 22px;
-      line-height: 1;
-      padding: 2px 6px;
-      border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .edit-modal__close:hover {
-      background: var(--hover-bg);
-      color: var(--text);
-    }
-
-    .edit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .edit-form__group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .edit-form__label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .edit-form__input,
-    .edit-form__textarea {
-      border: 1.5px solid var(--border-md);
-      border-radius: 8px;
-      padding: 9px 12px;
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s;
-      background: var(--input-bg);
-    }
-
-    .edit-form__input:focus,
-    .edit-form__textarea:focus {
-      border-color: var(--color-primary);
-    }
-
-    .edit-form__textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .edit-form__avatar-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .edit-form__avatar-preview {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      background: var(--subtle-bg);
-      flex-shrink: 0;
-    }
-
-    .edit-form__avatar-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .edit-form__avatar-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border: 1.5px dashed var(--border);
-      border-radius: 8px;
-      background: var(--input-bg);
-      color: var(--text-muted);
-      font-size: 13px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
-    }
-
-    .edit-form__avatar-btn:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
-    .edit-form__avatar-filename {
-      font-size: 11px;
-      color: var(--text-muted);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 160px;
-    }
-
-    .edit-form__actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    .edit-form__cancel,
-    .edit-form__save {
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      border: 1.5px solid var(--border-md);
-      background: none;
-      color: var(--text-muted);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-
-    .edit-form__save {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: #fff;
-    }
-
-    .edit-form__cancel:hover {
-      background: var(--hover-bg);
-      color: var(--text);
-    }
-
-    .edit-form__save:hover {
-      background: var(--color-dark);
-      border-color: var(--color-dark);
-    }
-
-    .edit-form__save:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .edit-form__error {
-      font-size: 13px;
-      color: #c0392b;
-      margin: 0;
-    }
-
-    @media (max-width: 600px) {
-      .edit-modal__box {
-        margin: 12px;
-        padding: 22px 18px 18px;
-        max-width: 100%;
-        border-radius: 12px;
-      }
-    }
-
-    .users-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .users-modal[hidden] { display: none; }
-
-    .users-modal__backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-    }
-
-    .users-modal__box {
-      position: relative;
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 0;
-      width: 100%;
-      max-width: 380px;
-      max-height: 70vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 8px 32px rgba(6,22,19,0.18);
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .users-modal__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 20px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .users-modal__title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      margin: 0;
-    }
-
-    .users-modal__close {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-size: 20px;
-      line-height: 1;
-      padding: 2px 6px;
-      border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .users-modal__close:hover { background: var(--hover-bg); color: var(--text); }
-
-    .users-modal__list {
-      list-style: none;
-      margin: 0;
-      padding: 8px 0;
-      overflow-y: auto;
-    }
-
-    .users-modal__item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 20px;
-      transition: background 0.12s;
-    }
-
-    .users-modal__item:hover { background: var(--hover-bg); }
-
-    .users-modal__avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .users-modal__avatar--initials {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--color-primary);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .users-modal__info { flex: 1; min-width: 0; }
-
-    .users-modal__name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .users-modal__name:hover { text-decoration: underline; }
-
-    .users-modal__handle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .users-modal__follow-btn {
-      font-size: 12px;
-      font-weight: 700;
-      font-family: inherit;
-      padding: 5px 14px;
-      border-radius: var(--radius-full);
-      border: 1.5px solid var(--color-primary);
-      background: none;
-      color: var(--color-primary);
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .users-modal__follow-btn:hover { background: var(--color-primary); color: #fff; }
-
-    .users-modal__follow-btn--following {
-      background: var(--color-light);
-      border-color: var(--border-md);
-      color: var(--text-muted);
-    }
-
-    .users-modal__follow-btn--following:hover {
-      background: #fdecea;
-      border-color: #c0392b;
-      color: #c0392b;
-    }
-
-    .users-modal__empty {
-      padding: 32px 20px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-  </style>
 </head>
 <body>
 
@@ -385,60 +15,8 @@
     <div id="profile-grid-container"></div>
   </div>
 
-  <!-- Modal de edição de perfil -->
-  <div id="edit-modal" class="edit-modal">
-    <div class="edit-modal__backdrop" id="edit-modal-backdrop"></div>
-    <div class="edit-modal__box">
-      <div class="edit-modal__header">
-        <h2 class="edit-modal__title">Editar perfil</h2>
-        <button class="edit-modal__close" id="edit-modal-close" aria-label="Fechar">✕</button>
-      </div>
-      <form class="edit-form" id="edit-form" novalidate>
-        <div class="edit-form__group">
-          <label class="edit-form__label" for="edit-display-name">Nome</label>
-          <input class="edit-form__input" id="edit-display-name" type="text" maxlength="60" placeholder="O teu nome">
-        </div>
-        <div class="edit-form__group">
-          <label class="edit-form__label" for="edit-bio">Bio</label>
-          <textarea class="edit-form__textarea" id="edit-bio" maxlength="200" placeholder="Fala um pouco sobre ti..."></textarea>
-        </div>
-        <div class="edit-form__group">
-          <label class="edit-form__label">Foto de perfil</label>
-          <div class="edit-form__avatar-row">
-            <img class="edit-form__avatar-preview" id="edit-avatar-preview" src="" alt="preview">
-            <div class="edit-form__avatar-actions">
-              <button type="button" class="edit-form__avatar-btn" id="edit-avatar-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
-                </svg>
-                Alterar foto
-              </button>
-              <span class="edit-form__avatar-filename" id="edit-avatar-filename" hidden></span>
-              <input type="file" id="edit-avatar-file" accept="image/*" hidden>
-            </div>
-          </div>
-        </div>
-        <p class="edit-form__error" id="edit-error" hidden></p>
-        <div class="edit-form__actions">
-          <button type="button" class="edit-form__cancel" id="edit-cancel">Cancelar</button>
-          <button type="submit" class="edit-form__save" id="edit-save">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal seguidores / a seguir -->
-  <div id="users-modal" class="users-modal" role="dialog" aria-modal="true" hidden>
-    <div class="users-modal__backdrop" id="users-modal-backdrop"></div>
-    <div class="users-modal__box">
-      <div class="users-modal__header">
-        <h2 class="users-modal__title" id="users-modal-title"></h2>
-        <button class="users-modal__close" id="users-modal-close" aria-label="Fechar">✕</button>
-      </div>
-      <ul class="users-modal__list" id="users-modal-list"></ul>
-    </div>
-  </div>
+  <profile-edit-modal></profile-edit-modal>
+  <profile-users-modal></profile-users-modal>
 
   <app-footer></app-footer>
 
@@ -447,9 +25,10 @@
     import '../webcomponent/layout/footer.js';
     import '../webcomponent/profile/profile-header.js';
     import '../webcomponent/profile/profile-grid.js';
-    import { getMe, getUser, updateMe, followUser, unfollowUser, getFollowers, getFollowing } from '../services/users.js';
+    import '../webcomponent/profile/profile-edit-modal.js';
+    import '../webcomponent/profile/profile-users-modal.js';
+    import { getMe, getUser } from '../services/users.js';
     import { getPosts } from '../services/posts.js';
-    import { uploadImage } from '../services/upload.js';
 
     const params        = new URLSearchParams(window.location.search);
     const usernameParam = params.get('user');
@@ -459,199 +38,26 @@
       window.location.replace('/pages/login.html');
     }
 
-    // ── Modal de edição ───────────────────────────────────────────
-    const modal           = document.getElementById('edit-modal');
-    const editForm        = document.getElementById('edit-form');
-    const editName        = document.getElementById('edit-display-name');
-    const editBio         = document.getElementById('edit-bio');
-    const avatarPreview   = document.getElementById('edit-avatar-preview');
-    const avatarBtn       = document.getElementById('edit-avatar-btn');
-    const avatarFile      = document.getElementById('edit-avatar-file');
-    const avatarFilename  = document.getElementById('edit-avatar-filename');
-    const editError       = document.getElementById('edit-error');
-    const saveBtn         = document.getElementById('edit-save');
-
-    let selectedAvatarFile = null;
-    let currentAvatarUrl   = '';
-
-    avatarBtn.addEventListener('click', () => avatarFile.click());
-
-    avatarFile.addEventListener('change', () => {
-      const file = avatarFile.files[0];
-      if (!file) return;
-      selectedAvatarFile = file;
-      avatarPreview.src  = URL.createObjectURL(file);
-      const label = file.name.length > 24 ? file.name.slice(0, 22) + '…' : file.name;
-      avatarFilename.textContent = label;
-      avatarFilename.hidden = false;
-    });
-
-    function openModal(data) {
-      editName.value        = data.displayName || '';
-      editBio.value         = data.bio || '';
-      avatarPreview.src     = data.avatar || '';
-      currentAvatarUrl      = data.avatar || '';
-      selectedAvatarFile    = null;
-      avatarFile.value      = '';
-      avatarFilename.hidden = true;
-      editError.hidden      = true;
-      modal.classList.add('edit-modal--open');
-      editName.focus();
-    }
-
-    function closeModal() {
-      modal.classList.remove('edit-modal--open');
-      editForm.reset();
-      selectedAvatarFile    = null;
-      avatarFile.value      = '';
-      avatarFilename.hidden = true;
-    }
-
-    document.getElementById('edit-modal-close').addEventListener('click', closeModal);
-    document.getElementById('edit-cancel').addEventListener('click', closeModal);
-    document.getElementById('edit-modal-backdrop').addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-    editForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      editError.hidden = true;
-      saveBtn.disabled = true;
-
-      try {
-        let avatar_url = currentAvatarUrl || null;
-
-        if (selectedAvatarFile) {
-          saveBtn.textContent = 'A carregar foto...';
-          const result = await uploadImage(selectedAvatarFile);
-          avatar_url = result.url;
-        }
-
-        saveBtn.textContent = 'A guardar...';
-        const payload = {};
-        const nameVal = editName.value.trim();
-        if (nameVal) payload.display_name = nameVal;
-        payload.bio        = editBio.value.trim() || null;
-        payload.avatar_url = avatar_url;
-        await updateMe(payload);
-        closeModal();
-        window.location.reload();
-      } catch {
-        editError.textContent = 'Erro ao guardar. Tenta novamente.';
-        editError.hidden = false;
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Guardar';
-      }
-    });
-
-    // ── Modal de seguidores / a seguir ───────────────────────────
-    const usersModal      = document.getElementById('users-modal');
-    const usersModalTitle = document.getElementById('users-modal-title');
-    const usersModalList  = document.getElementById('users-modal-list');
-
-    function closeUsersModal() { usersModal.hidden = true; usersModalList.innerHTML = ''; }
-
-    document.getElementById('users-modal-close').addEventListener('click', closeUsersModal);
-    document.getElementById('users-modal-backdrop').addEventListener('click', closeUsersModal);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUsersModal(); });
-
-    function getHeaderStatEl(index) {
-      return document.querySelectorAll('#profile-header-container .profile-header__stat-value')[index];
-    }
-
+    // ── Sync header stat counters after follow/unfollow in users modal ──
     function nudgeHeaderStat(index, delta) {
-      const el = getHeaderStatEl(index);
+      const el = document.querySelectorAll('#profile-header-container .profile-header__stat-value')[index];
       if (el) el.textContent = Math.max(0, parseInt(el.textContent || '0') + delta);
     }
 
-    function buildUserItem(u, loggedInUsername, profileUsername) {
-      const isMe = loggedInUsername && u.username === loggedInUsername;
-      const initials = (u.display_name || u.username).slice(0, 1).toUpperCase();
-      const avatar = u.avatar_url
-        ? `<img class="users-modal__avatar" src="${u.avatar_url}" alt="${u.username}">`
-        : `<span class="users-modal__avatar--initials">${initials}</span>`;
-      const li = document.createElement('li');
-      li.className = 'users-modal__item';
-      li.innerHTML = `
-        ${avatar}
-        <div class="users-modal__info">
-          <a class="users-modal__name" href="/pages/profile.html?user=${u.username}">${u.display_name || u.username}</a>
-          <span class="users-modal__handle">@${u.username}</span>
-        </div>
-        ${!isMe ? `<button class="users-modal__follow-btn ${u.followed_by_me ? 'users-modal__follow-btn--following' : ''}" data-username="${u.username}">
-          ${u.followed_by_me ? 'A seguir' : 'Seguir'}
-        </button>` : ''}
-      `;
-      if (!isMe) {
-        let followed = u.followed_by_me;
-        const btn = li.querySelector('.users-modal__follow-btn');
-        btn.addEventListener('click', async () => {
-          if (btn.disabled) return;
-          const wasFollowed = followed;
-          followed = !followed;
-          const delta = followed ? 1 : -1;
+    document.addEventListener('profile-follow-change', (e) => {
+      const { targetUsername, profileUsername, loggedInUsername, delta } = e.detail;
+      if (targetUsername === profileUsername) nudgeHeaderStat(1, delta);
+      if (loggedInUsername === profileUsername) nudgeHeaderStat(2, delta);
+    });
 
-          // optimistic update
-          btn.disabled = true;
-          btn.textContent = followed ? 'A seguir' : 'Seguir';
-          btn.classList.toggle('users-modal__follow-btn--following', followed);
-
-          // sync header counters
-          if (u.username === profileUsername) nudgeHeaderStat(1, delta); // Seguidores do perfil
-          if (loggedInUsername === profileUsername) nudgeHeaderStat(2, delta); // A seguir (perfil próprio)
-
-          try {
-            if (followed) await followUser(u.username);
-            else await unfollowUser(u.username);
-            sessionStorage.setItem('feed-stale', '1');
-          } catch {
-            // rollback
-            followed = wasFollowed;
-            btn.textContent = followed ? 'A seguir' : 'Seguir';
-            btn.classList.toggle('users-modal__follow-btn--following', followed);
-            if (u.username === profileUsername) nudgeHeaderStat(1, -delta);
-            if (loggedInUsername === profileUsername) nudgeHeaderStat(2, -delta);
-          } finally {
-            btn.disabled = false;
-          }
-        });
-      }
-      return li;
-    }
-
-    async function openUsersModal(list, username) {
-      usersModalTitle.textContent = list === 'followers' ? 'Seguidores' : 'A seguir';
-      usersModal.hidden = false;
-      usersModalList.innerHTML = '<li class="users-modal__empty">A carregar...</li>';
-      try {
-        let loggedInUsername = null;
-        if (localStorage.getItem('token')) {
-          try { loggedInUsername = (await getMe()).username; } catch {}
-        }
-        const users = list === 'followers' ? await getFollowers(username) : await getFollowing(username);
-        usersModalList.innerHTML = '';
-        if (!users.length) {
-          usersModalList.innerHTML = '<li class="users-modal__empty">Nenhum utilizador.</li>';
-          return;
-        }
-        users.forEach(u => usersModalList.appendChild(buildUserItem(u, loggedInUsername, username)));
-      } catch {
-        usersModalList.innerHTML = '<li class="users-modal__empty">Erro ao carregar.</li>';
-      }
-    }
-
-    document.addEventListener('profile-stat-click', (e) => openUsersModal(e.detail.list, e.detail.username));
-
-    // ── Perfil ───────────────────────────────────────────────────
-    document.addEventListener('profile-edit-open', (e) => openModal(e.detail));
-
-    document.addEventListener('profile-follow', (e) => {
+    document.addEventListener('profile-follow', () => {
       sessionStorage.setItem('feed-stale', '1');
     });
 
+    // ── Load profile ──────────────────────────────────────────────
     async function loadProfile() {
       document.getElementById('profile-header-container').innerHTML = '';
-      document.getElementById('profile-grid-container').innerHTML = '';
+      document.getElementById('profile-grid-container').innerHTML   = '';
 
       try {
         let user;
@@ -669,22 +75,22 @@
           }
         }
 
-        const posts     = await getPosts();
-        const userPosts = posts.filter(p => p.author_username === user.username);
-        const totalLikes= userPosts.reduce((sum, p) => sum + (p.like_count ?? 0), 0);
+        const posts      = await getPosts();
+        const userPosts  = posts.filter(p => p.author_username === user.username);
+        const totalLikes = userPosts.reduce((sum, p) => sum + (p.like_count ?? 0), 0);
 
         document.title = `InstaPet – @${user.username}`;
 
         const header = document.createElement('profile-header');
-        header.setAttribute('username',      user.username);
-        header.setAttribute('display-name',  user.display_name ?? user.username);
-        header.setAttribute('avatar',        user.avatar_url ?? '');
-        header.setAttribute('bio',           user.bio ?? '');
-        header.setAttribute('followers',     user.follower_count  ?? 0);
-        header.setAttribute('following',     user.following_count ?? 0);
-        header.setAttribute('likes',         totalLikes);
-        header.setAttribute('editable',        isEditable ? 'true' : 'false');
-        header.setAttribute('followed-by-me',  !isEditable && (user.followed_by_me ?? false) ? 'true' : 'false');
+        header.setAttribute('username',       user.username);
+        header.setAttribute('display-name',   user.display_name ?? user.username);
+        header.setAttribute('avatar',         user.avatar_url ?? '');
+        header.setAttribute('bio',            user.bio ?? '');
+        header.setAttribute('followers',      user.follower_count  ?? 0);
+        header.setAttribute('following',      user.following_count ?? 0);
+        header.setAttribute('likes',          totalLikes);
+        header.setAttribute('editable',       isEditable ? 'true' : 'false');
+        header.setAttribute('followed-by-me', !isEditable && (user.followed_by_me ?? false) ? 'true' : 'false');
         document.getElementById('profile-header-container').appendChild(header);
 
         const grid = document.createElement('profile-grid');

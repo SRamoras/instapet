@@ -324,3 +324,23 @@ body {
   border-color: var(--color-primary);
   color: var(--color-dark);
 }
+
+
+/* ── Search page layout ── */
+.search-page {
+  max-width: 600px;
+  margin: 32px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: calc(100vh - 62px - 32px);
+}
+
+@media (max-width: 600px) {
+  .search-page {
+    margin: 14px auto;
+    padding: 0 12px;
+    gap: 12px;
+  }
+}
