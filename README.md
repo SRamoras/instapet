@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <sub>Final project for <b>Project I — Web Programming</b>, ETIC_Algarve, 2025/26 (Class 2527, Group 4, Path A).</sub>
+  <sub>Final project for <b>Project I — Web Programming</b>, ETIC_Algarve, 2025/26 · Graded <b>19/20</b></sub>
 </p>
 
 ---
