@@ -1,8 +1,14 @@
-# InstaPet 🐾
+<p align="center">
+  <img src="frontend/img/logoinstapet1.png" alt="InstaPet" width="260">
+</p>
 
-A social media platform for pet lovers — share photos, follow other pet owners, like and comment on posts, and discover new animals through hashtags.
+<p align="left">
+  A social media platform for pet lovers — share photos, follow other pet owners, like and comment on posts, and discover new animals through hashtags.
+</p>
 
-Built as the final project for **Project I — Web Programming**, ETIC_Algarve, Academic Year 2025/26 (Class 2527, Group 4, Path A).
+<p align="left">
+  Built as the final project for <b>Project I — Web Programming</b>, ETIC_Algarve, Academic Year 2025/26 (Class 2527, Group 4, Path A).
+</p>
 
 ---
 
