@@ -10,6 +10,14 @@
   Built as the final project for <b>Project I — Web Programming</b>, ETIC_Algarve, Academic Year 2025/26 (Class 2527, Group 4, Path A).
 </p>
 
+<p align="center">
+  <img src="instapet-gif.gif" alt="InstaPet demo" width="750">
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/NDfyXEHs6Hg">▶️ Watch the full demo (4 min)</a>
+</p>
+
 ---
 
 ## Authors & Contributions
