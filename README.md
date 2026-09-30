@@ -2,12 +2,17 @@
   <img src="frontend/img/logoinstapet1.png" alt="InstaPet" width="260">
 </p>
 
-<p align="left">
-  A social media platform for pet lovers — share photos, follow other pet owners, like and comment on posts, and discover new animals through hashtags.
+<p align="center">
+  <b>A social network for pet lovers.</b><br>
+  Share photos, follow other pet owners and discover new animals through hashtags.
 </p>
 
-<p align="left">
-  Built as the final project for <b>Project I — Web Programming</b>, ETIC_Algarve, Academic Year 2025/26 (Class 2527, Group 4, Path A).
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white" alt="Python 3.12">
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/JavaScript-Web_Components-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
+  <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white" alt="Docker">
 </p>
 
 <p align="center">
@@ -16,6 +21,10 @@
 
 <p align="center">
   <a href="https://youtu.be/NDfyXEHs6Hg">▶️ Watch the full demo (4 min)</a>
+</p>
+
+<p align="center">
+  <sub>Final project for <b>Project I — Web Programming</b>, ETIC_Algarve, 2025/26 (Class 2527, Group 4, Path A).</sub>
 </p>
 
 ---
